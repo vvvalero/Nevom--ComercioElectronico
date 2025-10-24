@@ -1,18 +1,6 @@
 <?php
-// Configuración de conexión
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db   = 'nevombbdd';
-
-try {
-    // Crear conexión
-    $conexion = new mysqli($host, $user, $pass, $db);
-    $conexion->set_charset('utf8');
-
-    if ($conexion->connect_errno) {
-        throw new Exception("Error de conexión ({$conexion->connect_errno}): {$conexion->connect_error}");
-    }
+    // Incluir conexión externa
+    include_once 'conexion.php';
 
     /**
      * Ejecuta una consulta SQL y devuelve el resultado.
@@ -27,7 +15,6 @@ try {
 
     /**
      * Genera una tabla HTML con Bootstrap a partir de una consulta SQL.
-     * Si la tabla está vacía, muestra un mensaje informativo.
      */
     function mostrarTabla($conexion, $titulo, $tabla) {
         $sql = "SELECT * FROM $tabla";
@@ -81,10 +68,6 @@ try {
         'linea_reparacion' => 'Líneas de Reparación',
         'movil' => 'Móviles'
     ];
-
-} catch (Exception $e) {
-    die("<div class='alert alert-danger text-center'><strong>Error:</strong> " . $e->getMessage() . "</div>");
-}
 ?>
 
 <!-- EMPIEZA EL HTML DE LA PÁGINA !-->
@@ -111,10 +94,5 @@ try {
     // Cerrar conexión
     $conexion->close();
     ?>
-
-    <footer class="text-center mt-5 mb-3 text-muted">
-        <small>© <?= date('Y') ?> Sistema Nevombbdd - PHP & MySQL</small>
-    </footer>
-
 </body>
 </html>
