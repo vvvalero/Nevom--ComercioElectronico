@@ -1,0 +1,5 @@
+Si sale el error Error: Unknown database 'nevombbdd'
+
+Hacer:
+1.- /Applications/XAMPP/xamppfiles/bin/mysql -u root -e "CREATE DATABASE nevombbdd;"
+2.- /Applications/XAMPP/xamppfiles/bin/mysql -u root nevombbdd < /Applications/XAMPP/xamppfiles/htdocs/nevom/nevombbdd.sql
