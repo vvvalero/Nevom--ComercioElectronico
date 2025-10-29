@@ -1,6 +1,6 @@
 <?php
     // Incluir conexión externa
-    include_once 'conexion.php';
+    require 'conexion.php';
 
     /**
      * Ejecuta una consulta SQL y devuelve el resultado.
