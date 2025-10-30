@@ -7,6 +7,22 @@ CREATE DATABASE `nevombbdd` CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 USE `nevombbdd`;
 
 -- --------------------------------------------------------
+-- Tabla `users` (usuarios para login)
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role` enum('client','admin') NOT NULL DEFAULT 'client',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_unique` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- Nota: Por seguridad no se incluye aquí un administrador por defecto. Puedes crear uno
+-- con un script PHP que use password_hash() o con un INSERT manual incluyendo un hash.
+
+-- --------------------------------------------------------
 -- Tabla `cliente`
 -- --------------------------------------------------------
 CREATE TABLE `cliente` (

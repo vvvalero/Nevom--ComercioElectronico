@@ -1,6 +1,14 @@
 <?php
     // Incluir conexión externa
     require 'conexion.php';
+    // Iniciar sesión para controlar login/roles
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Nombre y rol del usuario logueado (si aplica)
+    $userName = $_SESSION['user_name'] ?? null;
+    $userRole = $_SESSION['user_role'] ?? null;
 
     /**
      * Ejecuta una consulta SQL y devuelve el resultado.
@@ -81,11 +89,33 @@
 </head>
 <body class="bg-light">
 
-    <header class="bg-dark text-white py-4 mb-5 text-center shadow-sm">
-        <h1>Gestión de Base de Datos Nevom</h1>
+    <header class="bg-dark text-white py-4 mb-5 shadow-sm">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">Gestión de Base de Datos Nevom</h1>
+            <div>
+                <?php if (! $userName): ?>
+                    <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
+                    <a href="signup.php" class="btn btn-outline-light">Registrarse</a>
+                <?php else: ?>
+                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?></span>
+                    <?php if ($userRole === 'admin'): ?>
+                        <a href="añadirMovil.php" class="btn btn-warning me-2">Añadir móvil</a>
+                    <?php endif; ?>
+                    <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
+                <?php endif; ?>
+            </div>
+        </div>
     </header>
 
     <?php
+    // Mostrar mensaje flash desde la sesión (si existe)
+    if (!empty($_SESSION['flash'])) {
+        $f = $_SESSION['flash'];
+        $type = ($f['type'] ?? 'info') === 'success' ? 'success' : 'danger';
+        echo "<div class='container'><div class='alert alert-" . htmlspecialchars($type) . " mt-3'>" . htmlspecialchars($f['text']) . "</div></div>";
+        unset($_SESSION['flash']);
+    }
+
     // Mostrar todas las tablas dinámicamente
     foreach ($tablas as $tabla => $titulo) {
         mostrarTabla($conexion, $titulo, $tabla);
