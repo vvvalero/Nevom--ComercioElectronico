@@ -99,7 +99,7 @@ $tablas = [
             <div>
                 <?php if (! $userName): ?>
                     <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
-                    <a href="signupcliente.php" class="btn btn-outline-light">Registrarse</a>
+                    <a href="signupadmin.php" class="btn btn-outline-light">Registrarse</a>
                 <?php else: ?>
                     <span class="me-3">Hola, <?= htmlspecialchars($userName) ?></span>
                     <?php if ($userRole === 'admin'): ?>
