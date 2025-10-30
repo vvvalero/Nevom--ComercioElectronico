@@ -1,10 +1,9 @@
 <?php
 require 'conexion.php';
 
-$mensaje = ''; // Variable para mostrar mensajes de éxito o error
+$mensaje = ''; 
 
 if (isset($_POST['enviar'])) {
-    // Recoger los datos y evitar XSS
     $marca = htmlspecialchars($_POST['marca']);
     $modelo = htmlspecialchars($_POST['modelo']);
     $capacidad = (int) $_POST['capacidad'];
@@ -48,7 +47,7 @@ $conexion->close();
         }
     ?>
 
-    <form action="<?= htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
+    <form action="" method="post">
         <div class="mb-3">
             <label>Marca:</label>
             <input type="text" name="marca" class="form-control" required>
