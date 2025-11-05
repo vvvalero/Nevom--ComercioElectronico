@@ -56,48 +56,63 @@ $conexion->close();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro - Nevom</title>
+    <title>Registro Admin - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title mb-4">Crear cuenta</h3>
-                        <?php if ($error): ?>
-                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-                        <?php endif; ?>
-                        <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" name="nombre" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Contraseña</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Registrarme como</label>
-                                <select name="role" class="form-select">
-                                    <option value="client">Cliente</option>
-                                    <option value="admin">Administrador</option>
-                                </select>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="signin.php">¿Ya tienes cuenta? Inicia sesión</a>
-                                <button class="btn btn-primary" type="submit">Registrarse</button>
-                            </div>
-                        </form>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="card shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="mb-2">📱 Nevom</h2>
+                        <h3 class="mb-4">Crear Cuenta</h3>
+                        <p class="text-muted">Regístrate para gestionar la tienda</p>
                     </div>
+                    
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                    <?php endif; ?>
+                    
+                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Tu nombre completo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control form-control-lg" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Mínimo 8 caracteres" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Tipo de Cuenta</label>
+                            <select name="role" class="form-select form-select-lg">
+                                <option value="client">Cliente</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                            <small class="text-muted">Los administradores pueden gestionar productos</small>
+                        </div>
+                        <button class="btn btn-primary w-100 btn-lg rounded-pill mb-3" type="submit">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center">
+                            <span class="text-muted">¿Ya tienes cuenta?</span>
+                            <a href="signin.php" class="text-decoration-none fw-semibold">Inicia sesión</a>
+                        </div>
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <a href="index.php" class="text-muted text-decoration-none">← Volver al inicio</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

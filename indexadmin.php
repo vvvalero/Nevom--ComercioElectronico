@@ -1,6 +1,7 @@
 <?php
 // Incluir conexión externa
 require 'conexion.php';
+
 // Iniciar sesión para controlar login/roles
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -10,124 +11,411 @@ if (session_status() === PHP_SESSION_NONE) {
 $userName = $_SESSION['user_name'] ?? null;
 $userRole = $_SESSION['user_role'] ?? null;
 
-/**
- * Ejecuta una consulta SQL y devuelve el resultado.
- */
-function ejecutarConsulta($conexion, $sql)
-{
-    $resultado = $conexion->query($sql);
-    if (!$resultado) {
-        throw new Exception("Error en la consulta ({$conexion->errno}): {$conexion->error}");
-    }
-    return $resultado;
-}
+// Obtener móviles disponibles (con stock > 0)
+$sqlMoviles = "SELECT * FROM movil WHERE stock > 0 ORDER BY precio ASC LIMIT 6";
+$resultadoMoviles = $conexion->query($sqlMoviles);
 
-/**
- * Genera una tabla HTML con Bootstrap a partir de una consulta SQL.
- */
-function mostrarTabla($conexion, $titulo, $tabla)
-{
-    $sql = "SELECT * FROM $tabla";
-    $resultado = ejecutarConsulta($conexion, $sql);
-
-    echo "<div class='container my-5'>";
-    echo "<h2 class='text-center mb-4'>$titulo</h2>";
-
-    if ($resultado->num_rows === 0) {
-        echo "<div class='alert alert-warning text-center shadow-sm'>
-                    La tabla <strong>$tabla</strong> no contiene registros.
-                  </div>";
-    } else {
-        echo "<div class='table-responsive'>";
-        echo "<table class='table table-striped table-bordered text-center align-middle shadow-sm'>";
-
-        // Cabecera
-        $campos = array_keys($resultado->fetch_assoc());
-        echo "<thead class='table-dark'><tr>";
-        foreach ($campos as $campo) {
-            echo "<th>" . htmlspecialchars($campo) . "</th>";
-        }
-        echo "</tr></thead><tbody>";
-
-        // Volver al primer registro y mostrar todos
-        $resultado->data_seek(0);
-        while ($registro = $resultado->fetch_assoc()) {
-            echo "<tr>";
-            foreach ($registro as $valor) {
-                echo "<td>" . htmlspecialchars($valor) . "</td>";
-            }
-            echo "</tr>";
-        }
-
-        echo "</tbody></table></div>";
-    }
-
-    echo "</div>";
-    $resultado->free();
-}
-
-// Listado de tablas a mostrar
-$tablas = [
-    'cliente' => 'Clientes',
-    'pedido' => 'Pedidos',
-    'compra' => 'Compras',
-    'linea_compra' => 'Líneas de Compra',
-    'venta' => 'Ventas',
-    'linea_venta' => 'Líneas de Venta',
-    'reparacion' => 'Reparaciones',
-    'linea_reparacion' => 'Líneas de Reparación',
-    'movil' => 'Móviles'
-];
+// Obtener estadísticas
+$sqlStats = "SELECT COUNT(*) as total FROM movil WHERE stock > 0";
+$stats = $conexion->query($sqlStats)->fetch_assoc();
 ?>
 
-<!-- EMPIEZA EL HTML DE LA PÁGINA !-->
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Tablas - Nevombbdd</title>
+    <title>Nevom - Tu Tienda de Móviles de Confianza</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body>
 
-    <header class="bg-dark text-white py-4 mb-5 shadow-sm">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">Gestión de Base de Datos Nevom</h1>
-            <div>
-                <?php if (! $userName): ?>
-                    <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
-                    <a href="signupadmin.php" class="btn btn-outline-light">Registrarse</a>
-                <?php else: ?>
-                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?></span>
-                    <?php if ($userRole === 'admin'): ?>
-                        <a href="addMovil.php" class="btn btn-warning me-2">Añadir móvil</a>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="index.php">
+                📱 Nevom
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#productos">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#servicios">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto">Contacto</a>
+                    </li>
+                    <?php if ($userName): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                                👤 <?= htmlspecialchars($userName) ?>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php if ($userRole === 'admin'): ?>
+                                    <li><a class="dropdown-item" href="indexadmin.php">📊 Panel Admin</a></li>
+                                    <li><a class="dropdown-item" href="addMovil.php">➕ Añadir Móvil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php else: ?>
+                                    <li><a class="dropdown-item" href="visorBBDD.php">🛍️ Mis Pedidos</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="logout.php">🚪 Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="signin.php">Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-primary btn-sm rounded-pill px-4" href="signupadmin.php">Registrarse</a>
+                        </li>
                     <?php endif; ?>
-                    <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
-                <?php endif; ?>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <?php
-    // Mostrar mensaje flash desde la sesión (si existe)
-    if (!empty($_SESSION['flash'])) {
-        $f = $_SESSION['flash'];
-        $type = ($f['type'] ?? 'info') === 'success' ? 'success' : 'danger';
-        echo "<div class='container'><div class='alert alert-" . htmlspecialchars($type) . " mt-3'>" . htmlspecialchars($f['text']) . "</div></div>";
-        unset($_SESSION['flash']);
-    }
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">Bienvenido a Nevom</h1>
+                    <p class="hero-subtitle">
+                        Los mejores móviles al mejor precio. Calidad, servicio y garantía en cada compra.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#productos" class="btn btn-primary-custom btn-custom">
+                            Ver Catálogo 🛒
+                        </a>
+                        <a href="#servicios" class="btn btn-outline-custom btn-custom">
+                            Nuestros Servicios
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <div style="font-size: 15rem; opacity: 0.9;">📱</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Mostrar todas las tablas dinámicamente
-    foreach ($tablas as $tabla => $titulo) {
-        mostrarTabla($conexion, $titulo, $tabla);
-    }
+    <!-- Estadísticas -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 stat-item mb-4 mb-md-0">
+                    <div class="stat-number"><?= $stats['total'] ?>+</div>
+                    <div class="stat-label">Móviles Disponibles</div>
+                </div>
+                <div class="col-md-4 stat-item mb-4 mb-md-0">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Garantía Oficial</div>
+                </div>
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Atención al Cliente</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Cerrar conexión
-    $conexion->close();
-    ?>
+    <!-- Productos Destacados -->
+    <section class="py-5" id="productos" style="padding-top: 80px !important;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Productos Destacados</h2>
+                <p class="text-muted mt-4">Descubre nuestra selección de móviles con las mejores características</p>
+            </div>
+
+            <div class="row g-4">
+                <?php if ($resultadoMoviles && $resultadoMoviles->num_rows > 0): ?>
+                    <?php while ($movil = $resultadoMoviles->fetch_assoc()): ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card product-card">
+                                <div class="position-relative">
+                                    <div class="product-image">
+                                        📱
+                                    </div>
+                                    <?php if ($movil['stock'] <= 5): ?>
+                                        <span class="product-badge">¡Últimas unidades!</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold"><?= htmlspecialchars($movil['marca']) ?> <?= htmlspecialchars($movil['modelo']) ?></h5>
+                                    <div class="mb-3">
+                                        <span class="badge bg-secondary me-2"><?= htmlspecialchars($movil['capacidad']) ?> GB</span>
+                                        <span class="badge bg-info"><?= htmlspecialchars($movil['color']) ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="price-tag"><?= number_format($movil['precio'], 2) ?>€</span>
+                                        <span class="text-muted">Stock: <?= $movil['stock'] ?></span>
+                                    </div>
+                                    <button class="btn btn-primary w-100 mt-3 rounded-pill">
+                                        Comprar Ahora
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h4>🔍 Próximamente nuevos productos</h4>
+                            <p class="mb-0">Estamos preparando nuestro catálogo. ¡Vuelve pronto!</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($resultadoMoviles && $resultadoMoviles->num_rows > 0): ?>
+                <div class="text-center mt-5">
+                    <a href="visorBBDD.php" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                        Ver Todos los Productos →
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="py-5 bg-light" id="servicios" style="padding-top: 80px !important;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <p class="text-muted mt-4">Más que una tienda, somos tu partner tecnológico</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card text-center p-4">
+                        <div class="feature-icon">🛒</div>
+                        <h5 class="fw-bold mb-3">Venta</h5>
+                        <p class="text-muted">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card text-center p-4">
+                        <div class="feature-icon">🔧</div>
+                        <h5 class="fw-bold mb-3">Reparación</h5>
+                        <p class="text-muted">Servicio técnico especializado para todo tipo de averías</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card text-center p-4">
+                        <div class="feature-icon">💰</div>
+                        <h5 class="fw-bold mb-3">Compra</h5>
+                        <p class="text-muted">Compramos tu móvil usado al mejor precio del mercado</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card text-center p-4">
+                        <div class="feature-icon">🚚</div>
+                        <h5 class="fw-bold mb-3">Envío Gratis</h5>
+                        <p class="text-muted">Envío gratuito en pedidos superiores a 50€</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Por qué elegirnos -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">¿Por qué elegir Nevom?</h2>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="pe-lg-5">
+                        <h3 class="fw-bold mb-4">Tu confianza es nuestra prioridad</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3 d-flex">
+                                <span class="text-primary me-3 fs-5">✓</span>
+                                <div>
+                                    <strong>Garantía oficial:</strong> Todos nuestros productos cuentan con garantía del fabricante
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex">
+                                <span class="text-primary me-3 fs-5">✓</span>
+                                <div>
+                                    <strong>Mejor precio:</strong> Igualamos cualquier oferta de la competencia
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex">
+                                <span class="text-primary me-3 fs-5">✓</span>
+                                <div>
+                                    <strong>Atención personalizada:</strong> Asesoramiento profesional para cada cliente
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex">
+                                <span class="text-primary me-3 fs-5">✓</span>
+                                <div>
+                                    <strong>Servicio técnico:</strong> Reparaciones rápidas y eficientes
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div style="font-size: 12rem; opacity: 0.8;">🏆</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="py-5 bg-light" id="contacto" style="padding-top: 80px !important;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Contacta con Nosotros</h2>
+                <p class="text-muted mt-4">¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg rounded-4">
+                        <div class="card-body p-5">
+                            <form>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nombre</label>
+                                        <input type="text" class="form-control form-control-lg" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control form-control-lg" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Asunto</label>
+                                        <input type="text" class="form-control form-control-lg" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Mensaje</label>
+                                        <textarea class="form-control form-control-lg" rows="5" required></textarea>
+                                    </div>
+                                    <div class="col-12 text-center mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                            Enviar Mensaje ✉️
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5 text-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="fs-1 mb-3">📍</div>
+                    <h5 class="fw-bold">Dirección</h5>
+                    <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="fs-1 mb-3">📞</div>
+                    <h5 class="fw-bold">Teléfono</h5>
+                    <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="fs-1 mb-3">✉️</div>
+                    <h5 class="fw-bold">Email</h5>
+                    <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="fw-bold mb-3">📱 Nevom</h4>
+                    <p class="text-light opacity-75">
+                        Tu tienda de confianza para comprar, vender y reparar móviles. 
+                        Calidad y servicio garantizados.
+                    </p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
+                    <h5 class="fw-bold mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#productos" class="text-light text-decoration-none opacity-75">Productos</a></li>
+                        <li class="mb-2"><a href="#servicios" class="text-light text-decoration-none opacity-75">Servicios</a></li>
+                        <li class="mb-2"><a href="#contacto" class="text-light text-decoration-none opacity-75">Contacto</a></li>
+                        <?php if ($userRole === 'admin'): ?>
+                            <li class="mb-2"><a href="indexadmin.php" class="text-light text-decoration-none opacity-75">Admin Panel</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4 mb-lg-0">
+                    <h5 class="fw-bold mb-3">Servicios</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><span class="text-light opacity-75">Venta de móviles</span></li>
+                        <li class="mb-2"><span class="text-light opacity-75">Reparaciones</span></li>
+                        <li class="mb-2"><span class="text-light opacity-75">Compra de usados</span></li>
+                        <li class="mb-2"><span class="text-light opacity-75">Accesorios</span></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5 class="fw-bold mb-3">Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light fs-4">📘</a>
+                        <a href="#" class="text-light fs-4">📷</a>
+                        <a href="#" class="text-light fs-4">🐦</a>
+                        <a href="#" class="text-light fs-4">📺</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-light opacity-25 my-4">
+            <div class="text-center text-light opacity-75">
+                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Proyecto Educativo</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Smooth scroll para los enlaces del menú
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Cambiar navbar al hacer scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.15)';
+            } else {
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+    </script>
+
 </body>
 
 </html>
+
+<?php
+// Cerrar conexión
+$conexion->close();
+?>

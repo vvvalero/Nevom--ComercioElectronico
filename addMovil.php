@@ -32,13 +32,20 @@ $conexion->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Añadir Móvil</title>
+    <title>Añadir Móvil - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
 <header class="bg-dark text-white py-4 mb-5 text-center shadow-sm">
-    <h1>Añadir Móvil</h1>
+    <div class="container d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">📱 Añadir Móvil</h1>
+        <div>
+            <a href="index.php" class="btn btn-outline-light me-2">← Volver al Inicio</a>
+            <a href="indexadmin.php" class="btn btn-outline-light">Panel Admin</a>
+        </div>
+    </div>
 </header>
 
 <div class="container">
@@ -49,34 +56,58 @@ $conexion->close();
         }
     ?>
 
-    <form action="" method="post">
-        <div class="mb-3">
-            <label>Marca:</label>
-            <input type="text" name="marca" class="form-control" required>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h3 class="card-title mb-4 text-center">Formulario de Nuevo Móvil</h3>
+                    
+                    <form action="" method="post">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Marca</label>
+                                <input type="text" name="marca" class="form-control" placeholder="Ej: Samsung" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Modelo</label>
+                                <input type="text" name="modelo" class="form-control" placeholder="Ej: Galaxy S23" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Capacidad (GB)</label>
+                                <input type="number" name="capacidad" class="form-control" placeholder="128" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Stock</label>
+                                <input type="number" name="stock" class="form-control" placeholder="10" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Color</label>
+                                <input type="text" name="color" class="form-control" placeholder="Negro" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Precio (€)</label>
+                                <input type="number" step="0.01" name="precio" class="form-control" placeholder="599.99" required>
+                            </div>
+                            <div class="col-12 text-center mt-4">
+                                <input type="submit" name="enviar" value="➕ Añadir Móvil" class="btn btn-primary btn-lg rounded-pill px-5">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>Modelo:</label>
-            <input type="text" name="modelo" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Capacidad (GB):</label>
-            <input type="number" name="capacidad" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Stock:</label>
-            <input type="number" name="stock" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Color:</label>
-            <input type="text" name="color" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Precio:</label>
-            <input type="number" step="0.01" name="precio" class="form-control" required>
-        </div>
-        <input type="submit" name="enviar" value="Añadir Móvil" class="btn btn-primary">
-    </form>
+    </div>
 </div>
+
+<footer class="mt-5">
+    <div class="container">
+        <div class="text-center text-light opacity-75 py-3">
+            <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Panel de Administración</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
