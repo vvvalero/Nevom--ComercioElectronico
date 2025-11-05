@@ -76,7 +76,8 @@ $tablas = [
     'linea_venta' => 'Líneas de Venta',
     'reparacion' => 'Reparaciones',
     'linea_reparacion' => 'Líneas de Reparación',
-    'movil' => 'Móviles'
+    'movil' => 'Móviles',
+    'users' => 'Usuarios'
 ];
 ?>
 
