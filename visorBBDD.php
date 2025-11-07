@@ -1,8 +1,17 @@
 <?php
 // Incluir conexión externa
 require 'conexion.php';
-// Iniciar sesión para controlar login/roles
+// Iniciar sesión (con parámetros seguros si no existe)
 if (session_status() === PHP_SESSION_NONE) {
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
     session_start();
 }
 
@@ -25,9 +34,9 @@ function ejecutarConsulta($conexion, $sql)
 /**
  * Genera una tabla HTML con Bootstrap a partir de una consulta SQL.
  */
-function mostrarTabla($conexion, $titulo, $tabla)
+function mostrarTabla($conexion, $titulo, $tabla, $where = '')
 {
-    $sql = "SELECT * FROM $tabla";
+    $sql = "SELECT * FROM $tabla" . ($where ? " WHERE $where" : '');
     $resultado = ejecutarConsulta($conexion, $sql);
 
     echo "<div class='container my-5'>";
@@ -66,19 +75,43 @@ function mostrarTabla($conexion, $titulo, $tabla)
     $resultado->free();
 }
 
-// Listado de tablas a mostrar
-$tablas = [
-    'cliente' => 'Clientes',
-    'pedido' => 'Pedidos',
-    'compra' => 'Compras',
-    'linea_compra' => 'Líneas de Compra',
-    'venta' => 'Ventas',
-    'linea_venta' => 'Líneas de Venta',
-    'reparacion' => 'Reparaciones',
-    'linea_reparacion' => 'Líneas de Reparación',
-    'movil' => 'Móviles',
-    'users' => 'Usuarios'
-];
+// Determinar tablas y filtros según rol
+$tablas = [];
+if ($userRole === 'admin') {
+    $tablas = [
+        'cliente' => 'Clientes',
+        'pedido' => 'Pedidos',
+        'compra' => 'Compras',
+        'linea_compra' => 'Líneas de Compra',
+        'venta' => 'Ventas',
+        'linea_venta' => 'Líneas de Venta',
+        'reparacion' => 'Reparaciones',
+        'linea_reparacion' => 'Líneas de Reparación',
+        'movil' => 'Móviles',
+        'users' => 'Usuarios'
+    ];
+} else {
+    // Cliente: limitar visión solo a sus datos + catálogo móviles
+    // Asegurar que tenemos cliente_id (si no, intentar obtenerlo)
+    if (!isset($_SESSION['cliente_id']) && isset($_SESSION['user_id'])) {
+        $tmp = $conexion->prepare('SELECT id FROM cliente WHERE user_id = ? LIMIT 1');
+        $tmp->bind_param('i', $_SESSION['user_id']);
+        if ($tmp->execute()) {
+            $tmp->store_result();
+            if ($tmp->num_rows === 1) {
+                $tmp->bind_result($cid);
+                $tmp->fetch();
+                $_SESSION['cliente_id'] = $cid;
+            }
+        }
+        $tmp->close();
+    }
+    $tablas = [
+        'cliente' => 'Mi Perfil',
+        'pedido' => 'Mis Pedidos',
+        'movil' => 'Catálogo de Móviles'
+    ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -122,9 +155,26 @@ $tablas = [
         unset($_SESSION['flash']);
     }
 
-    // Mostrar todas las tablas dinámicamente
-    foreach ($tablas as $tabla => $titulo) {
-        mostrarTabla($conexion, $titulo, $tabla);
+    // Mostrar tablas con filtros según rol
+    if ($userRole === 'admin') {
+        foreach ($tablas as $tabla => $titulo) {
+            mostrarTabla($conexion, $titulo, $tabla);
+        }
+    } else {
+        // Si no hay sesión de usuario, redirigir a login
+        if (!$userName || !isset($_SESSION['user_id'])) {
+            header('Location: signin.php');
+            exit;
+        }
+        $clienteId = $_SESSION['cliente_id'] ?? null;
+        // Mostrar solo su propio perfil
+        if ($clienteId) {
+            mostrarTabla($conexion, $tablas['cliente'], 'cliente', 'id=' . intval($clienteId));
+            // Pedidos asociados al cliente
+            mostrarTabla($conexion, $tablas['pedido'], 'pedido', 'idCliente=' . intval($clienteId));
+        }
+        // Catálogo móviles completo (no sensible)
+        mostrarTabla($conexion, $tablas['movil'], 'movil');
     }
 
     // Cerrar conexión

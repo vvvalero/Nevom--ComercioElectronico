@@ -1,6 +1,18 @@
 <?php
 require 'conexion.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
+// Inicializar sesión con parámetros seguros (solo si aún no se ha iniciado)
+if (session_status() === PHP_SESSION_NONE) {
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
 
 // Asegurar que exista la tabla users (por si no se importó el SQL)
 $createUsers = "CREATE TABLE IF NOT EXISTS users (
@@ -20,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || $password === '') {
         $error = 'Rellena todos los campos.';
     } else {
-        $stmt = $conexion->prepare('SELECT nombre, password_hash, role FROM users WHERE email = ? LIMIT 1');
+    $stmt = $conexion->prepare('SELECT id, nombre, password_hash, role FROM users WHERE email = ? LIMIT 1');
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->store_result();
@@ -28,12 +40,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Credenciales incorrectas.';
             $stmt->close();
         } else {
-            $stmt->bind_result($nombre, $hash, $role);
+            $stmt->bind_result($user_id, $nombre, $hash, $role);
             $stmt->fetch();
             if (password_verify($password, $hash)) {
                 // Login OK
+                session_regenerate_id(true); // Prevención de fijación de sesión
+                $_SESSION['user_id'] = $user_id;
                 $_SESSION['user_name'] = $nombre;
                 $_SESSION['user_role'] = $role;
+                // Intentar obtener el cliente_id si es cliente
+                if ($role === 'client') {
+                    $stmtCli = $conexion->prepare('SELECT id FROM cliente WHERE user_id = ? LIMIT 1');
+                    $stmtCli->bind_param('i', $user_id);
+                    if ($stmtCli->execute()) {
+                        $stmtCli->store_result();
+                        if ($stmtCli->num_rows === 1) {
+                            $stmtCli->bind_result($cliente_id);
+                            $stmtCli->fetch();
+                            $_SESSION['cliente_id'] = $cliente_id;
+                        }
+                    }
+                    $stmtCli->close();
+                }
                 header('Location: index.php');
                 exit;
             } else {
