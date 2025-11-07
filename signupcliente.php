@@ -16,10 +16,13 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $apellidos = trim($_POST['apellidos'] ?? '');
+    $direccion = trim($_POST['direccion'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
     $password = $_POST['password'] ?? '';
     $role = 'client'; // Solo permite registrarse como cliente
 
-    if ($nombre === '' || $email === '' || $password === '') {
+    if ($nombre === '' || $email === '' || $apellidos === '' || $direccion === '' || $telefono === '' || $password === '') {
         $error = 'Rellena todos los campos.';
     } else {
         // Comprobar si el email ya existe
@@ -31,20 +34,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'El email ya está registrado.';
             $stmt->close();
         } else {
-            $stmt->close();
+            // Insertar en tabla users
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $ins = $conexion->prepare('INSERT INTO users (nombre, email, password_hash, role) VALUES (?, ?, ?, ?)');
-            $ins->bind_param('ssss', $nombre, $email, $hash, $role);
-            if ($ins->execute()) {
-                // Registrar en sesión y redirigir
-                $_SESSION['user_name'] = $nombre;
-                $_SESSION['user_role'] = $role;
-                header('Location: index.php');
-                exit;
+            $insUser = $conexion->prepare('INSERT INTO users (nombre, email, password_hash, role) VALUES (?, ?, ?, ?)');
+            $insUser->bind_param('ssss', $nombre, $email, $hash, $role);
+
+            if ($insUser->execute()) {
+                $insUser->close();
+
+                // Insertar en tabla cliente
+                $insCliente = $conexion->prepare('INSERT INTO cliente (nombre, apellidos, email, telefono, direccion) VALUES (?, ?, ?, ?, ?)');
+                $insCliente->bind_param('sssss', $nombre, $apellidos, $email, $telefono, $direccion);
+
+                if ($insCliente->execute()) {
+                    $_SESSION['user_name'] = $nombre;
+                    $_SESSION['user_role'] = $role;
+                    $_SESSION['user_email'] = $email;
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    $error = 'Error al crear el perfil de cliente: ' . $conexion->error;
+                }
+                $insCliente->close();
             } else {
                 $error = 'Error al crear la cuenta: ' . $conexion->error;
+                $insUser->close();
             }
-            $ins->close();
         }
     }
 }
@@ -53,6 +68,7 @@ $conexion->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,29 +76,42 @@ $conexion->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <div class="card shadow-lg rounded-4">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <h2 class="mb-2">📱 Nevom</h2>
+                        <h2 class="mb-2">Nevom</h2>
                         <h3 class="mb-4">Crear Cuenta</h3>
                         <p class="text-muted">Únete a nosotros y disfruta de ofertas exclusivas</p>
                     </div>
-                    
+
                     <?php if ($error): ?>
                         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
                     <?php endif; ?>
-                    
+
                     <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
                             <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Tu nombre completo" required>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Apellidos</label>
+                            <input type="text" name="apellidos" class="form-control form-control-lg" placeholder="Tus apellidos" required>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" name="email" class="form-control form-control-lg" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" name="direccion" class="form-control form-control-lg" placeholder="Tu dirección" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" name="telefono" class="form-control form-control-lg" placeholder="Tu número de teléfono" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Contraseña</label>
@@ -107,4 +136,5 @@ $conexion->close();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

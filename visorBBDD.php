@@ -96,7 +96,7 @@ $tablas = [
 
     <header class="bg-dark text-white py-4 mb-5 shadow-sm">
         <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">🗄️ Visor de Base de Datos - Nevom</h1>
+            <h1 class="mb-0">Visor de Base de Datos - Nevom</h1>
             <div>
                 <?php if (!$userName): ?>
                     <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
@@ -104,10 +104,10 @@ $tablas = [
                 <?php else: ?>
                     <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
                     <?php if ($userRole === 'admin'): ?>
-                        <a href="addMovil.php" class="btn btn-warning me-2">➕ Añadir móvil</a>
+                        <a href="addMovil.php" class="btn btn-warning me-2">Añadir móvil</a>
                     <?php endif; ?>
-                    <a href="index.php" class="btn btn-outline-light me-2">🏠 Inicio</a>
-                    <a href="logout.php" class="btn btn-outline-light">🚪 Cerrar sesión</a>
+                    <a href="index.php" class="btn btn-outline-light me-2">Inicio</a>
+                    <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
                 <?php endif; ?>
             </div>
         </div>

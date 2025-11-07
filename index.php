@@ -15,9 +15,6 @@ $userRole = $_SESSION['user_role'] ?? null;
 $sqlMoviles = "SELECT * FROM movil WHERE stock > 0 ORDER BY precio ASC LIMIT 6";
 $resultadoMoviles = $conexion->query($sqlMoviles);
 
-// Obtener estadísticas
-$sqlStats = "SELECT COUNT(*) as total FROM movil WHERE stock > 0";
-$stats = $conexion->query($sqlStats)->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
@@ -60,14 +57,14 @@ $stats = $conexion->query($sqlStats)->fetch_assoc();
                             </a>
                             <ul class="dropdown-menu">
                                 <?php if ($userRole === 'admin'): ?>
-                                    <li><a class="dropdown-item" href="indexadmin.php">📊 Panel Admin</a></li>
-                                    <li><a class="dropdown-item" href="addMovil.php">➕ Añadir Móvil</a></li>
+                                    <li><a class="dropdown-item" href="indexadmin.php">Panel Admin</a></li>
+                                    <li><a class="dropdown-item" href="addMovil.php">Añadir Móvil</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item" href="visorBBDD.php">🛍️ Mis Pedidos</a></li>
+                                    <li><a class="dropdown-item" href="visorBBDD.php">Mis Pedidos</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="logout.php">🚪 Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="logout.php">Cerrar Sesión</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
@@ -94,7 +91,7 @@ $stats = $conexion->query($sqlStats)->fetch_assoc();
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
                         <a href="#productos" class="btn btn-primary-custom btn-custom">
-                            Ver Catálogo 🛒
+                            Ver Catálogo
                         </a>
                         <a href="#servicios" class="btn btn-outline-custom btn-custom">
                             Nuestros Servicios
@@ -103,26 +100,6 @@ $stats = $conexion->query($sqlStats)->fetch_assoc();
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
                     <div style="font-size: 15rem; opacity: 0.9;">📱</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Estadísticas -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 stat-item mb-4 mb-md-0">
-                    <div class="stat-number"><?= $stats['total'] ?>+</div>
-                    <div class="stat-label">Móviles Disponibles</div>
-                </div>
-                <div class="col-md-4 stat-item mb-4 mb-md-0">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Garantía Oficial</div>
-                </div>
-                <div class="col-md-4 stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Atención al Cliente</div>
                 </div>
             </div>
         </div>
@@ -222,52 +199,6 @@ $stats = $conexion->query($sqlStats)->fetch_assoc();
                         <h5 class="fw-bold mb-3">Envío Gratis</h5>
                         <p class="text-muted">Envío gratuito en pedidos superiores a 50€</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Por qué elegirnos -->
-    <section class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title">¿Por qué elegir Nevom?</h2>
-            </div>
-
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <div class="pe-lg-5">
-                        <h3 class="fw-bold mb-4">Tu confianza es nuestra prioridad</h3>
-                        <ul class="list-unstyled">
-                            <li class="mb-3 d-flex">
-                                <span class="text-primary me-3 fs-5">✓</span>
-                                <div>
-                                    <strong>Garantía oficial:</strong> Todos nuestros productos cuentan con garantía del fabricante
-                                </div>
-                            </li>
-                            <li class="mb-3 d-flex">
-                                <span class="text-primary me-3 fs-5">✓</span>
-                                <div>
-                                    <strong>Mejor precio:</strong> Igualamos cualquier oferta de la competencia
-                                </div>
-                            </li>
-                            <li class="mb-3 d-flex">
-                                <span class="text-primary me-3 fs-5">✓</span>
-                                <div>
-                                    <strong>Atención personalizada:</strong> Asesoramiento profesional para cada cliente
-                                </div>
-                            </li>
-                            <li class="mb-3 d-flex">
-                                <span class="text-primary me-3 fs-5">✓</span>
-                                <div>
-                                    <strong>Servicio técnico:</strong> Reparaciones rápidas y eficientes
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center">
-                    <div style="font-size: 12rem; opacity: 0.8;">🏆</div>
                 </div>
             </div>
         </div>

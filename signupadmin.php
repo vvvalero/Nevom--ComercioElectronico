@@ -19,32 +19,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $role = ($_POST['role'] ?? 'client') === 'admin' ? 'admin' : 'client';
 
+    // Validar campos comunes
     if ($nombre === '' || $email === '' || $password === '') {
-        $error = 'Rellena todos los campos.';
+        $error = 'Rellena todos los campos obligatorios.';
     } else {
         // Comprobar si el email ya existe
         $stmt = $conexion->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->store_result();
+
         if ($stmt->num_rows > 0) {
             $error = 'El email ya está registrado.';
             $stmt->close();
         } else {
             $stmt->close();
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $ins = $conexion->prepare('INSERT INTO users (nombre, email, password_hash, role) VALUES (?, ?, ?, ?)');
-            $ins->bind_param('ssss', $nombre, $email, $hash, $role);
-            if ($ins->execute()) {
-                // Registrar en sesión y redirigir
-                $_SESSION['user_name'] = $nombre;
-                $_SESSION['user_role'] = $role;
-                header('Location: index.php');
-                exit;
+
+            if ($role === 'client') {
+                // Para clientes, validar campos adicionales
+                $apellidos = trim($_POST['apellidos'] ?? '');
+                $direccion = trim($_POST['direccion'] ?? '');
+                $telefono = trim($_POST['telefono'] ?? '');
+
+                if ($apellidos === '' || $direccion === '' || $telefono === '') {
+                    $error = 'Los clientes deben rellenar todos los campos.';
+                } else {
+                    // Insertar en tabla users
+                    $insUser = $conexion->prepare('INSERT INTO users (nombre, email, password_hash, role) VALUES (?, ?, ?, ?)');
+                    $insUser->bind_param('ssss', $nombre, $email, $hash, $role);
+
+                    if ($insUser->execute()) {
+                        $insUser->close();
+
+                        // Insertar en tabla cliente
+                        $insCliente = $conexion->prepare('INSERT INTO cliente (nombre, apellidos, email, telefono, direccion) VALUES (?, ?, ?, ?, ?)');
+                        $insCliente->bind_param('sssss', $nombre, $apellidos, $email, $telefono, $direccion);
+
+                        if ($insCliente->execute()) {
+                            $_SESSION['user_name'] = $nombre;
+                            $_SESSION['user_role'] = $role;
+                            $_SESSION['user_email'] = $email;
+                            header('Location: index.php');
+                            exit;
+                        } else {
+                            $error = 'Error al crear el perfil de cliente: ' . $conexion->error;
+                        }
+                        $insCliente->close();
+                    } else {
+                        $error = 'Error al crear la cuenta: ' . $conexion->error;
+                        $insUser->close();
+                    }
+                }
             } else {
-                $error = 'Error al crear la cuenta: ' . $conexion->error;
+                // Para administradores, solo insertar en users
+                $ins = $conexion->prepare('INSERT INTO users (nombre, email, password_hash, role) VALUES (?, ?, ?, ?)');
+                $ins->bind_param('ssss', $nombre, $email, $hash, $role);
+
+                if ($ins->execute()) {
+                    $_SESSION['user_name'] = $nombre;
+                    $_SESSION['user_role'] = $role;
+                    $_SESSION['user_email'] = $email;
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    $error = 'Error al crear la cuenta: ' . $conexion->error;
+                }
+                $ins->close();
             }
-            $ins->close();
         }
     }
 }
@@ -53,52 +95,81 @@ $conexion->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro Admin - Nevom</title>
+    <title>Registro - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <div class="card shadow-lg rounded-4">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <h2 class="mb-2">📱 Nevom</h2>
+                        <h2 class="mb-2">Nevom</h2>
                         <h3 class="mb-4">Crear Cuenta</h3>
-                        <p class="text-muted">Regístrate para gestionar la tienda</p>
+                        <p class="text-muted">Registra una cuenta con su rol</p>
                     </div>
-                    
+
                     <?php if ($error): ?>
                         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
                     <?php endif; ?>
-                    
-                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre</label>
-                            <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Tu nombre completo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control form-control-lg" placeholder="tu@email.com" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Mínimo 8 caracteres" required>
-                        </div>
+
+                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="registerForm">
+                        <!-- Selector de Rol (Primero) -->
                         <div class="mb-4">
-                            <label class="form-label">Tipo de Cuenta</label>
-                            <select name="role" class="form-select form-select-lg">
+                            <label class="form-label fw-bold">Tipo de Cuenta *</label>
+                            <select name="role" id="roleSelect" class="form-select form-select-lg" required>
+                                <option value="">-- Selecciona un tipo de cuenta --</option>
                                 <option value="client">Cliente</option>
                                 <option value="admin">Administrador</option>
                             </select>
                             <small class="text-muted">Los administradores pueden gestionar productos</small>
                         </div>
-                        <button class="btn btn-primary w-100 btn-lg rounded-pill mb-3" type="submit">
-                            Crear Cuenta
-                        </button>
+
+                        <!-- Campos Comunes -->
+                        <div id="commonFields" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Tu nombre completo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" name="email" class="form-control form-control-lg" placeholder="tu@email.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña *</label>
+                                <input type="password" name="password" class="form-control form-control-lg" placeholder="Mínimo 8 caracteres" required>
+                            </div>
+                        </div>
+
+                        <!-- Campos Solo para Clientes -->
+                        <div id="clientFields" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label">Apellidos *</label>
+                                <input type="text" name="apellidos" class="form-control form-control-lg" placeholder="Tus apellidos" id="apellidosInput">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Dirección *</label>
+                                <input type="text" name="direccion" class="form-control form-control-lg" placeholder="Tu dirección" id="direccionInput">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono *</label>
+                                <input type="text" name="telefono" class="form-control form-control-lg" placeholder="Tu teléfono" id="telefonoInput">
+                            </div>
+                        </div>
+
+                        <!-- Botón de Envío -->
+                        <div id="submitButton" style="display: none;">
+                            <button class="btn btn-primary w-100 btn-lg rounded-pill mb-3" type="submit">
+                                Crear Cuenta
+                            </button>
+                        </div>
+
                         <div class="text-center">
                             <span class="text-muted">¿Ya tienes cuenta?</span>
                             <a href="signin.php" class="text-decoration-none fw-semibold">Inicia sesión</a>
@@ -114,5 +185,46 @@ $conexion->close();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Manejo dinámico de campos según el rol
+        document.getElementById('roleSelect').addEventListener('change', function() {
+            const role = this.value;
+            const commonFields = document.getElementById('commonFields');
+            const clientFields = document.getElementById('clientFields');
+            const submitButton = document.getElementById('submitButton');
+
+            const apellidosInput = document.getElementById('apellidosInput');
+            const direccionInput = document.getElementById('direccionInput');
+            const telefonoInput = document.getElementById('telefonoInput');
+
+            if (role === '') {
+                // Si no hay selección, ocultar todo
+                commonFields.style.display = 'none';
+                clientFields.style.display = 'none';
+                submitButton.style.display = 'none';
+            } else if (role === 'client') {
+                // Mostrar campos comunes y de cliente
+                commonFields.style.display = 'block';
+                clientFields.style.display = 'block';
+                submitButton.style.display = 'block';
+
+                // Hacer campos de cliente requeridos
+                apellidosInput.setAttribute('required', 'required');
+                direccionInput.setAttribute('required', 'required');
+                telefonoInput.setAttribute('required', 'required');
+            } else if (role === 'admin') {
+                // Mostrar solo campos comunes
+                commonFields.style.display = 'block';
+                clientFields.style.display = 'none';
+                submitButton.style.display = 'block';
+
+                // Quitar requerimiento de campos de cliente
+                apellidosInput.removeAttribute('required');
+                direccionInput.removeAttribute('required');
+                telefonoInput.removeAttribute('required');
+            }
+        });
+    </script>
 </body>
+
 </html>

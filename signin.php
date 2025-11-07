@@ -61,7 +61,7 @@ $conexion->close();
             <div class="card shadow-lg rounded-4">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <h2 class="mb-2">📱 Nevom</h2>
+                        <h2 class="mb-2">Nevom</h2>
                         <h3 class="mb-4">Iniciar Sesión</h3>
                         <p class="text-muted">Accede a tu cuenta para continuar</p>
                     </div>
