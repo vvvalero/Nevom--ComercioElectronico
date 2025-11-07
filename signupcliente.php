@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $insUser->close();
                     
                     // 3. Insertar en tabla cliente con la relación user_id
-                    $insCliente = $conexion->prepare('INSERT INTO cliente (user_id, nombre, apellidos, email, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)');
+                    $insCliente = $conexion->prepare('INSERT INTO cliente (id, nombre, apellidos, email, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)');
                     $insCliente->bind_param('isssss', $user_id, $nombre, $apellidos, $email, $telefono, $direccion);
                     
                     if (!$insCliente->execute()) {
