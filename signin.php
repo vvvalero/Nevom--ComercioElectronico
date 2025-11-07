@@ -61,9 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     $stmtCli->close();
+                    // Redirigir clientes a index.php
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    // Redirigir administradores a indexadmin.php
+                    header('Location: indexadmin.php');
+                    exit;
                 }
-                header('Location: index.php');
-                exit;
             } else {
                 $error = 'Credenciales incorrectas.';
             }

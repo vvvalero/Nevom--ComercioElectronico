@@ -136,10 +136,7 @@ if ($userRole === 'admin') {
                     <a href="signupcliente.php" class="btn btn-outline-light">Registrarse</a>
                 <?php else: ?>
                     <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <?php if ($userRole === 'admin'): ?>
-                        <a href="addMovil.php" class="btn btn-warning me-2">Añadir móvil</a>
-                    <?php endif; ?>
-                    <a href="index.php" class="btn btn-outline-light me-2">Inicio</a>
+                    <a href="indexadmin.php" class="btn btn-outline-light me-2">Inicio</a>
                     <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
                 <?php endif; ?>
             </div>

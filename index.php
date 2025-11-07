@@ -10,6 +10,39 @@ if (session_status() === PHP_SESSION_NONE) {
 // Nombre y rol del usuario logueado (si aplica)
 $userName = $_SESSION['user_name'] ?? null;
 $userRole = $_SESSION['user_role'] ?? null;
+$clienteId = $_SESSION['cliente_id'] ?? null;
+
+// Obtener pedidos y reparaciones si es cliente logueado
+$pedidosCliente = null;
+$reparacionesCliente = null;
+if ($userRole === 'client' && $clienteId) {
+    // Consultar pedidos del cliente
+    $sqlPedidos = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.idVenta, p.idCompra, p.idReparacion 
+                   FROM pedido p 
+                   WHERE p.idCliente = ? 
+                   ORDER BY p.id DESC 
+                   LIMIT 5";
+    $stmtPedidos = $conexion->prepare($sqlPedidos);
+    $stmtPedidos->bind_param('i', $clienteId);
+    $stmtPedidos->execute();
+    $pedidosCliente = $stmtPedidos->get_result();
+    $stmtPedidos->close();
+    
+    // Consultar reparaciones del cliente (a través de pedidos)
+    $sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo 
+                        FROM pedido p
+                        JOIN reparacion r ON p.idReparacion = r.id
+                        JOIN linea_reparacion lr ON r.idLineaReparacion = lr.id
+                        JOIN movil m ON lr.idMovil = m.id
+                        WHERE p.idCliente = ?
+                        ORDER BY r.id DESC
+                        LIMIT 5";
+    $stmtReparaciones = $conexion->prepare($sqlReparaciones);
+    $stmtReparaciones->bind_param('i', $clienteId);
+    $stmtReparaciones->execute();
+    $reparacionesCliente = $stmtReparaciones->get_result();
+    $stmtReparaciones->close();
+}
 
 // Obtener móviles disponibles (con stock > 0)
 $sqlMoviles = "SELECT * FROM movil WHERE stock > 0 ORDER BY precio ASC LIMIT 6";
@@ -105,12 +138,117 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </section>
 
+    <!-- Sección de Pedidos y Reparaciones del Cliente (solo si está logueado como cliente) -->
+    <?php if ($userRole === 'client' && $clienteId && ($pedidosCliente || $reparacionesCliente)): ?>
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="section-title">Mi Panel de Cliente</h2>
+                <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones recientes.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Pedidos Recientes -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos Recientes</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if ($pedidosCliente && $pedidosCliente->num_rows > 0): ?>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Total</th>
+                                                <th>Cantidad</th>
+                                                <th>Forma de Pago</th>
+                                                <th>Tipo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php while ($pedido = $pedidosCliente->fetch_assoc()): ?>
+                                                <tr>
+                                                    <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
+                                                    <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
+                                                    <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
+                                                    <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
+                                                    <td>
+                                                        <?php if ($pedido['idVenta']): ?>
+                                                            <span class="badge bg-success">Venta</span>
+                                                        <?php elseif ($pedido['idCompra']): ?>
+                                                            <span class="badge bg-warning">Compra</span>
+                                                        <?php elseif ($pedido['idReparacion']): ?>
+                                                            <span class="badge bg-danger">Reparación</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="visorBBDD.php" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        Ver Todos los Pedidos →
+                                    </a>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info text-center">
+                                    <p class="mb-0">📭 No tienes pedidos aún. ¡Explora nuestro catálogo!</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reparaciones Recientes -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="bi bi-tools"></i> 🔧 Mis Reparaciones</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
+                                <div class="list-group">
+                                    <?php while ($reparacion = $reparacionesCliente->fetch_assoc()): ?>
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                                <h6 class="mb-1">
+                                                    <span class="badge bg-secondary me-2">#<?= htmlspecialchars($reparacion['id']) ?></span>
+                                                    <?= htmlspecialchars($reparacion['marca']) ?> <?= htmlspecialchars($reparacion['modelo']) ?>
+                                                </h6>
+                                            </div>
+                                            <p class="mb-1 text-muted">
+                                                <strong>Tipo:</strong> <?= htmlspecialchars($reparacion['tipoReparacion']) ?>
+                                            </p>
+                                        </div>
+                                    <?php endwhile; ?>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="visorBBDD.php" class="btn btn-outline-warning btn-sm rounded-pill">
+                                        Ver Detalles →
+                                    </a>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info text-center">
+                                    <p class="mb-0">🔧 No tienes reparaciones registradas.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
     <!-- Productos Destacados -->
     <section class="py-5" id="productos" style="padding-top: 80px !important;">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title">Productos Destacados</h2>
-                <p class="text-muted mt-4">Descubre nuestra selección de móviles con las mejores características</p>
+                <p class="text-muted mt-1">Descubre nuestra selección de móviles con las mejores características</p>
             </div>
 
             <div class="row g-4">

@@ -2,6 +2,13 @@
 require 'conexion.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
+// Verificar que el usuario esté autenticado y sea admin
+$userRole = $_SESSION['user_role'] ?? null;
+if ($userRole !== 'admin') {
+    header('Location: index.php');
+    exit;
+}
+
 // Asegurar que exista la tabla users
 $createUsers = "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,14 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Confirmar transacción
                     $conexion->commit();
                     
-                    // Registrar en sesión
-                    $_SESSION['user_id'] = $user_id;
-                    $_SESSION['cliente_id'] = $cliente_id;
-                    $_SESSION['user_name'] = $nombre;
-                    $_SESSION['user_role'] = $role;
-                    $_SESSION['user_email'] = $email;
-                    
-                    header('Location: index.php');
+                    // Establecer mensaje de éxito y redirigir
+                    $_SESSION['flash'] = [
+                        'type' => 'success',
+                        'text' => 'Usuario cliente registrado exitosamente: ' . htmlspecialchars($nombre)
+                    ];
+                    header('Location: indexadmin.php');
                     exit;
                     
                 } else {
@@ -115,13 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Confirmar transacción
                     $conexion->commit();
                     
-                    // Registrar en sesión
-                    $_SESSION['user_id'] = $user_id;
-                    $_SESSION['user_name'] = $nombre;
-                    $_SESSION['user_role'] = $role;
-                    $_SESSION['user_email'] = $email;
-                    
-                    header('Location: index.php');
+                    // Establecer mensaje de éxito y redirigir
+                    $_SESSION['flash'] = [
+                        'type' => 'success',
+                        'text' => 'Usuario administrador registrado exitosamente: ' . htmlspecialchars($nombre)
+                    ];
+                    header('Location: indexadmin.php');
                     exit;
                 }
             } catch (Exception $e) {
@@ -237,7 +241,7 @@ $conexion->close();
                         </div>
                         <hr class="my-4">
                         <div class="text-center">
-                            <a href="index.php" class="text-muted text-decoration-none">
+                            <a href="indexadmin.php" class="text-muted text-decoration-none">
                                 <i class="bi bi-arrow-left"></i> Volver al inicio
                             </a>
                         </div>

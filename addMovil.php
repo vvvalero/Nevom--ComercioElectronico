@@ -17,8 +17,8 @@ if (isset($_POST['enviar'])) {
 
     if ($conexion->query($sql) === TRUE) {
         $mensaje = "<div class='alert alert-success'>Móvil añadido correctamente.</div>";
-        // Redirigir a index.php después de 1 segundo
-        header("refresh:1;url=index.php");
+        // Redirigir a indexadmin.php después de 1 segundo
+        header("refresh:1;url=indexadmin.php");
     } else {
         $mensaje = "<div class='alert alert-danger'>Error al añadir el móvil: " . $conexion->error . "</div>";
     }
@@ -42,8 +42,7 @@ $conexion->close();
     <div class="container d-flex justify-content-between align-items-center">
         <h1 class="mb-0">📱 Añadir Móvil</h1>
         <div>
-            <a href="index.php" class="btn btn-outline-light me-2">← Volver al Inicio</a>
-            <a href="indexadmin.php" class="btn btn-outline-light">Panel Admin</a>
+            <a href="indexadmin.php" class="btn btn-outline-light me-2">← Volver al Inicio</a>
         </div>
     </div>
 </header>
