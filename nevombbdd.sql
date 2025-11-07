@@ -1,6 +1,6 @@
 -- phpMyAdmin SQL Dump
 -- Base de datos: `nevombbdd`
--- Script limpio con AUTO_INCREMENT y claves primarias
+-- Script completo con sincronización users <-> cliente mediante user_id
 
 DROP DATABASE IF EXISTS `nevombbdd`;
 CREATE DATABASE `nevombbdd` CHARACTER SET utf8 COLLATE utf8_spanish_ci;
@@ -19,14 +19,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
--- Nota: Por seguridad no se incluye aquí un administrador por defecto. Puedes crear uno
--- con un script PHP que use password_hash() o con un INSERT manual incluyendo un hash.
+-- Insertar usuario de ejemplo (password: "password123")
+INSERT INTO `users` (`nombre`, `email`, `password_hash`, `role`) VALUES
+('cliente1', 'email@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'client');
 
 -- --------------------------------------------------------
 -- Tabla `cliente`
 -- --------------------------------------------------------
 CREATE TABLE `cliente` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
   `nombre` varchar(300) NOT NULL,
   `apellidos` varchar(300) NOT NULL,
   `email` varchar(300) NOT NULL,
@@ -34,11 +36,14 @@ CREATE TABLE `cliente` (
   `direccion` varchar(300) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_cliente` (`email`),
-  UNIQUE KEY `tlf_cliente` (`telefono`)
+  UNIQUE KEY `tlf_cliente` (`telefono`),
+  UNIQUE KEY `user_id_unique` (`user_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `Cliente_User_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci COMMENT='Tabla que almacena los datos sobre los Clientes';
 
-INSERT INTO `cliente` (`nombre`, `apellidos`, `email`, `telefono`, `direccion`) VALUES
-('cliente1', 'apellido1', 'email@email.com', '666666666', 'C/calle nº numero');
+INSERT INTO `cliente` (`user_id`, `nombre`, `apellidos`, `email`, `telefono`, `direccion`) VALUES
+(1, 'cliente1', 'apellido1', 'email@email.com', '666666666', 'C/calle nº numero');
 
 -- --------------------------------------------------------
 -- Tabla `movil`
