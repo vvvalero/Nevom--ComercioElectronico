@@ -2,6 +2,45 @@
 // Incluir conexión externa
 require 'conexion.php';
 
+// Sesion y cookie de ultima visita
+if (session_status() === PHP_SESSION_NONE) {
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
+
+// COOKIE de ultima visita
+$mensajeVisita = '';
+$visitas = 1;
+
+// Si ya existe una cookie de visitas, se incrementa
+if (isset($_COOKIE['visitas'])) {
+    $visitas = (int)$_COOKIE['visitas'] + 1;
+}
+setcookie('visitas', $visitas, time() + (86400 * 30), "/");
+
+// Mostrar mensajes segun cookies
+if (isset($_COOKIE['ultima_visita'])) {
+    $mensajeVisita = "Bienvenido de nuevo. 
+    Último acceso: " . $_COOKIE['ultima_visita'] . ".
+    Fecha actual: " . date('d/m/Y H:i:s') . ".
+    Número de visitas: $visitas";
+} else {
+    $mensajeVisita = "Bienvenido a Nevom por primera vez 
+    Fecha actual: " . date('d/m/Y H:i:s') . "
+    Número de visitas: 1";
+}
+
+// Actualizar cookie de ultima visita
+setcookie('ultima_visita', date('d/m/Y H:i:s'), time() + (86400 * 30), "/");
+
 // Iniciar sesión para controlar login/roles
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -112,6 +151,15 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
             </div>
         </div>
     </nav>
+
+    <?php // Mensaje de visita ?>
+    <?php if (isset($mensajeVisita)): ?>
+    <div class="container mt-4">
+    <div class="alert alert-info fade-in shadow-sm text-center">
+        <?= htmlspecialchars($mensajeVisita) ?>
+    </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Hero Section -->
     <section class="hero-section">
