@@ -19,9 +19,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
--- Insertar usuario de ejemplo (password: "password123")
+-- Insertar usuario cliente y admin por defecto (contraseña admin: password)
 INSERT INTO `users` (`nombre`, `email`, `password_hash`, `role`) VALUES
 ('cliente1', 'email@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'client');
+INSERT INTO `users` (`id`, `nombre`, `email`, `password_hash`, `role`) VALUES
+(4, 'Admin admin', 'administrador@email.com', '$2y$10$p0od9rlK929RkL6Z47l2hezFJBIx7smZA0EhDcqhIvMsnFhQA7o/2', 'admin');
 
 -- --------------------------------------------------------
 -- Tabla `cliente`
