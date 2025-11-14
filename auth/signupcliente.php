@@ -1,5 +1,5 @@
 <?php
-require 'conexion.php';
+require '../config/conexion.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 $error = '';
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_email'] = $email;
                     
                     // Redirigir al index o dashboard de cliente
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                     exit;
                     
                 } catch (Exception $e) {
@@ -112,7 +112,7 @@ $conexion->close();
     <title>Registro de Cliente - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -210,7 +210,7 @@ $conexion->close();
                         <hr class="my-4">
 
                         <div class="text-center">
-                            <a href="index.php" class="text-muted text-decoration-none">
+                            <a href="../index.php" class="text-muted text-decoration-none">
                                 <i class="bi bi-arrow-left me-1"></i>Volver al inicio
                             </a>
                         </div>

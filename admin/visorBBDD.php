@@ -1,6 +1,6 @@
 <?php
 // Incluir conexión externa
-require 'conexion.php';
+require '../config/conexion.php';
 // Iniciar sesión (con parámetros seguros si no existe)
 if (session_status() === PHP_SESSION_NONE) {
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
@@ -122,7 +122,7 @@ if ($userRole === 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor de Base de Datos - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -132,12 +132,12 @@ if ($userRole === 'admin') {
             <h1 class="mb-0">Visor de Base de Datos - Nevom</h1>
             <div>
                 <?php if (!$userName): ?>
-                    <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
-                    <a href="signupcliente.php" class="btn btn-outline-light">Registrarse</a>
+                    <a href="../auth/signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
+                    <a href="../auth/signupcliente.php" class="btn btn-outline-light">Registrarse</a>
                 <?php else: ?>
                     <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
                     <a href="indexadmin.php" class="btn btn-outline-light me-2">Inicio</a>
-                    <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
+                    <a href="../auth/logout.php" class="btn btn-outline-light">Cerrar sesión</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -160,7 +160,7 @@ if ($userRole === 'admin') {
     } else {
         // Si no hay sesión de usuario, redirigir a login
         if (!$userName || !isset($_SESSION['user_id'])) {
-            header('Location: signin.php');
+            header('Location: ../auth/signin.php');
             exit;
         }
         $clienteId = $_SESSION['cliente_id'] ?? null;
