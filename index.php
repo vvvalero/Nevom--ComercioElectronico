@@ -1,6 +1,6 @@
 <?php
 // Incluir conexión externa
-require 'conexion.php';
+require 'config/conexion.php';
 
 // Sesion y cookie de ultima visita
 if (session_status() === PHP_SESSION_NONE) {
@@ -66,7 +66,7 @@ if ($userRole === 'client' && $clienteId) {
     $stmtPedidos->execute();
     $pedidosCliente = $stmtPedidos->get_result();
     $stmtPedidos->close();
-    
+
     // Consultar reparaciones del cliente (a través de pedidos)
     $sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo 
                         FROM pedido p
@@ -97,7 +97,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEVOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -122,6 +122,19 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     <li class="nav-item">
                         <a class="nav-link" href="#contacto">Contacto</a>
                     </li>
+                    <?php if ($userName && $userRole === 'client'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" href="carrito/carrito.php">
+                                🛒 Carrito
+                                <?php
+                                $cantidadCarrito = array_sum($_SESSION['carrito'] ?? []);
+                                if ($cantidadCarrito > 0):
+                                ?>
+                                    <span class="badge bg-danger"><?= $cantidadCarrito ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
                     <?php if ($userName): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
@@ -129,22 +142,26 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                             </a>
                             <ul class="dropdown-menu">
                                 <?php if ($userRole === 'admin'): ?>
-                                    <li><a class="dropdown-item" href="indexadmin.php">Panel Admin</a></li>
-                                    <li><a class="dropdown-item" href="addMovil.php">Añadir Móvil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="admin/indexadmin.php">Panel Admin</a></li>
+                                    <li><a class="dropdown-item" href="admin/addMovil.php">Añadir Móvil</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item" href="visorBBDD.php">Mis Pedidos</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="admin/visorBBDD.php">Mis Pedidos</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="logout.php">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="auth/logout.php">Cerrar Sesión</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="signin.php">Iniciar Sesión</a>
+                            <a class="nav-link" href="auth/signin.php">Iniciar Sesión</a>
                         </li>
                         <li class="nav-item ms-2">
-                            <a class="btn btn-primary btn-sm rounded-pill px-4" href="signupcliente.php">Registrarse</a>
+                            <a class="btn btn-primary btn-sm rounded-pill px-4" href="auth/signupcliente.php">Registrarse</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -152,13 +169,14 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </nav>
 
-    <?php // Mensaje de visita ?>
+    <?php // Mensaje de visita 
+    ?>
     <?php if (isset($mensajeVisita)): ?>
-    <div class="container mt-4">
-    <div class="alert alert-info fade-in shadow-sm text-center">
-        <?= htmlspecialchars($mensajeVisita) ?>
-    </div>
-    </div>
+        <div class="container mt-4">
+            <div class="alert alert-info fade-in shadow-sm text-center">
+                <?= htmlspecialchars($mensajeVisita) ?>
+            </div>
+        </div>
     <?php endif; ?>
 
     <!-- Hero Section -->
@@ -188,107 +206,107 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
 
     <!-- Sección de Pedidos y Reparaciones del Cliente (solo si está logueado como cliente) -->
     <?php if ($userRole === 'client' && $clienteId && ($pedidosCliente || $reparacionesCliente)): ?>
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-4">
-                <h2 class="section-title">Mi Panel de Cliente</h2>
-                <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones recientes.</p>
-            </div>
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-4">
+                    <h2 class="section-title">Mi Panel de Cliente</h2>
+                    <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones recientes.</p>
+                </div>
 
-            <div class="row g-4">
-                <!-- Pedidos Recientes -->
-                <div class="col-lg-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos Recientes</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if ($pedidosCliente && $pedidosCliente->num_rows > 0): ?>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Total</th>
-                                                <th>Cantidad</th>
-                                                <th>Forma de Pago</th>
-                                                <th>Tipo</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php while ($pedido = $pedidosCliente->fetch_assoc()): ?>
+                <div class="row g-4">
+                    <!-- Pedidos Recientes -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos Recientes</h5>
+                            </div>
+                            <div class="card-body">
+                                <?php if ($pedidosCliente && $pedidosCliente->num_rows > 0): ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm">
+                                            <thead class="table-light">
                                                 <tr>
-                                                    <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
-                                                    <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
-                                                    <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
-                                                    <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
-                                                    <td>
-                                                        <?php if ($pedido['idVenta']): ?>
-                                                            <span class="badge bg-success">Venta</span>
-                                                        <?php elseif ($pedido['idCompra']): ?>
-                                                            <span class="badge bg-warning">Compra</span>
-                                                        <?php elseif ($pedido['idReparacion']): ?>
-                                                            <span class="badge bg-danger">Reparación</span>
-                                                        <?php endif; ?>
-                                                    </td>
+                                                    <th>ID</th>
+                                                    <th>Total</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Forma de Pago</th>
+                                                    <th>Tipo</th>
                                                 </tr>
-                                            <?php endwhile; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-primary btn-sm rounded-pill">
-                                        Ver Todos los Pedidos →
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info text-center">
-                                    <p class="mb-0">📭 No tienes pedidos aún. ¡Explora nuestro catálogo!</p>
-                                </div>
-                            <?php endif; ?>
+                                            </thead>
+                                            <tbody>
+                                                <?php while ($pedido = $pedidosCliente->fetch_assoc()): ?>
+                                                    <tr>
+                                                        <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
+                                                        <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
+                                                        <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
+                                                        <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
+                                                        <td>
+                                                            <?php if ($pedido['idVenta']): ?>
+                                                                <span class="badge bg-success">Venta</span>
+                                                            <?php elseif ($pedido['idCompra']): ?>
+                                                                <span class="badge bg-warning">Compra</span>
+                                                            <?php elseif ($pedido['idReparacion']): ?>
+                                                                <span class="badge bg-danger">Reparación</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endwhile; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="admin/visorBBDD.php" class="btn btn-outline-primary btn-sm rounded-pill">
+                                            Ver Todos los Pedidos →
+                                        </a>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info text-center">
+                                        <p class="mb-0">📭 No tienes pedidos aún. ¡Explora nuestro catálogo!</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Reparaciones Recientes -->
-                <div class="col-lg-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0"><i class="bi bi-tools"></i> 🔧 Mis Reparaciones</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
-                                <div class="list-group">
-                                    <?php while ($reparacion = $reparacionesCliente->fetch_assoc()): ?>
-                                        <div class="list-group-item">
-                                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                                <h6 class="mb-1">
-                                                    <span class="badge bg-secondary me-2">#<?= htmlspecialchars($reparacion['id']) ?></span>
-                                                    <?= htmlspecialchars($reparacion['marca']) ?> <?= htmlspecialchars($reparacion['modelo']) ?>
-                                                </h6>
+                    <!-- Reparaciones Recientes -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="bi bi-tools"></i> 🔧 Mis Reparaciones</h5>
+                            </div>
+                            <div class="card-body">
+                                <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
+                                    <div class="list-group">
+                                        <?php while ($reparacion = $reparacionesCliente->fetch_assoc()): ?>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                                    <h6 class="mb-1">
+                                                        <span class="badge bg-secondary me-2">#<?= htmlspecialchars($reparacion['id']) ?></span>
+                                                        <?= htmlspecialchars($reparacion['marca']) ?> <?= htmlspecialchars($reparacion['modelo']) ?>
+                                                    </h6>
+                                                </div>
+                                                <p class="mb-1 text-muted">
+                                                    <strong>Tipo:</strong> <?= htmlspecialchars($reparacion['tipoReparacion']) ?>
+                                                </p>
                                             </div>
-                                            <p class="mb-1 text-muted">
-                                                <strong>Tipo:</strong> <?= htmlspecialchars($reparacion['tipoReparacion']) ?>
-                                            </p>
-                                        </div>
-                                    <?php endwhile; ?>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-warning btn-sm rounded-pill">
-                                        Ver Detalles →
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info text-center">
-                                    <p class="mb-0">🔧 No tienes reparaciones registradas.</p>
-                                </div>
-                            <?php endif; ?>
+                                        <?php endwhile; ?>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="admin/visorBBDD.php" class="btn btn-outline-warning btn-sm rounded-pill">
+                                            Ver Detalles →
+                                        </a>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info text-center">
+                                        <p class="mb-0">🔧 No tienes reparaciones registradas.</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
     <?php endif; ?>
 
     <!-- Productos Destacados -->
@@ -322,9 +340,20 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                         <span class="price-tag"><?= number_format($movil['precio'], 2) ?>€</span>
                                         <span class="text-muted">Stock: <?= $movil['stock'] ?></span>
                                     </div>
-                                    <button class="btn btn-primary w-100 mt-3 rounded-pill">
-                                        Comprar Ahora
-                                    </button>
+                                    <?php if ($userName && $userRole === 'client'): ?>
+                                        <form method="post" action="carrito/agregar_carrito.php" class="mt-3">
+                                            <input type="hidden" name="movil_id" value="<?= $movil['id'] ?>">
+                                            <input type="hidden" name="cantidad" value="1">
+                                            <input type="hidden" name="redirect" value="productos">
+                                            <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                                                🛒 Agregar al Carrito
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <a href="auth/signin.php" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
+                                            Iniciar Sesión para Comprar
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -341,7 +370,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
 
             <?php if ($resultadoMoviles && $resultadoMoviles->num_rows > 0): ?>
                 <div class="text-center mt-5">
-                    <a href="visorBBDD.php" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                    <a href="admin/visorBBDD.php" class="btn btn-outline-primary btn-lg rounded-pill px-5">
                         Ver Todos los Productos →
                     </a>
                 </div>
@@ -459,7 +488,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h4 class="fw-bold mb-3">📱 Nevom</h4>
                     <p class="text-light opacity-75">
-                        Tu tienda de confianza para comprar, vender y reparar móviles. 
+                        Tu tienda de confianza para comprar, vender y reparar móviles.
                         Calidad y servicio garantizados.
                     </p>
                 </div>
@@ -470,7 +499,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                         <li class="mb-2"><a href="#servicios" class="text-light text-decoration-none opacity-75">Servicios</a></li>
                         <li class="mb-2"><a href="#contacto" class="text-light text-decoration-none opacity-75">Contacto</a></li>
                         <?php if ($userRole === 'admin'): ?>
-                            <li class="mb-2"><a href="indexadmin.php" class="text-light text-decoration-none opacity-75">Admin Panel</a></li>
+                            <li class="mb-2"><a href="admin/indexadmin.php" class="text-light text-decoration-none opacity-75">Admin Panel</a></li>
                         <?php endif; ?>
                     </ul>
                 </div>
@@ -501,11 +530,11 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Smooth scroll para los enlaces del menú
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {

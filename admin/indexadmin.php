@@ -1,6 +1,6 @@
 <?php
 // Incluir conexión externa
-require 'conexion.php';
+require '../config/conexion.php';
 
 // Iniciar sesión para controlar login/roles
 if (session_status() === PHP_SESSION_NONE) {
@@ -13,7 +13,7 @@ $userRole = $_SESSION['user_role'] ?? null;
 
 // Redirigir si no es admin
 if ($userRole !== 'admin') {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -67,7 +67,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nevom - Tu Tienda de Móviles de Confianza</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -102,7 +102,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="visorBBDD.php">🗄️ Ver Base de Datos</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php">🚪 Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="../auth/logout.php">🚪 Cerrar Sesión</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -183,7 +183,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             <div class="row justify-content-center mb-4">
                 <div class="col-lg-10">
                     <div class="text-center">
-                        <a href="signupadmin.php" class="btn btn-primary btn-lg rounded-pill px-5">
+                        <a href="../auth/signupadmin.php" class="btn btn-primary btn-lg rounded-pill px-5">
                             ➕ Crear Nueva Cuenta de Usuario
                         </a>
                     </div>

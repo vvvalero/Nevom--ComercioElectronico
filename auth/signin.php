@@ -1,5 +1,5 @@
 <?php
-require 'conexion.php';
+require '../config/conexion.php';
 // Inicializar sesión con parámetros seguros (solo si aún no se ha iniciado)
 if (session_status() === PHP_SESSION_NONE) {
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
@@ -62,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $stmtCli->close();
                     // Redirigir clientes a index.php
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                     exit;
                 } else {
                     // Redirigir administradores a indexadmin.php
-                    header('Location: indexadmin.php');
+                    header('Location: ../admin/indexadmin.php');
                     exit;
                 }
             } else {
@@ -86,7 +86,7 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Iniciar Sesión - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="auth-container">
@@ -121,7 +121,7 @@ $conexion->close();
                         </div>
                         <hr class="my-4">
                         <div class="text-center">
-                            <a href="index.php" class="text-muted text-decoration-none">← Volver al inicio</a>
+                            <a href="../index.php" class="text-muted text-decoration-none">← Volver al inicio</a>
                         </div>
                     </form>
                 </div>
