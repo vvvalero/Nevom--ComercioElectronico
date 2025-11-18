@@ -104,7 +104,7 @@ $conexion->close();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="carrito.php">
-                            🛒 Carrito (<?= $cantidadTotal ?>)
+                            🛒 Carrito (<span id="cantidad-carrito"><?= $cantidadTotal ?></span>)
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -196,16 +196,20 @@ $conexion->close();
                                                     <strong class="text-primary"><?= number_format($producto['precio'], 2) ?>€</strong>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <form method="post" action="actualizar_carrito.php" class="d-flex align-items-center gap-2">
-                                                        <input type="hidden" name="movil_id" value="<?= $producto['id'] ?>">
-                                                        <input type="number" name="cantidad" value="<?= $producto['cantidad'] ?>" 
-                                                               min="1" max="<?= $producto['stock'] ?>" 
-                                                               class="form-control form-control-sm text-center" 
-                                                               style="width: 70px;">
-                                                        <button type="submit" class="btn btn-sm btn-outline-primary" title="Actualizar">
-                                                            🔄
-                                                        </button>
-                                                    </form>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="number" 
+                                                               name="cantidad" 
+                                                               value="<?= $producto['cantidad'] ?>" 
+                                                               min="1" 
+                                                               max="<?= $producto['stock'] ?>" 
+                                                               class="form-control form-control-sm text-center cantidad-input" 
+                                                               style="width: 70px;"
+                                                               data-movil-id="<?= $producto['id'] ?>"
+                                                               data-precio="<?= $producto['precio'] ?>">
+                                                        <div class="spinner-border spinner-border-sm text-primary d-none" role="status">
+                                                            <span class="visually-hidden">Actualizando...</span>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                                 <td class="align-middle">
                                                     <strong class="text-success"><?= number_format($producto['subtotal'], 2) ?>€</strong>
@@ -228,7 +232,7 @@ $conexion->close();
                         <div class="card-footer bg-light">
                             <div class="d-flex justify-content-between align-items-center">
                                 <a href="../index.php#productos" class="btn btn-outline-secondary">
-                                    ← Seguir Comprando
+                                    Seguir Comprando
                                 </a>
                                 <form method="post" action="vaciar_carrito.php" class="d-inline">
                                     <button type="submit" class="btn btn-outline-danger" 
@@ -250,45 +254,32 @@ $conexion->close();
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Productos (<?= $cantidadTotal ?>):</span>
-                                <strong><?= number_format($totalCarrito, 2) ?>€</strong>
+                                <span>Productos (<span id="cantidad-productos"><?= $cantidadTotal ?></span>):</span>
+                                <strong id="total-productos"><?= number_format($totalCarrito, 2) ?>€</strong>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Envío:</span>
-                                <strong class="text-success">
-                                    <?= $totalCarrito >= 50 ? 'GRATIS' : number_format(5.00, 2) . '€' ?>
-                                </strong>
-                            </div>
-                            <?php if ($totalCarrito < 50): ?>
-                                <small class="text-muted">
-                                    💡 Añade <?= number_format(50 - $totalCarrito, 2) ?>€ más para envío gratis
-                                </small>
-                            <?php endif; ?>
-                            <hr>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0">Total:</h5>
-                                <h4 class="mb-0 text-primary">
+                                <h4 class="mb-0 text-primary" id="total-final">
                                     <?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>€
                                 </h4>
                             </div>
-                            <form method="post" action="compra/procesar_compra.php" id="formProcesarCompra">
+                            <form method="post" action="procesar_compra.php" id="formProcesarCompra" data-total="<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Forma de Pago *</label>
                                     <select name="forma_pago" class="form-select" required>
                                         <option value="">-- Selecciona --</option>
-                                        <option value="tarjeta">💳 Tarjeta de Crédito/Débito</option>
-                                        <option value="transferencia">🏦 Transferencia Bancaria</option>
-                                        <option value="efectivo">💵 Efectivo (Contrareembolso)</option>
-                                        <option value="paypal">💰 PayPal</option>
+                                        <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                                        <option value="transferencia">Transferencia Bancaria</option>
+                                        <option value="efectivo">Efectivo (Contrareembolso)</option>
+                                        <option value="paypal">PayPal</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill">
-                                    ✅ Finalizar Compra
+                                    Finalizar Compra
                                 </button>
                             </form>
                         </div>
                     </div>
-
                     <!-- Información de Entrega -->
                     <div class="card shadow-lg">
                         <div class="card-header bg-info text-white">
@@ -300,9 +291,6 @@ $conexion->close();
                             <p class="mb-2"><strong>Teléfono:</strong><br><?= htmlspecialchars($cliente['telefono']) ?></p>
                             <p class="mb-0"><strong>Dirección:</strong><br><?= htmlspecialchars($cliente['direccion']) ?></p>
                             <hr>
-                            <small class="text-muted">
-                                💡 Si necesitas cambiar tus datos, contacta con soporte.
-                            </small>
                         </div>
                     </div>
                 </div>
@@ -323,6 +311,166 @@ $conexion->close();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Función para actualizar el carrito automáticamente
+        let timeoutId;
+        
+        document.querySelectorAll('.cantidad-input').forEach(input => {
+            input.addEventListener('change', function() {
+                actualizarCantidad(this);
+            });
+            
+            // También actualizar cuando se usan las flechas del input
+            input.addEventListener('input', function() {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    actualizarCantidad(this);
+                }, 800); // Espera 800ms después de que el usuario deje de escribir
+            });
+        });
+        
+        function actualizarCantidad(input) {
+            const movilId = input.dataset.movilId;
+            const cantidad = parseInt(input.value);
+            const precio = parseFloat(input.dataset.precio);
+            const row = input.closest('tr');
+            const spinner = row.querySelector('.spinner-border');
+            
+            // Validación básica
+            if (isNaN(cantidad) || cantidad < 0) {
+                return;
+            }
+            
+            // Mostrar spinner
+            spinner.classList.remove('d-none');
+            input.disabled = true;
+            
+            // Enviar petición AJAX
+            const formData = new FormData();
+            formData.append('movil_id', movilId);
+            formData.append('cantidad', cantidad);
+            formData.append('ajax', 'true');
+            
+            fetch('actualizar_carrito.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.accion === 'eliminar') {
+                        // Eliminar la fila con animación
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            location.reload(); // Recargar para actualizar todo
+                        }, 300);
+                    } else {
+                        // Actualizar subtotal de la fila
+                        const subtotalElement = row.querySelector('td:nth-child(4) strong');
+                        subtotalElement.textContent = data.subtotal + '€';
+                        
+                        // Actualizar totales generales
+                        actualizarTotales(data);
+                        
+                        // Mostrar mensaje de éxito (opcional, comentado para no saturar)
+                        // mostrarMensaje('success', data.mensaje);
+                    }
+                } else {
+                    // Error: restaurar valor anterior o ajustar según stock
+                    if (data.stock_disponible !== undefined) {
+                        input.value = data.stock_disponible;
+                        input.max = data.stock_disponible;
+                    }
+                    mostrarMensaje('warning', data.mensaje);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('danger', 'Error al actualizar el carrito');
+            })
+            .finally(() => {
+                // Ocultar spinner
+                spinner.classList.add('d-none');
+                input.disabled = false;
+            });
+        }
+        
+        function actualizarTotales(data) {
+            // Actualizar cantidad en el navbar
+            const cantidadCarrito = document.getElementById('cantidad-carrito');
+            if (cantidadCarrito) {
+                cantidadCarrito.textContent = data.cantidad_total;
+            }
+            
+            // Actualizar cantidad de productos en resumen
+            const cantidadProductos = document.getElementById('cantidad-productos');
+            if (cantidadProductos) {
+                cantidadProductos.textContent = data.cantidad_total;
+            }
+            
+            // Actualizar subtotal de productos
+            const totalProductos = document.getElementById('total-productos');
+            if (totalProductos) {
+                totalProductos.textContent = data.total_carrito + '€';
+            }
+            
+            // Actualizar envío
+            const costoEnvio = document.getElementById('costo-envio');
+            if (costoEnvio) {
+                if (data.envio_gratis) {
+                    costoEnvio.innerHTML = 'GRATIS';
+                    costoEnvio.classList.add('text-success');
+                } else {
+                    costoEnvio.textContent = data.costo_envio + '€';
+                    costoEnvio.classList.remove('text-success');
+                }
+            }
+            
+            // Actualizar mensaje de envío gratis
+            const mensajeEnvio = document.getElementById('mensaje-envio');
+            if (mensajeEnvio) {
+                if (data.envio_gratis) {
+                    mensajeEnvio.textContent = '✅ ¡Tienes envío gratis!';
+                    mensajeEnvio.classList.remove('text-muted');
+                    mensajeEnvio.classList.add('text-success');
+                } else {
+                    mensajeEnvio.innerHTML = `💡 Añade ${data.falta_envio_gratis}€ más para envío gratis`;
+                    mensajeEnvio.classList.remove('text-success');
+                    mensajeEnvio.classList.add('text-muted');
+                }
+            }
+            
+            // Actualizar total final
+            const totalFinal = document.getElementById('total-final');
+            if (totalFinal) {
+                totalFinal.textContent = data.total_final + '€';
+            }
+            
+            // Actualizar el total en el confirmación del botón
+            const formCompra = document.getElementById('formProcesarCompra');
+            if (formCompra) {
+                formCompra.dataset.total = data.total_final;
+            }
+        }
+        
+        function mostrarMensaje(tipo, mensaje) {
+            // Crear alerta temporal
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto-eliminar después de 3 segundos
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+        
         // Validación del formulario de compra
         document.getElementById('formProcesarCompra')?.addEventListener('submit', function(e) {
             const formaPago = this.querySelector('[name="forma_pago"]').value;
@@ -333,7 +481,7 @@ $conexion->close();
             }
             
             // Confirmación de compra
-            const total = '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
+            const total = this.dataset.total || '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
             if (!confirm('¿Confirmar la compra por ' + total + '€?')) {
                 e.preventDefault();
                 return false;

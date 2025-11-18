@@ -72,7 +72,6 @@ CREATE TABLE `linea_compra` (
   `idMovil` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idMovil` (`idMovil`),
   CONSTRAINT `LineaCompra_Movil_FK` FOREIGN KEY (`idMovil`) REFERENCES `movil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -124,7 +123,6 @@ CREATE TABLE `linea_reparacion` (
   `idMovil` int(11) NOT NULL,
   `tipoReparacion` varchar(300) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idMovil_UNIQUE` (`idMovil`),
   CONSTRAINT `LineaReparacion_Movil_FK` FOREIGN KEY (`idMovil`) REFERENCES `movil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
