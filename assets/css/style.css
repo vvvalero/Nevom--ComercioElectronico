@@ -119,6 +119,7 @@ body {
     border: 2px solid var(--accent-color);
     color: var(--accent-color);
 }
+
 .btn-outline-custom:hover {
     background-color: var(--accent-color);
     color: var(--text-dark);
@@ -226,7 +227,7 @@ footer {
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
@@ -238,4 +239,56 @@ html {
 
 section {
     scroll-margin-top: 80px;
+}
+
+/* Estilos específicos para estados de pedidos y tarjetas de estadísticas */
+.stat-card {
+    border-left: 4px solid;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.procesando {
+    border-left-color: #0dcaf0;
+}
+
+.stat-card.preparando {
+    border-left-color: #ffc107;
+}
+
+.stat-card.enviado {
+    border-left-color: #0d6efd;
+}
+
+.stat-card.entregado {
+    border-left-color: #198754;
+}
+
+.pedido-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #dee2e6;
+}
+
+.pedido-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pedido-card.procesando {
+    border-left-color: #0dcaf0;
+}
+
+.pedido-card.preparando {
+    border-left-color: #ffc107;
+}
+
+.pedido-card.enviado {
+    border-left-color: #0d6efd;
+}
+
+.pedido-card.entregado {
+    border-left-color: #198754;
 }

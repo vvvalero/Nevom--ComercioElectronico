@@ -149,6 +149,7 @@ CREATE TABLE `pedido` (
   `idCompra` int(11) DEFAULT NULL,
   `idReparacion` int(11) DEFAULT NULL,
   `idCliente` int(11) NOT NULL,
+  `estado` enum('procesando','preparando','enviado','entregado') DEFAULT 'procesando',
   PRIMARY KEY (`id`),
   KEY `Pedido_Cliente_FK` (`idCliente`),
   KEY `Pedido_Venta_FK` (`idVenta`),
@@ -160,5 +161,5 @@ CREATE TABLE `pedido` (
   CONSTRAINT `Pedido_Compra_FK` FOREIGN KEY (`idCompra`) REFERENCES `compra` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
-INSERT INTO `pedido` (`precioTotal`, `cantidadTotal`, `formaPago`, `idCompra`, `idCliente`) VALUES
-(100, 1, 'tarjeta', 1, 1);
+INSERT INTO `pedido` (`precioTotal`, `cantidadTotal`, `formaPago`, `idCompra`, `idCliente`, `estado`) VALUES
+(100, 1, 'tarjeta', 1, 1, 'procesando');
