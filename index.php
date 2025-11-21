@@ -119,13 +119,10 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     <li class="nav-item">
                         <a class="nav-link" href="#servicios">Servicios</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contacto">Contacto</a>
-                    </li>
                     <?php if ($userName && $userRole === 'client'): ?>
                         <li class="nav-item">
                             <a class="nav-link fw-semibold" href="carrito/carrito.php">
-                                🛒 Carrito
+                                Carrito
                                 <?php
                                 $cantidadCarrito = array_sum($_SESSION['carrito'] ?? []);
                                 if ($cantidadCarrito > 0):
