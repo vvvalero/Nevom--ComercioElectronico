@@ -433,66 +433,24 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </section>
 
-    <!-- Contacto -->
-    <section class="py-5 bg-light" id="contacto" style="padding-top: 80px !important;">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title">Contacta con Nosotros</h2>
-                <p class="text-muted mt-4">¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card border-0 shadow-lg rounded-4">
-                        <div class="card-body p-5">
-                            <form>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Nombre</label>
-                                        <input type="text" class="form-control form-control-lg" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control form-control-lg" required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Asunto</label>
-                                        <input type="text" class="form-control form-control-lg" required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Mensaje</label>
-                                        <textarea class="form-control form-control-lg" rows="5" required></textarea>
-                                    </div>
-                                    <div class="col-12 text-center mt-4">
-                                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
-                                            Enviar Mensaje ✉️
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-5 text-center">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="fs-1 mb-3">📍</div>
-                    <h5 class="fw-bold">Dirección</h5>
-                    <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="fs-1 mb-3">📞</div>
-                    <h5 class="fw-bold">Teléfono</h5>
-                    <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
-                </div>
-                <div class="col-md-4">
-                    <div class="fs-1 mb-3">✉️</div>
-                    <h5 class="fw-bold">Email</h5>
-                    <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
-                </div>
-            </div>
+    <div class="row mt-5 text-center">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="fs-1 mb-3">📍</div>
+            <h5 class="fw-bold">Dirección</h5>
+            <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
         </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="fs-1 mb-3">📞</div>
+            <h5 class="fw-bold">Teléfono</h5>
+            <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
+        </div>
+        <div class="col-md-4">
+            <div class="fs-1 mb-3">✉️</div>
+            <h5 class="fw-bold">Email</h5>
+            <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
+        </div>
+    </div>
+    </div>
     </section>
 
     <!-- Footer -->
