@@ -1,11 +1,11 @@
 <?php
-require 'conexion.php';
+require '../config/conexion.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 // Verificar que el usuario esté autenticado y sea admin
 $userRole = $_SESSION['user_role'] ?? null;
 if ($userRole !== 'admin') {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'type' => 'success',
                         'text' => 'Usuario cliente registrado exitosamente: ' . htmlspecialchars($nombre)
                     ];
-                    header('Location: indexadmin.php');
+                    header('Location: ../admin/indexadmin.php');
                     exit;
                     
                 } else {
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'type' => 'success',
                         'text' => 'Usuario administrador registrado exitosamente: ' . htmlspecialchars($nombre)
                     ];
-                    header('Location: indexadmin.php');
+                    header('Location: ../admin/indexadmin.php');
                     exit;
                 }
             } catch (Exception $e) {
@@ -147,7 +147,7 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registro - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -241,7 +241,7 @@ $conexion->close();
                         </div>
                         <hr class="my-4">
                         <div class="text-center">
-                            <a href="indexadmin.php" class="text-muted text-decoration-none">
+                            <a href="../admin/indexadmin.php" class="text-muted text-decoration-none">
                                 <i class="bi bi-arrow-left"></i> Volver al inicio
                             </a>
                         </div>

@@ -1,6 +1,6 @@
 <?php
 // Incluir conexión externa
-require 'conexion.php';
+require '../config/conexion.php';
 // Iniciar sesión (con parámetros seguros si no existe)
 if (session_status() === PHP_SESSION_NONE) {
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
@@ -62,8 +62,20 @@ function mostrarTabla($conexion, $titulo, $tabla, $where = '')
         $resultado->data_seek(0);
         while ($registro = $resultado->fetch_assoc()) {
             echo "<tr>";
-            foreach ($registro as $valor) {
-                echo "<td>" . htmlspecialchars($valor) . "</td>";
+            foreach ($registro as $nombreCampo => $valor) {
+                // Si es el campo estado, mostrar con badge de color
+                if ($nombreCampo === 'estado') {
+                    $badgeClass = match ($valor) {
+                        'procesando' => 'bg-info',
+                        'preparando' => 'bg-warning text-dark',
+                        'enviado' => 'bg-primary',
+                        'entregado' => 'bg-success',
+                        default => 'bg-secondary'
+                    };
+                    echo "<td><span class='badge $badgeClass'>" . htmlspecialchars($valor) . "</span></td>";
+                } else {
+                    echo "<td>" . htmlspecialchars($valor) . "</td>";
+                }
             }
             echo "</tr>";
         }
@@ -122,67 +134,76 @@ if ($userRole === 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor de Base de Datos - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
     <header class="bg-dark text-white py-4 mb-5 shadow-sm">
         <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">Visor de Base de Datos - Nevom</h1>
+            <h1 class="mb-0">📊 Visor de Base de Datos - Nevom</h1>
             <div>
                 <?php if (!$userName): ?>
-                    <a href="signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
-                    <a href="signupcliente.php" class="btn btn-outline-light">Registrarse</a>
+                    <a href="../auth/signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
+                    <a href="../auth/signupcliente.php" class="btn btn-outline-light">Registrarse</a>
                 <?php else: ?>
                     <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <a href="indexadmin.php" class="btn btn-outline-light me-2">Inicio</a>
-                    <a href="logout.php" class="btn btn-outline-light">Cerrar sesión</a>
+                    <?php if ($userRole === 'admin'): ?>
+                        <a href="indexadmin.php" class="btn btn-outline-light me-2">Inicio</a>
+                    <?php endif; ?>
+                    <a href="../auth/logout.php" class="btn btn-outline-light">Cerrar sesión</a>
                 <?php endif; ?>
             </div>
         </div>
     </header>
 
-    <?php
-    // Mostrar mensaje flash desde la sesión (si existe)
-    if (!empty($_SESSION['flash'])) {
-        $f = $_SESSION['flash'];
-        $type = ($f['type'] ?? 'info') === 'success' ? 'success' : 'danger';
-        echo "<div class='container'><div class='alert alert-" . htmlspecialchars($type) . " mt-3'>" . htmlspecialchars($f['text']) . "</div></div>";
-        unset($_SESSION['flash']);
-    }
-
-    // Mostrar tablas con filtros según rol
-    if ($userRole === 'admin') {
-        foreach ($tablas as $tabla => $titulo) {
-            mostrarTabla($conexion, $titulo, $tabla);
+        <?php
+        // Mostrar mensaje desde la sesión (si existe)
+        if (!empty($_SESSION['mensaje'])) {
+            $tipo = $_SESSION['mensaje_tipo'] ?? 'info';
+            $claseMensaje = match ($tipo) {
+                'success' => 'alert-success',
+                'danger' => 'alert-danger',
+                'warning' => 'alert-warning',
+                default => 'alert-info'
+            };
+            echo "<div class='alert $claseMensaje alert-dismissible fade show' role='alert'>";
+            echo htmlspecialchars($_SESSION['mensaje']);
+            echo "<button type='button' class='btn-close' data-bs-dismiss='alert'></button></div>";
+            unset($_SESSION['mensaje']);
+            unset($_SESSION['mensaje_tipo']);
         }
-    } else {
-        // Si no hay sesión de usuario, redirigir a login
-        if (!$userName || !isset($_SESSION['user_id'])) {
-            header('Location: signin.php');
-            exit;
-        }
-        $clienteId = $_SESSION['cliente_id'] ?? null;
-        // Mostrar solo su propio perfil
-        if ($clienteId) {
-            mostrarTabla($conexion, $tablas['cliente'], 'cliente', 'id=' . intval($clienteId));
-            // Pedidos asociados al cliente
-            mostrarTabla($conexion, $tablas['pedido'], 'pedido', 'idCliente=' . intval($clienteId));
-        }
-        // Catálogo móviles completo (no sensible)
-        mostrarTabla($conexion, $tablas['movil'], 'movil');
-    }
 
-    // Cerrar conexión
-    $conexion->close();
-    ?>
+        // Mostrar tablas con filtros según rol
+        if ($userRole === 'admin') {
+            foreach ($tablas as $tabla => $titulo) {
+                mostrarTabla($conexion, $titulo, $tabla);
+            }
+        } else {
+            // Si no hay sesión de usuario, redirigir a login
+            if (!$userName || !isset($_SESSION['user_id'])) {
+                header('Location: ../auth/signin.php');
+                exit;
+            }
+            $clienteId = $_SESSION['cliente_id'] ?? null;
+            // Mostrar solo su propio perfil
+            if ($clienteId) {
+                mostrarTabla($conexion, $tablas['cliente'], 'cliente', 'id=' . intval($clienteId));
+                // Pedidos asociados al cliente (con estado visible)
+                mostrarTabla($conexion, $tablas['pedido'], 'pedido', 'idCliente=' . intval($clienteId));
+            }
+            // Catálogo móviles completo (no sensible)
+            mostrarTabla($conexion, $tablas['movil'], 'movil');
+        }
 
-    <footer>
-        <div class="container">
-            <div class="text-center text-light opacity-75 py-3">
-                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Visor de Base de Datos</p>
-            </div>
+        // Cerrar conexión
+        $conexion->close();
+        ?>
+    </div>
+
+    <footer class="mt-5 py-4 bg-light">
+        <div class="container text-center text-muted">
+            <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Visor de Base de Datos</p>
         </div>
     </footer>
 

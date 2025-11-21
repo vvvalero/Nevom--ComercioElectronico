@@ -1,6 +1,6 @@
 <?php
 // Incluir conexión externa
-require 'conexion.php';
+require '../config/conexion.php';
 
 // Iniciar sesión para controlar login/roles
 if (session_status() === PHP_SESSION_NONE) {
@@ -13,7 +13,7 @@ $userRole = $_SESSION['user_role'] ?? null;
 
 // Redirigir si no es admin
 if ($userRole !== 'admin') {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -67,7 +67,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nevom - Tu Tienda de Móviles de Confianza</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -84,25 +84,27 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="#agregar-usuario">👥 Agregar Usuario</a>
+                        <a class="nav-link" href="#agregar-usuario">Agregar Usuario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#ver-pedidos">📦 Ver Pedidos</a>
+                        <a class="nav-link" href="gestionar_pedidos.php">Gestión de Pedidos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#ver-reparaciones">🔧 Ver Reparaciones</a>
+                        <a class="nav-link" href="#ver-reparaciones">Ver Reparaciones</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#agregar-movil">📱 Agregar Móvil</a>
+                        <a class="nav-link" href="#agregar-movil">Agregar Móvil</a>
                     </li>
                     <li class="nav-item dropdown ms-3">
                         <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             👤 <?= htmlspecialchars($userName) ?>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="visorBBDD.php">🗄️ Ver Base de Datos</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php">🚪 Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="visorBBDD.php">Ver Base de Datos</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="../auth/logout.php">Cerrar Sesión</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -136,7 +138,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                         <a href="#agregar-movil" class="btn btn-primary-custom btn-custom">
                             📱 Agregar Móvil
                         </a>
-                        <a href="#ver-pedidos" class="btn btn-outline-custom btn-custom">
+                        <a href="gestionar_pedidos.php" class="btn btn-outline-custom btn-custom">
                             📦 Ver Pedidos
                         </a>
                     </div>
@@ -170,7 +172,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                 </div>
             </div>
         </div>
-        </section>
+    </section>
 
     <!-- Sección: Agregar Usuario -->
     <section class="py-5" id="agregar-usuario" style="padding-top: 80px !important;">
@@ -183,7 +185,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             <div class="row justify-content-center mb-4">
                 <div class="col-lg-10">
                     <div class="text-center">
-                        <a href="signupadmin.php" class="btn btn-primary btn-lg rounded-pill px-5">
+                        <a href="../auth/signupadmin.php" class="btn btn-primary btn-lg rounded-pill px-5">
                             ➕ Crear Nueva Cuenta de Usuario
                         </a>
                     </div>
@@ -225,11 +227,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-primary rounded-pill">
-                                        Ver Todos los Usuarios →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
@@ -282,11 +279,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-success rounded-pill">
-                                        Ver Todos los Pedidos →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
@@ -343,11 +335,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-warning rounded-pill">
-                                        Ver Todas las Reparaciones →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
@@ -423,11 +410,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-success rounded-pill">
-                                        Ver Todos los Móviles →
-                                    </a>
-                                </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
                                     No hay móviles registrados en el inventario.
@@ -442,51 +424,51 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 
     <!-- Footer -->
     <footer>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h4 class="fw-bold mb-1">📱 Nevom</h4>
-                    <p class="text-light opacity-75">
-                        Tu tienda de confianza para comprar, vender y reparar móviles. 
-                        Calidad y servicio garantizados.
-                    </p>
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <h4 class="fw-bold mb-1">📱 Nevom</h4>
+                        <p class="text-light opacity-75">
+                            Tu tienda de confianza para comprar, vender y reparar móviles.
+                            Calidad y servicio garantizados.
+                        </p>
+                    </div>
+                </div>
+                <hr class="border-light opacity-25 my-4">
+                <div class="text-center text-light opacity-75">
+                    <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Proyecto Educativo</p>
                 </div>
             </div>
-            <hr class="border-light opacity-25 my-4">
-            <div class="text-center text-light opacity-75">
-                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Proyecto Educativo</p>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Smooth scroll para los enlaces del menú
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // Smooth scroll para los enlaces del menú
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Cambiar navbar al hacer scroll
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.15)';
+                } else {
+                    navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
                 }
             });
-        });
-
-        // Cambiar navbar al hacer scroll
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.15)';
-            } else {
-                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            }
-        });
-    </script>
+        </script>
 
 </body>
 
