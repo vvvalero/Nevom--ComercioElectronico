@@ -242,6 +242,15 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                         <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
                                                         <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
                                                         <td>
+                                                            <?php if ($pedido['idVenta']): ?>
+                                                                <span class="badge bg-success">Venta</span>
+                                                            <?php elseif ($pedido['idCompra']): ?>
+                                                                <span class="badge bg-warning">Compra</span>
+                                                            <?php elseif ($pedido['idReparacion']): ?>
+                                                                <span class="badge bg-danger">Reparación</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
                                                             <?php if ($pedido['estado'] === 'Procesando'): ?>
                                                                 <span class="badge bg-warning text-dark"><?= htmlspecialchars($pedido['estado']) ?></span>
                                                             <?php elseif ($pedido['estado'] === 'Enviado'): ?>
@@ -252,15 +261,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                                 <span class="badge bg-danger"><?= htmlspecialchars($pedido['estado']) ?></span>
                                                             <?php else: ?>
                                                                 <span class="badge bg-secondary"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td>
-                                                            <?php if ($pedido['idVenta']): ?>
-                                                                <span class="badge bg-success">Venta</span>
-                                                            <?php elseif ($pedido['idCompra']): ?>
-                                                                <span class="badge bg-warning">Compra</span>
-                                                            <?php elseif ($pedido['idReparacion']): ?>
-                                                                <span class="badge bg-danger">Reparación</span>
                                                             <?php endif; ?>
                                                         </td>
                                                     </tr>

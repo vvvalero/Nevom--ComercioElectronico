@@ -189,7 +189,7 @@ try {
     $_SESSION['mensaje_tipo'] = 'success';
 
     // Redirigir a página de confirmación o pedidos
-    header('Location: ../admin/visorBBDD.php');
+    header('Location: ../index.php');
     exit;
 } catch (Exception $e) {
     // Revertir transacción en caso de error
