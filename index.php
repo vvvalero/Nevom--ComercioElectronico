@@ -56,7 +56,7 @@ $pedidosCliente = null;
 $reparacionesCliente = null;
 if ($userRole === 'client' && $clienteId) {
     // Consultar pedidos del cliente
-    $sqlPedidos = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.idVenta, p.idCompra, p.idReparacion 
+    $sqlPedidos = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.idVenta, p.idCompra, p.idReparacion, p.estado 
                    FROM pedido p 
                    WHERE p.idCliente = ? 
                    ORDER BY p.id DESC 
@@ -231,6 +231,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                     <th>Cantidad</th>
                                                     <th>Forma de Pago</th>
                                                     <th>Tipo</th>
+                                                    <th>Estado</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -240,6 +241,19 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                         <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
                                                         <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
                                                         <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
+                                                        <td>
+                                                            <?php if ($pedido['estado'] === 'Procesando'): ?>
+                                                                <span class="badge bg-warning text-dark"><?= htmlspecialchars($pedido['estado']) ?></span>
+                                                            <?php elseif ($pedido['estado'] === 'Enviado'): ?>
+                                                                <span class="badge bg-primary"><?= htmlspecialchars($pedido['estado']) ?></span>
+                                                            <?php elseif ($pedido['estado'] === 'Entregado'): ?>
+                                                                <span class="badge bg-success"><?= htmlspecialchars($pedido['estado']) ?></span>
+                                                            <?php elseif ($pedido['estado'] === 'Cancelado'): ?>
+                                                                <span class="badge bg-danger"><?= htmlspecialchars($pedido['estado']) ?></span>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-secondary"><?= htmlspecialchars($pedido['estado']) ?></span>
+                                                            <?php endif; ?>
+                                                        </td>
                                                         <td>
                                                             <?php if ($pedido['idVenta']): ?>
                                                                 <span class="badge bg-success">Venta</span>
