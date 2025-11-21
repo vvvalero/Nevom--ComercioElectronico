@@ -84,27 +84,27 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="#agregar-usuario">👥 Agregar Usuario</a>
+                        <a class="nav-link" href="#agregar-usuario">Agregar Usuario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="gestionar_pedidos.php">📦 Gestión de Pedidos</a>
+                        <a class="nav-link" href="gestionar_pedidos.php">Gestión de Pedidos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#ver-reparaciones">🔧 Ver Reparaciones</a>
+                        <a class="nav-link" href="#ver-reparaciones">Ver Reparaciones</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#agregar-movil">📱 Agregar Móvil</a>
+                        <a class="nav-link" href="#agregar-movil">Agregar Móvil</a>
                     </li>
                     <li class="nav-item dropdown ms-3">
                         <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                             👤 <?= htmlspecialchars($userName) ?>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="visorBBDD.php">🗄️ Ver Base de Datos</a></li>
+                            <li><a class="dropdown-item" href="visorBBDD.php">Ver Base de Datos</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="../auth/logout.php">🚪 Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="../auth/logout.php">Cerrar Sesión</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -228,11 +228,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-primary rounded-pill">
-                                        Ver Todos los Usuarios →
-                                    </a>
-                                </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
                                     No hay usuarios registrados.
@@ -284,11 +279,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-success rounded-pill">
-                                        Ver Todos los Pedidos →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
@@ -345,11 +335,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-warning rounded-pill">
-                                        Ver Todas las Reparaciones →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
@@ -424,11 +409,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                             <?php endwhile; ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="visorBBDD.php" class="btn btn-outline-success rounded-pill">
-                                        Ver Todos los Móviles →
-                                    </a>
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">

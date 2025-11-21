@@ -145,10 +145,10 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                         <hr class="dropdown-divider">
                                     </li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item" href="admin/visorBBDD.php">Mis Pedidos</a></li>
-                                    <li>
+                                    <!-- <li><a class="dropdown-item" href="admin/visorBBDD.php">Mis Pedidos</a></li> -->
+                                    <!-- <li>
                                         <hr class="dropdown-divider">
-                                    </li>
+                                    </li> -->
                                 <?php endif; ?>
                                 <li><a class="dropdown-item" href="auth/logout.php">Cerrar Sesión</a></li>
                             </ul>
@@ -207,15 +207,15 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
             <div class="container">
                 <div class="text-center mb-4">
                     <h2 class="section-title">Mi Panel de Cliente</h2>
-                    <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones recientes.</p>
+                    <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones.</p>
                 </div>
 
                 <div class="row g-4">
-                    <!-- Pedidos Recientes -->
+                    <!-- Pedidos -->
                     <div class="col-lg-6">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos Recientes</h5>
+                                <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos </h5>
                             </div>
                             <div class="card-body">
                                 <?php if ($pedidosCliente && $pedidosCliente->num_rows > 0): ?>
@@ -265,11 +265,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="text-center mt-3">
-                                        <a href="admin/visorBBDD.php" class="btn btn-outline-primary btn-sm rounded-pill">
-                                            Ver Todos los Pedidos →
-                                        </a>
-                                    </div>
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
                                         <p class="mb-0">📭 No tienes pedidos aún. ¡Explora nuestro catálogo!</p>
@@ -279,7 +274,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                         </div>
                     </div>
 
-                    <!-- Reparaciones Recientes -->
+                    <!-- Reparaciones  -->
                     <div class="col-lg-6">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-warning text-dark">
@@ -301,11 +296,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                 </p>
                                             </div>
                                         <?php endwhile; ?>
-                                    </div>
-                                    <div class="text-center mt-3">
-                                        <a href="admin/visorBBDD.php" class="btn btn-outline-warning btn-sm rounded-pill">
-                                            Ver Detalles →
-                                        </a>
                                     </div>
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
@@ -378,14 +368,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
                 <?php endif; ?>
             </div>
-
-            <?php if ($resultadoMoviles && $resultadoMoviles->num_rows > 0): ?>
-                <div class="text-center mt-5">
-                    <a href="admin/visorBBDD.php" class="btn btn-outline-primary btn-lg rounded-pill px-5">
-                        Ver Todos los Productos →
-                    </a>
-                </div>
-            <?php endif; ?>
         </div>
     </section>
 
