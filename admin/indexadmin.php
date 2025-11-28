@@ -34,12 +34,23 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 $sqlUsuarios = "SELECT u.id, u.nombre, u.email, u.role FROM users u ORDER BY u.id DESC LIMIT 10";
 $resultUsuarios = $conexion->query($sqlUsuarios);
 
-$sqlPedidos = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.idCliente, c.nombre as nombreCliente 
-               FROM pedido p 
-               LEFT JOIN cliente c ON p.idCliente = c.id 
-               ORDER BY p.id DESC 
-               LIMIT 10";
-$resultPedidos = $conexion->query($sqlPedidos);
+// Obtener últimos pedidos de VENTA (cliente compra de tienda)
+$sqlPedidosVenta = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado, c.nombre as nombreCliente 
+                    FROM pedido p 
+                    LEFT JOIN cliente c ON p.idCliente = c.id 
+                    WHERE p.idCompra IS NOT NULL
+                    ORDER BY p.id DESC 
+                    LIMIT 10";
+$resultPedidosVenta = $conexion->query($sqlPedidosVenta);
+
+// Obtener últimas solicitudes de COMPRA (cliente vende a tienda)
+$sqlPedidosCompra = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado, c.nombre as nombreCliente 
+                     FROM pedido p 
+                     LEFT JOIN cliente c ON p.idCliente = c.id 
+                     WHERE p.idVenta IS NOT NULL
+                     ORDER BY p.id DESC 
+                     LIMIT 10";
+$resultPedidosCompra = $conexion->query($sqlPedidosCompra);
 
 $sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo, p.idCliente, c.nombre as nombreCliente
                     FROM reparacion r
@@ -87,7 +98,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                         <a class="nav-link" href="#agregar-usuario">Agregar Usuario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="gestionar_pedidos.php">Gestión de Pedidos</a>
+                        <a class="nav-link" href="#ver-pedidos">Gestión de Pedidos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#ver-reparaciones">Ver Reparaciones</a>
@@ -138,7 +149,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                         <a href="#agregar-movil" class="btn btn-primary-custom btn-custom">
                             📱 Agregar Móvil
                         </a>
-                        <a href="gestionar_pedidos.php" class="btn btn-outline-custom btn-custom">
+                        <a href="#ver-pedidos" class="btn btn-outline-custom btn-custom">
                             📦 Ver Pedidos
                         </a>
                     </div>
@@ -245,17 +256,27 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title">📦 Gestión de Pedidos</h2>
-                <p class="text-muted mt-4">Consulta y gestiona todos los pedidos del sistema</p>
+                <p class="text-muted mt-4">Consulta y gestiona los pedidos del sistema</p>
             </div>
-
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mb-4">
+                <div class="col-lg-10">
+                    <div class="text-center">
+                        <a href="./gestionar_compras.php" class="btn btn-primary btn-lg rounded-pill px-5">
+                            ➕ Gestionar pedidos de compra
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Pedidos de COMPRA (cliente compra de tienda) -->
+            <div class="row justify-content-center mb-4">
                 <div class="col-lg-10">
                     <div class="card shadow-lg rounded-4">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">📋 Últimos Pedidos Registrados</h5>
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Últimos Pedidos de Compra</h5>
+                            <small>Cliente compra de la tienda</small>
                         </div>
                         <div class="card-body p-4">
-                            <?php if ($resultPedidos && $resultPedidos->num_rows > 0): ?>
+                            <?php if ($resultPedidosVenta && $resultPedidosVenta->num_rows > 0): ?>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead class="table-light">
@@ -265,16 +286,29 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                                 <th>Precio Total</th>
                                                 <th>Cantidad</th>
                                                 <th>Forma de Pago</th>
+                                                <th>Estado</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php while ($pedido = $resultPedidos->fetch_assoc()): ?>
+                                            <?php while ($pedido = $resultPedidosVenta->fetch_assoc()): ?>
                                                 <tr>
                                                     <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
                                                     <td><?= htmlspecialchars($pedido['nombreCliente'] ?? 'N/A') ?></td>
                                                     <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
                                                     <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
                                                     <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
+                                                    <td>
+                                                        <?php
+                                                        $estadoClass = match ($pedido['estado']) {
+                                                            'procesando' => 'bg-warning text-dark',
+                                                            'preparando' => 'bg-info',
+                                                            'enviado' => 'bg-primary',
+                                                            'entregado' => 'bg-success',
+                                                            default => 'bg-secondary'
+                                                        };
+                                                        ?>
+                                                        <span class="badge <?= $estadoClass ?>"><?= ucfirst($pedido['estado']) ?></span>
+                                                    </td>
                                                 </tr>
                                             <?php endwhile; ?>
                                         </tbody>
@@ -282,7 +316,76 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info text-center">
-                                    No hay pedidos registrados.
+                                    No hay pedidos de venta registrados.
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-4">
+                <div class="col-lg-10">
+                    <div class="text-center">
+                        <a href="./gestionar_ventas.php" class="btn btn-primary btn-lg rounded-pill px-5">
+                            ➕ Gestionar pedidos de ventas
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Solicitudes de VENTA (cliente vende a tienda) -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-lg rounded-4">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Últimas Solicitudes de Venta</h5>
+                            <small>Cliente vende a la tienda</small>
+                        </div>
+                        <div class="card-body p-4">
+                            <?php if ($resultPedidosCompra && $resultPedidosCompra->num_rows > 0): ?>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID Solicitud</th>
+                                                <th>Cliente</th>
+                                                <th>Valoración</th>
+                                                <th>Cantidad</th>
+                                                <th>Forma de Pago</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php while ($pedido = $resultPedidosCompra->fetch_assoc()): ?>
+                                                <tr>
+                                                    <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
+                                                    <td><?= htmlspecialchars($pedido['nombreCliente'] ?? 'N/A') ?></td>
+                                                    <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
+                                                    <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
+                                                    <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
+                                                    <td>
+                                                        <?php
+                                                        $estadoClass = match ($pedido['estado']) {
+                                                            'procesando' => 'bg-warning text-dark',
+                                                            'aprobado' => 'bg-success',
+                                                            'rechazado' => 'bg-danger',
+                                                            'pagado' => 'bg-info',
+                                                            default => 'bg-secondary'
+                                                        };
+                                                        $estadoTexto = match ($pedido['estado']) {
+                                                            'procesando' => 'Pendiente Revisión',
+                                                            default => ucfirst($pedido['estado'])
+                                                        };
+                                                        ?>
+                                                        <span class="badge <?= $estadoClass ?>"><?= $estadoTexto ?></span>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <div class="alert alert-info text-center">
+                                    No hay solicitudes de compra registradas.
                                 </div>
                             <?php endif; ?>
                         </div>
