@@ -51,21 +51,42 @@ $userName = $_SESSION['user_name'] ?? null;
 $userRole = $_SESSION['user_role'] ?? null;
 $clienteId = $_SESSION['cliente_id'] ?? null;
 
-// Obtener pedidos y reparaciones si es cliente logueado
-$pedidosCliente = null;
+// Obtener compras, ventas y reparaciones si es cliente logueado
+$comprasCliente = null;
+$ventasCliente = null;
 $reparacionesCliente = null;
 if ($userRole === 'client' && $clienteId) {
-    // Consultar pedidos del cliente
-    $sqlPedidos = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.idVenta, p.idCompra, p.idReparacion, p.estado 
+    // Consultar COMPRAS del cliente (cuando el cliente compra móviles de la tienda)
+    $sqlCompras = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
+                          m.marca, m.modelo
                    FROM pedido p 
-                   WHERE p.idCliente = ? 
+                   JOIN compra c ON p.idCompra = c.id
+                   JOIN linea_compra lc ON c.idLineaCompra = lc.id
+                   JOIN movil m ON lc.idMovil = m.id
+                   WHERE p.idCliente = ? AND p.idCompra IS NOT NULL
                    ORDER BY p.id DESC 
                    LIMIT 5";
-    $stmtPedidos = $conexion->prepare($sqlPedidos);
-    $stmtPedidos->bind_param('i', $clienteId);
-    $stmtPedidos->execute();
-    $pedidosCliente = $stmtPedidos->get_result();
-    $stmtPedidos->close();
+    $stmtCompras = $conexion->prepare($sqlCompras);
+    $stmtCompras->bind_param('i', $clienteId);
+    $stmtCompras->execute();
+    $comprasCliente = $stmtCompras->get_result();
+    $stmtCompras->close();
+
+    // Consultar VENTAS del cliente (cuando el cliente vende móviles a la tienda)
+    $sqlVentas = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
+                         m.marca, m.modelo
+                  FROM pedido p 
+                  JOIN venta v ON p.idVenta = v.id
+                  JOIN linea_venta lv ON v.idLineaVenta = lv.id
+                  JOIN movil m ON lv.idMovil = m.id
+                  WHERE p.idCliente = ? AND p.idVenta IS NOT NULL
+                  ORDER BY p.id DESC 
+                  LIMIT 5";
+    $stmtVentas = $conexion->prepare($sqlVentas);
+    $stmtVentas->bind_param('i', $clienteId);
+    $stmtVentas->execute();
+    $ventasCliente = $stmtVentas->get_result();
+    $stmtVentas->close();
 
     // Consultar reparaciones del cliente (a través de pedidos)
     $sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo 
@@ -130,6 +151,9 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                     <span class="badge bg-danger"><?= $cantidadCarrito ?></span>
                                 <?php endif; ?>
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="vender/vender_movil.php">Vender</a>
                         </li>
                     <?php endif; ?>
                     <?php if ($userName): ?>
@@ -201,73 +225,106 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </section>
 
-    <!-- Sección de Pedidos y Reparaciones del Cliente (solo si está logueado como cliente) -->
-    <?php if ($userRole === 'client' && $clienteId && ($pedidosCliente || $reparacionesCliente)): ?>
+    <!-- Sección de Compras, Ventas y Reparaciones del Cliente (solo si está logueado como cliente) -->
+    <?php if ($userRole === 'client' && $clienteId && ($comprasCliente || $ventasCliente || $reparacionesCliente)): ?>
         <section class="py-5 bg-light">
             <div class="container">
                 <div class="text-center mb-4">
                     <h2 class="section-title">Mi Panel de Cliente</h2>
-                    <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus pedidos y reparaciones.</p>
+                    <p class="text-muted">Bienvenido de nuevo, <?= htmlspecialchars($userName) ?>. Aquí puedes ver tus operaciones.</p>
                 </div>
 
                 <div class="row g-4">
-                    <!-- Pedidos -->
-                    <div class="col-lg-6">
+                    <!-- Compras (cliente compra móviles de la tienda) -->
+                    <div class="col-lg-4">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-bag-check"></i> 📦 Mis Pedidos </h5>
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">🛒 Mis Compras</h5>
                             </div>
                             <div class="card-body">
-                                <?php if ($pedidosCliente && $pedidosCliente->num_rows > 0): ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-sm">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Total</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Forma de Pago</th>
-                                                    <th>Tipo</th>
-                                                    <th>Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php while ($pedido = $pedidosCliente->fetch_assoc()): ?>
-                                                    <tr>
-                                                        <td><strong>#<?= htmlspecialchars($pedido['id']) ?></strong></td>
-                                                        <td><span class="text-success fw-bold"><?= number_format($pedido['precioTotal'], 2) ?>€</span></td>
-                                                        <td><?= htmlspecialchars($pedido['cantidadTotal']) ?></td>
-                                                        <td><span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span></td>
-                                                        <td>
-                                                            <?php if ($pedido['idVenta']): ?>
-                                                                <span class="badge bg-success">Venta</span>
-                                                            <?php elseif ($pedido['idCompra']): ?>
-                                                                <span class="badge bg-warning">Compra</span>
-                                                            <?php elseif ($pedido['idReparacion']): ?>
-                                                                <span class="badge bg-danger">Reparación</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td>
-                                                            <?php if ($pedido['estado'] === 'Procesando'): ?>
-                                                                <span class="badge bg-warning text-dark"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php elseif ($pedido['estado'] === 'Enviado'): ?>
-                                                                <span class="badge bg-primary"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php elseif ($pedido['estado'] === 'Entregado'): ?>
-                                                                <span class="badge bg-success"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php elseif ($pedido['estado'] === 'Cancelado'): ?>
-                                                                <span class="badge bg-danger"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php else: ?>
-                                                                <span class="badge bg-secondary"><?= htmlspecialchars($pedido['estado']) ?></span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php endwhile; ?>
-                                            </tbody>
-                                        </table>
+                                <?php if ($comprasCliente && $comprasCliente->num_rows > 0): ?>
+                                    <div class="list-group">
+                                        <?php while ($compra = $comprasCliente->fetch_assoc()): ?>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="mb-1">
+                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($compra['id']) ?></span>
+                                                            <?= htmlspecialchars($compra['marca']) ?> <?= htmlspecialchars($compra['modelo']) ?>
+                                                        </h6>
+                                                        <p class="mb-1">
+                                                            <strong class="text-success"><?= number_format($compra['precioTotal'], 2) ?>€</strong>
+                                                            <span class="text-muted ms-2">(<?= htmlspecialchars($compra['cantidadTotal']) ?> ud.)</span>
+                                                        </p>
+                                                        <small class="text-muted">
+                                                            <span class="badge bg-info"><?= htmlspecialchars($compra['formaPago']) ?></span>
+                                                        </small>
+                                                    </div>
+                                                    <div>
+                                                        <?php
+                                                        $estadoClass = 'secondary';
+                                                        if ($compra['estado'] === 'procesando') $estadoClass = 'warning text-dark';
+                                                        elseif ($compra['estado'] === 'preparando') $estadoClass = 'info';
+                                                        elseif ($compra['estado'] === 'enviado') $estadoClass = 'primary';
+                                                        elseif ($compra['estado'] === 'entregado') $estadoClass = 'success';
+                                                        ?>
+                                                        <span class="badge bg-<?= $estadoClass ?>"><?= ucfirst(htmlspecialchars($compra['estado'])) ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endwhile; ?>
                                     </div>
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
-                                        <p class="mb-0">📭 No tienes pedidos aún. ¡Explora nuestro catálogo!</p>
+                                        <p class="mb-0">🛒 No has comprado móviles aún.<br>¡Explora nuestro catálogo!</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ventas (cliente vende móviles a la tienda) -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Mis Ventas</h5>
+                            </div>
+                            <div class="card-body">
+                                <?php if ($ventasCliente && $ventasCliente->num_rows > 0): ?>
+                                    <div class="list-group">
+                                        <?php while ($venta = $ventasCliente->fetch_assoc()): ?>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="mb-1">
+                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($venta['id']) ?></span>
+                                                            <?= htmlspecialchars($venta['marca']) ?> <?= htmlspecialchars($venta['modelo']) ?>
+                                                        </h6>
+                                                        <p class="mb-1">
+                                                            <strong class="text-success"><?= number_format($venta['precioTotal'], 2) ?>€</strong>
+                                                            <span class="text-muted ms-2">(<?= htmlspecialchars($venta['cantidadTotal']) ?> ud.)</span>
+                                                        </p>
+                                                        <small class="text-muted">
+                                                            <span class="badge bg-info"><?= htmlspecialchars($venta['formaPago']) ?></span>
+                                                        </small>
+                                                    </div>
+                                                    <div>
+                                                        <?php
+                                                        $estadoClass = 'secondary';
+                                                        if ($venta['estado'] === 'procesando') $estadoClass = 'warning text-dark';
+                                                        elseif ($venta['estado'] === 'preparando') $estadoClass = 'info';
+                                                        elseif ($venta['estado'] === 'enviado') $estadoClass = 'primary';
+                                                        elseif ($venta['estado'] === 'entregado') $estadoClass = 'success';
+                                                        ?>
+                                                        <span class="badge bg-<?= $estadoClass ?>"><?= ucfirst(htmlspecialchars($venta['estado'])) ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endwhile; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info text-center">
+                                        <p class="mb-0">No has vendido móviles aún.<br>¡Vende tus móviles usados!</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -275,10 +332,10 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
 
                     <!-- Reparaciones  -->
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="bi bi-tools"></i> 🔧 Mis Reparaciones</h5>
+                                <h5 class="mb-0">🔧 Mis Reparaciones</h5>
                             </div>
                             <div class="card-body">
                                 <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
@@ -395,10 +452,19 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card feature-card text-center p-4">
+                    <div class="card feature-card text-center p-4 h-100 d-flex flex-column">
                         <div class="feature-icon">💰</div>
                         <h5 class="fw-bold mb-3">Compra</h5>
-                        <p class="text-muted">Compramos tu móvil usado al mejor precio del mercado</p>
+                        <p class="text-muted flex-grow-1">Compramos tu móvil usado al mejor precio del mercado</p>
+                        <?php if ($userName && $userRole === 'client'): ?>
+                            <a href="vender/vender_movil.php" class="btn btn-primary btn-sm mt-3 rounded-pill">
+                                Vender Mi Móvil
+                            </a>
+                        <?php else: ?>
+                            <a href="auth/signin.php" class="btn btn-outline-primary btn-sm mt-3 rounded-pill">
+                                Iniciar Sesión
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
