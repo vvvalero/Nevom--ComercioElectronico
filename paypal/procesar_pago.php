@@ -109,236 +109,155 @@ $conexion->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago - Nevom</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .pago-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-        }
-        
-        .resumen-compra {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-        }
-        
-        .resumen-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .resumen-item:last-child {
-            border-bottom: none;
-        }
-        
-        .resumen-total {
-            font-size: 24px;
-            font-weight: bold;
-            color: #28a745;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #28a745;
-        }
-        
-        .datos-cliente {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .datos-cliente p {
-            margin: 8px 0;
-        }
-        
-        .label-datos {
-            font-weight: bold;
-            color: #495057;
-        }
-        
-        .botones-pago {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .btn-paypal {
-            background-color: #0070ba;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-paypal:hover {
-            background-color: #005ea6;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .btn-cancelar {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-cancelar:hover {
-            background-color: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .info-paypal {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #856404;
-        }
-        
-        .paypal-logo {
-            display: inline-block;
-            margin-right: 10px;
-        }
-        
-        .error-message {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner-border {
-            color: #0070ba;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css?v=<?php echo time(); ?>">
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../index.php">Nevom</a>
-            <span class="navbar-text text-white">Procesamiento de Pago</span>
+<body class="paypal-page">
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="../index.php">
+                📱 Nevom
+            </a>
+            <span class="navbar-text text-muted">Procesamiento de Pago</span>
         </div>
     </nav>
 
-    <div class="pago-container">
-        <h1 class="mb-4">Confirmar Pago</h1>
+    <!-- Header -->
+    <div class="header-pago">
+        <div class="container">
+            <h1>🔒 Confirmar Pago</h1>
+            <p>Revisa los detalles de tu compra antes de proceder con PayPal</p>
+        </div>
+    </div>
 
+    <!-- Contenido principal -->
+    <div class="pago-wrapper">
         <?php if (!empty($errores)): ?>
-            <div class="error-message">
-                <h5>Errores encontrados:</h5>
-                <ul class="mb-0">
-                    <?php foreach ($errores as $error): ?>
-                        <li><?php echo htmlspecialchars($error); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+            <div class="pago-card">
+                <div class="pago-card-body">
+                    <div class="error-message">
+                        <h5>⚠️ Errores encontrados:</h5>
+                        <ul>
+                            <?php foreach ($errores as $error): ?>
+                                <li><?php echo htmlspecialchars($error); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <a href="../carrito/carrito.php" class="btn btn-primary">← Volver al Carrito</a>
+                </div>
             </div>
         <?php else: ?>
-
-            <!-- Información de PayPal -->
+            <!-- Información PayPal -->
             <div class="info-paypal">
-                <strong>ℹ️ Información:</strong> Serás redirigido a PayPal Sandbox para completar el pago de forma segura.
+                <span style="font-size: 1.2rem;">🛡️</span>
+                <div>
+                    <strong>Pago Seguro</strong>
+                    <p style="margin: 0; font-size: 0.9rem; margin-top: 4px;">Serás redirigido a PayPal Sandbox para completar el pago de forma segura. Tu información nunca se compartirá con terceros.</p>
+                </div>
             </div>
 
-            <!-- Resumen de la compra -->
-            <div class="resumen-compra">
-                <h5 class="mb-3">Resumen de tu compra</h5>
-                
-                <?php foreach ($productosDetalle as $producto): ?>
-                    <div class="resumen-item">
-                        <span><?php echo htmlspecialchars($producto); ?></span>
+            <!-- Resumen de compra -->
+            <div class="pago-card">
+                <div class="pago-card-header">
+                    📦 Resumen de tu compra
+                </div>
+                <div class="pago-card-body">
+                    <?php foreach ($productosDetalle as $producto): ?>
+                        <div class="resumen-item">
+                            <span><?php echo htmlspecialchars($producto); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                    
+                    <div class="resumen-total">
+                        <span>Total a pagar:</span>
+                        <span class="price">€<?php echo number_format($precioTotal, 2, ',', '.'); ?></span>
                     </div>
-                <?php endforeach; ?>
-                
-                <div class="resumen-total">
-                    Total: €<?php echo number_format($precioTotal, 2, ',', '.'); ?>
                 </div>
             </div>
 
             <!-- Datos de envío -->
-            <div class="datos-cliente">
-                <h5 class="mb-3">Datos de envío</h5>
-                
-                <p>
-                    <span class="label-datos">Nombre:</span> 
-                    <?php echo htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellidos']); ?>
-                </p>
-                
-                <p>
-                    <span class="label-datos">Email:</span> 
-                    <?php echo htmlspecialchars($cliente['email']); ?>
-                </p>
-                
-                <p>
-                    <span class="label-datos">Teléfono:</span> 
-                    <?php echo htmlspecialchars($cliente['telefono']); ?>
-                </p>
-                
-                <p>
-                    <span class="label-datos">Dirección:</span> 
-                    <?php echo htmlspecialchars($cliente['direccion']); ?>
-                </p>
+            <div class="pago-card">
+                <div class="pago-card-header">
+                    📍 Datos de envío
+                </div>
+                <div class="pago-card-body">
+                    <div class="cliente-info">
+                        <div class="cliente-info-item">
+                            <span class="cliente-info-label">Nombre completo</span>
+                            <span class="cliente-info-value"><?php echo htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellidos']); ?></span>
+                        </div>
+                        
+                        <div class="cliente-info-item">
+                            <span class="cliente-info-label">Email</span>
+                            <span class="cliente-info-value"><?php echo htmlspecialchars($cliente['email']); ?></span>
+                        </div>
+                        
+                        <div class="cliente-info-item">
+                            <span class="cliente-info-label">Teléfono</span>
+                            <span class="cliente-info-value"><?php echo htmlspecialchars($cliente['telefono']); ?></span>
+                        </div>
+                        
+                        <div class="cliente-info-item">
+                            <span class="cliente-info-label">Dirección</span>
+                            <span class="cliente-info-value"><?php echo htmlspecialchars($cliente['direccion']); ?></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Botones de acción -->
-            <form method="post" action="">
-                <div class="botones-pago">
-                    <button type="submit" class="btn-paypal" id="btn-pagar">
-                        🔒 Pagar con PayPal
-                    </button>
-                    <a href="../carrito/carrito.php" class="btn-cancelar">Cancelar</a>
+            <div class="pago-card">
+                <div class="pago-card-body" style="display: flex; justify-content: center; padding-top: 20px;">
+                    <form method="post" action="" style="width: 100%;">
+                        <div class="pago-buttons">
+                            <button type="submit" class="btn-pagar-paypal" id="btn-pagar">
+                                🔒 Pagar con PayPal
+                            </button>
+                            <a href="../carrito/carrito.php" class="btn-cancelar">
+                                ← Cancelar Compra
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
 
-            <!-- Spinner de carga -->
-            <div class="loading-spinner" id="loading-spinner">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Cargando...</span>
+                <!-- Spinner de carga -->
+                <div class="loading-spinner" id="loading-spinner">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p>🔄 Redirigiendo a PayPal...</p>
                 </div>
-                <p class="mt-2">Redirigiendo a PayPal...</p>
             </div>
 
         <?php endif; ?>
     </div>
 
-    <!-- Formulario oculto para PayPal (se envía automáticamente si $procesarPago es true) -->
+    <!-- Formulario oculto para PayPal (se envía automáticamente) -->
     <?php if ($procesarPago && !empty($parametrosPayPal)): ?>
         <?php echo ProcesadorPayPal::generarFormularioOculto($parametrosPayPal); ?>
         
         <script>
-            // Mostrar spinner y enviar formulario automáticamente
-            document.getElementById('loading-spinner').style.display = 'block';
-            document.getElementById('btn-pagar').disabled = true;
-            document.getElementById('paypal-form').submit();
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('loading-spinner').style.display = 'block';
+                document.getElementById('btn-pagar').disabled = true;
+                setTimeout(function() {
+                    document.getElementById('paypal-form').submit();
+                }, 500);
+            });
         </script>
     <?php endif; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <hr class="border-light opacity-25 my-4">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

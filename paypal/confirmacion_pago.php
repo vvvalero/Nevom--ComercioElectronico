@@ -228,212 +228,157 @@ function enviarEmailConfirmacion($email, $nombre, $pedidoId, $total, $cantidad_a
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Pago - Nevom</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .confirmation-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-        }
-        
-        .success-icon {
-            font-size: 60px;
-            color: #28a745;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .error-icon {
-            font-size: 60px;
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .warning-icon {
-            font-size: 60px;
-            color: #ffc107;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .confirmation-message {
-            background-color: white;
-            padding: 30px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-        }
-        
-        .mensaje-alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .mensaje-alert.success {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        
-        .mensaje-alert.danger {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        
-        .mensaje-alert.warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-        }
-        
-        .detalles-pedido {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-        }
-        
-        .detalle-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .detalle-item:last-child {
-            border-bottom: none;
-        }
-        
-        .botones-accion {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .btn-primario {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-primario:hover {
-            background-color: #0056b3;
-            color: white;
-            text-decoration: none;
-        }
-        
-        .btn-secundario {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-secundario:hover {
-            background-color: #5a6268;
-            color: white;
-            text-decoration: none;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css?v=<?php echo time(); ?>">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../index.php">Nevom</a>
-            <span class="navbar-text text-white">Confirmación de Pago</span>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="../index.php">
+                📱 Nevom
+            </a>
+            <span class="navbar-text text-muted">Confirmación de Pago</span>
         </div>
     </nav>
 
-    <div class="confirmation-container">
+    <!-- Header -->
+    <div class="header-confirmacion <?php echo $tipo_mensaje === 'danger' ? 'error' : ($tipo_mensaje === 'warning' ? 'warning' : ''); ?>">
+        <div class="container">
+            <span class="icon-grande">
+                <?php 
+                    if ($procesado && $tipo_mensaje === 'success') {
+                        echo '✓';
+                    } elseif ($tipo_mensaje === 'danger') {
+                        echo '✕';
+                    } else {
+                        echo '⚠';
+                    }
+                ?>
+            </span>
+            <h1>
+                <?php 
+                    if ($procesado && $tipo_mensaje === 'success') {
+                        echo '¡Pago Confirmado!';
+                    } elseif ($tipo_mensaje === 'danger') {
+                        echo 'Error en el Pago';
+                    } else {
+                        echo 'Advertencia';
+                    }
+                ?>
+            </h1>
+            <p>
+                <?php 
+                    if ($procesado && $tipo_mensaje === 'success') {
+                        echo 'Tu pedido ha sido procesado correctamente';
+                    } elseif ($tipo_mensaje === 'danger') {
+                        echo 'Hubo un problema al procesar tu pago';
+                    } else {
+                        echo 'Por favor revisa la siguiente información';
+                    }
+                ?>
+            </p>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="confirmacion-wrapper">
         
         <?php if ($procesado && $tipo_mensaje === 'success'): ?>
             <!-- Éxito -->
-            <div class="success-icon">✓</div>
-            
-            <div class="confirmation-message">
-                <h1 class="text-center text-success mb-4">¡Pago Confirmado!</h1>
-                
-                <div class="mensaje-alert success">
-                    <?php echo htmlspecialchars($mensaje); ?>
-                </div>
+            <div class="confirmacion-card">
+                <div class="confirmacion-card-body">
+                    <!-- Mensaje de éxito -->
+                    <div class="mensaje-alert success">
+                        <span style="font-size: 1.5rem;">✓</span>
+                        <div>
+                            <strong>¡Pago procesado exitosamente!</strong>
+                            <p style="margin: 4px 0 0 0; font-size: 0.9rem;"><?php echo htmlspecialchars($mensaje); ?></p>
+                        </div>
+                    </div>
 
-                <div class="detalles-pedido">
-                    <h5 class="mb-3">Detalles del pedido</h5>
-                    
-                    <div class="detalle-item">
-                        <span><strong>Número de pedido:</strong></span>
-                        <span><strong>#<?php echo htmlspecialchars($numeroPedido); ?></strong></span>
+                    <!-- Detalles del pedido -->
+                    <div class="confirmacion-card" style="margin-bottom: 0; background: #f9fafb; border-shadow: none;">
+                        <div class="confirmacion-card-header" style="background: #f3f4f6; color: #1f2937; border-bottom: 1px solid #e5e7eb;">
+                            📋 Detalles del Pedido
+                        </div>
+                        <div class="confirmacion-card-body">
+                            <div class="detalle-item">
+                                <span class="detalle-item-label">Número de pedido:</span>
+                                <span class="detalle-item-valor">#<?php echo htmlspecialchars($numeroPedido); ?></span>
+                            </div>
+                            
+                            <div class="detalle-item">
+                                <span class="detalle-item-label">Total pagado:</span>
+                                <span class="detalle-item-valor">€<?php echo number_format($datosCompra['total'], 2, ',', '.'); ?></span>
+                            </div>
+                            
+                            <div class="detalle-item">
+                                <span class="detalle-item-label">Forma de pago:</span>
+                                <span style="font-weight: 600; color: #2563eb;">PayPal</span>
+                            </div>
+                            
+                            <div class="detalle-item">
+                                <span class="detalle-item-label">Fecha:</span>
+                                <span style="font-weight: 600; color: #6b7280;"><?php echo date('d/m/Y H:i:s'); ?></span>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="detalle-item">
-                        <span><strong>Total pagado:</strong></span>
-                        <span><strong>€<?php echo number_format($datosCompra['total'], 2, ',', '.'); ?></strong></span>
-                    </div>
-                    
-                    <div class="detalle-item">
-                        <span><strong>Forma de pago:</strong></span>
-                        <span><strong>PayPal</strong></span>
-                    </div>
-                    
-                    <div class="detalle-item">
-                        <span><strong>Fecha:</strong></span>
-                        <span><strong><?php echo date('d/m/Y H:i:s'); ?></strong></span>
-                    </div>
-                </div>
 
-                <div class="alert alert-info">
-                    <strong>ℹ️ Información:</strong> Te hemos enviado un email de confirmación. Tu pedido será procesado y enviado a la brevedad.
-                </div>
+                    <!-- Info importante -->
+                    <div class="info-box" style="margin-top: 20px;">
+                        <strong>📧 Información importante:</strong>
+                        <p style="margin-top: 8px;">Te hemos enviado un email de confirmación a tu dirección. Tu pedido será procesado y enviado a la brevedad. Puedes rastrear el estado de tu pedido en tu perfil.</p>
+                    </div>
 
-                <div class="botones-accion">
-                    <a href="../index.php" class="btn-primario">Volver a la tienda</a>
-                    <a href="../admin/indexadmin.php" class="btn-secundario">Ver mis pedidos</a>
+                    <!-- Botones -->
+                    <div class="confirmacion-buttons">
+                        <a href="../index.php" class="btn-confirmacion">
+                            🏠 Volver a la tienda
+                        </a>
+                        <a href="../admin/indexadmin.php" class="btn-confirmacion-secondary">
+                            📦 Ver mis pedidos
+                        </a>
+                    </div>
                 </div>
             </div>
 
         <?php else: ?>
             <!-- Error o advertencia -->
-            <div class="<?php echo $tipo_mensaje === 'danger' ? 'error-icon' : 'warning-icon'; ?>">
-                <?php echo $tipo_mensaje === 'danger' ? '✕' : '⚠'; ?>
-            </div>
-            
-            <div class="confirmation-message">
-                <h1 class="text-center mb-4">
-                    <?php echo $tipo_mensaje === 'danger' ? 'Error en el Pago' : 'Advertencia'; ?>
-                </h1>
-                
-                <div class="mensaje-alert <?php echo htmlspecialchars($tipo_mensaje); ?>">
-                    <?php echo htmlspecialchars($mensaje); ?>
-                </div>
+            <div class="confirmacion-card">
+                <div class="confirmacion-card-body">
+                    <!-- Mensaje de error/advertencia -->
+                    <div class="mensaje-alert <?php echo htmlspecialchars($tipo_mensaje); ?>">
+                        <span style="font-size: 1.5rem;">
+                            <?php echo $tipo_mensaje === 'danger' ? '✕' : '⚠'; ?>
+                        </span>
+                        <div>
+                            <strong>
+                                <?php echo $tipo_mensaje === 'danger' ? 'Error al procesar el pago' : 'Advertencia'; ?>
+                            </strong>
+                            <p style="margin: 4px 0 0 0; font-size: 0.9rem;"><?php echo htmlspecialchars($mensaje); ?></p>
+                        </div>
+                    </div>
 
-                <div class="alert alert-info">
-                    <strong>¿Qué puedes hacer?</strong>
-                    <ul class="mb-0 mt-2">
-                        <li>Verifica tu conexión a internet</li>
-                        <li>Intenta nuevamente desde tu carrito</li>
-                        <li>Si el problema persiste, contacta con nuestro equipo de soporte</li>
-                    </ul>
-                </div>
+                    <!-- Sugerencias -->
+                    <div class="info-box">
+                        <strong>¿Qué puedes hacer?</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #0c4a6e;">
+                            <li>Verifica tu conexión a internet</li>
+                            <li>Intenta nuevamente desde tu carrito</li>
+                            <li>Si el problema persiste, contacta con nuestro equipo de soporte</li>
+                        </ul>
+                    </div>
 
-                <div class="botones-accion">
-                    <a href="../carrito/carrito.php" class="btn-primario">Volver al carrito</a>
-                    <a href="../index.php" class="btn-secundario">Ir a inicio</a>
+                    <!-- Botones -->
+                    <div class="confirmacion-buttons">
+                        <a href="../carrito/carrito.php" class="btn-confirmacion">
+                            🛒 Volver al carrito
+                        </a>
+                        <a href="../index.php" class="btn-confirmacion-secondary">
+                            🏠 Ir a inicio
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -441,6 +386,16 @@ function enviarEmailConfirmacion($email, $nombre, $pedidoId, $total, $cantidad_a
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <hr class="border-light opacity-25 my-4">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
