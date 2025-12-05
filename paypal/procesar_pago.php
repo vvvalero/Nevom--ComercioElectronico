@@ -148,15 +148,6 @@ $conexion->close();
                 </div>
             </div>
         <?php else: ?>
-            <!-- Información PayPal -->
-            <div class="info-paypal">
-                <span style="font-size: 1.2rem;">🛡️</span>
-                <div>
-                    <strong>Pago Seguro</strong>
-                    <p style="margin: 0; font-size: 0.9rem; margin-top: 4px;">Serás redirigido a PayPal Sandbox para completar el pago de forma segura. Tu información nunca se compartirá con terceros.</p>
-                </div>
-            </div>
-
             <!-- Resumen de compra -->
             <div class="pago-card">
                 <div class="pago-card-header">

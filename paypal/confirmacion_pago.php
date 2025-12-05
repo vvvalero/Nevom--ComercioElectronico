@@ -245,17 +245,6 @@ function enviarEmailConfirmacion($email, $nombre, $pedidoId, $total, $cantidad_a
     <!-- Header -->
     <div class="header-confirmacion <?php echo $tipo_mensaje === 'danger' ? 'error' : ($tipo_mensaje === 'warning' ? 'warning' : ''); ?>">
         <div class="container">
-            <span class="icon-grande">
-                <?php 
-                    if ($procesado && $tipo_mensaje === 'success') {
-                        echo '✓';
-                    } elseif ($tipo_mensaje === 'danger') {
-                        echo '✕';
-                    } else {
-                        echo '⚠';
-                    }
-                ?>
-            </span>
             <h1>
                 <?php 
                     if ($procesado && $tipo_mensaje === 'success') {
@@ -298,7 +287,7 @@ function enviarEmailConfirmacion($email, $nombre, $pedidoId, $total, $cantidad_a
                     </div>
 
                     <!-- Detalles del pedido -->
-                    <div class="confirmacion-card" style="margin-bottom: 0; background: #f9fafb; border-shadow: none;">
+                    <div class="confirmacion-card" style="margin-bottom: 0; background: #f9fafb;">
                         <div class="confirmacion-card-header" style="background: #f3f4f6; color: #1f2937; border-bottom: 1px solid #e5e7eb;">
                             📋 Detalles del Pedido
                         </div>

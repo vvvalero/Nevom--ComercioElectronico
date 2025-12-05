@@ -82,7 +82,7 @@ if ($cantidadNueva > $movil['stock']) {
 // Agregar al carrito
 $_SESSION['carrito'][$movilId] = $cantidadNueva;
 
-$_SESSION['mensaje'] = "✅ {$movil['marca']} {$movil['modelo']} agregado al carrito";
+$_SESSION['mensaje'] = "{$movil['marca']} {$movil['modelo']} agregado al carrito";
 $_SESSION['mensaje_tipo'] = 'success';
 
 // Redirigir al carrito o a la página de productos según preferencia
