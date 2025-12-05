@@ -163,3 +163,35 @@ CREATE TABLE `pedido` (
 
 INSERT INTO `pedido` (`precioTotal`, `cantidadTotal`, `formaPago`, `idCompra`, `idCliente`, `estado`) VALUES
 (100, 1, 'tarjeta', 1, 1, 'procesando');
+
+-- Tabla para almacenar transacciones de PayPal
+CREATE TABLE IF NOT EXISTS `transaccion_paypal` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `pedido_id` INT NOT NULL,
+  `referencia_paypal` VARCHAR(100),
+  `estado` ENUM('INICIADA', 'PAGADO', 'COMPLETADA', 'FALLIDA', 'CANCELADA') DEFAULT 'INICIADA',
+  `monto` DECIMAL(10, 2) NOT NULL,
+  `moneda` VARCHAR(3) DEFAULT 'EUR',
+  `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `datos_respuesta` LONGTEXT,
+  `notas` TEXT,
+  FOREIGN KEY (`pedido_id`) REFERENCES `pedido`(`id`) ON DELETE CASCADE,
+  UNIQUE KEY `pedido_unico` (`pedido_id`),
+  INDEX `idx_estado` (`estado`),
+  INDEX `idx_referencia_paypal` (`referencia_paypal`),
+  INDEX `idx_fecha` (`fecha_creacion`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla para almacenar logs de transacciones
+CREATE TABLE IF NOT EXISTS `log_paypal` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `pedido_id` INT,
+  `tipo` ENUM('INFO', 'ERROR', 'SUCCESS', 'WARNING') DEFAULT 'INFO',
+  `mensaje` TEXT NOT NULL,
+  `datos_adicionales` JSON,
+  `fecha_log` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_pedido` (`pedido_id`),
+  INDEX `idx_tipo` (`tipo`),
+  INDEX `idx_fecha` (`fecha_log`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

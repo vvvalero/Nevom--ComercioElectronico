@@ -266,7 +266,7 @@ $conexion->close();
                             <form method="post" action="procesar_compra.php" id="formProcesarCompra" data-total="<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Forma de Pago *</label>
-                                    <select name="forma_pago" class="form-select" required>
+                                    <select name="forma_pago" class="form-select" required id="forma_pago_select">
                                         <option value="">-- Selecciona --</option>
                                         <option value="tarjeta">Tarjeta de Crédito/Débito</option>
                                         <option value="transferencia">Transferencia Bancaria</option>
@@ -274,10 +274,15 @@ $conexion->close();
                                         <option value="paypal">PayPal</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill" id="btn_finalizar_compra">
                                     Finalizar Compra
                                 </button>
                             </form>
+                            
+                            <!-- Información de PayPal -->
+                            <div class="alert alert-info mt-3" id="info_paypal" style="display: none;">
+                                <strong>🔒 PayPal Seguro:</strong> Serás redirigido a PayPal para completar el pago de forma segura.
+                            </div>
                         </div>
                     </div>
                     <!-- Información de Entrega -->
@@ -480,6 +485,13 @@ $conexion->close();
                 return false;
             }
             
+            // Si selecciona PayPal, redirigir a procesar_pago.php
+            if (formaPago === 'paypal') {
+                e.preventDefault();
+                window.location.href = '../paypal/procesar_pago.php';
+                return false;
+            }
+            
             // Confirmación de compra
             const total = this.dataset.total || '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
             if (!confirm('¿Confirmar la compra por ' + total + '€?')) {
@@ -487,6 +499,20 @@ $conexion->close();
                 return false;
             }
         });
+        
+        // Mostrar/ocultar información de PayPal según la forma de pago seleccionada
+        const formaPagoSelect = document.getElementById('forma_pago_select');
+        const infoPyapal = document.getElementById('info_paypal');
+        
+        if (formaPagoSelect) {
+            formaPagoSelect.addEventListener('change', function() {
+                if (this.value === 'paypal') {
+                    infoPyapal.style.display = 'block';
+                } else {
+                    infoPyapal.style.display = 'none';
+                }
+            });
+        }
     </script>
 
 </body>
