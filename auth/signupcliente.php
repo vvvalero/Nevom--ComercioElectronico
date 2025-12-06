@@ -116,10 +116,12 @@ $conexion->close();
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Registro de Cliente', 'basePath' => '../']); ?>
+
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-body p-5">
+        <div class="card shadow-lg rounded-4">
+            <div class="card-body p-5">
                     <div class="text-center mb-4">
                         <h2 class="fw-bold mb-2">Nevom</h2>
                         <h3 class="mb-3">Crear Cuenta de Cliente</h3>

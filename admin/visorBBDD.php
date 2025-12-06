@@ -138,25 +138,24 @@ if ($userRole === 'admin') {
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php 
+    require '../components/navbar.php'; 
+    if ($userRole === 'admin') {
+        renderNavbar(['type' => 'admin', 'basePath' => '../']);
+    } else {
+        renderNavbar(['type' => 'main', 'basePath' => '../']);
+    }
+    ?>
 
-    <header class="bg-dark text-white py-4 mb-5 shadow-sm">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">📊 Visor de Base de Datos - Nevom</h1>
-            <div>
-                <?php if (!$userName): ?>
-                    <a href="../auth/signin.php" class="btn btn-outline-light me-2">Iniciar sesión</a>
-                    <a href="../auth/signupcliente.php" class="btn btn-outline-light">Registrarse</a>
-                <?php else: ?>
-                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <?php if ($userRole === 'admin'): ?>
-                        <a href="indexadmin.php" class="btn btn-outline-light me-2">Inicio</a>
-                    <?php endif; ?>
-                    <a href="../auth/logout.php" class="btn btn-outline-light">Cerrar sesión</a>
-                <?php endif; ?>
-            </div>
+    <header class="bg-dark text-white py-4 mb-5 shadow-sm" style="margin-top: 20px;">
+        <div class="container text-center">
+            <h1 class="mb-0">📊 Visor de Base de Datos</h1>
+            <p class="mb-0 mt-2 opacity-75">Consulta la información del sistema</p>
         </div>
     </header>
 
+    <div class="container">
         <?php
         // Mostrar mensaje desde la sesión (si existe)
         if (!empty($_SESSION['mensaje'])) {

@@ -89,41 +89,10 @@ $conexion->close();
 <body>
 
     <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="../index.php">
-                📱 Nevom
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../index.php#productos">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="carrito.php">
-                            🛒 Carrito (<span id="cantidad-carrito"><?= $cantidadTotal ?></span>)
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                            👤 <?= htmlspecialchars($userName) ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="../admin/visorBBDD.php">Mis Pedidos</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="../auth/logout.php">Cerrar Sesión</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'activeLink' => 'carrito', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-dark text-white py-5 mb-5 text-center shadow-sm" style="margin-top: 56px;">
+    <header class="bg-dark text-white py-5 mb-5 text-center shadow-sm">
         <div class="container">
             <h1 class="mb-0">🛒 Mi Carrito de Compras</h1>
             <p class="mt-2 mb-0 opacity-75">Revisa tus productos y completa tu pedido</p>
@@ -266,7 +235,7 @@ $conexion->close();
                             <form method="post" action="procesar_compra.php" id="formProcesarCompra" data-total="<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Forma de Pago *</label>
-                                    <select name="forma_pago" class="form-select" required>
+                                    <select name="forma_pago" class="form-select" required id="forma_pago_select">
                                         <option value="">-- Selecciona --</option>
                                         <option value="tarjeta">Tarjeta de Crédito/Débito</option>
                                         <option value="transferencia">Transferencia Bancaria</option>
@@ -274,10 +243,15 @@ $conexion->close();
                                         <option value="paypal">PayPal</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill" id="btn_finalizar_compra">
                                     Finalizar Compra
                                 </button>
                             </form>
+                            
+                            <!-- Información de PayPal -->
+                            <div class="alert alert-info mt-3" id="info_paypal" style="display: none;">
+                                <strong>🔒 PayPal Seguro:</strong> Serás redirigido a PayPal para completar el pago de forma segura.
+                            </div>
                         </div>
                     </div>
                     <!-- Información de Entrega -->
@@ -480,6 +454,13 @@ $conexion->close();
                 return false;
             }
             
+            // Si selecciona PayPal, redirigir a procesar_pago.php
+            if (formaPago === 'paypal') {
+                e.preventDefault();
+                window.location.href = '../paypal/procesar_pago.php';
+                return false;
+            }
+            
             // Confirmación de compra
             const total = this.dataset.total || '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
             if (!confirm('¿Confirmar la compra por ' + total + '€?')) {
@@ -487,6 +468,20 @@ $conexion->close();
                 return false;
             }
         });
+        
+        // Mostrar/ocultar información de PayPal según la forma de pago seleccionada
+        const formaPagoSelect = document.getElementById('forma_pago_select');
+        const infoPyapal = document.getElementById('info_paypal');
+        
+        if (formaPagoSelect) {
+            formaPagoSelect.addEventListener('change', function() {
+                if (this.value === 'paypal') {
+                    infoPyapal.style.display = 'block';
+                } else {
+                    infoPyapal.style.display = 'none';
+                }
+            });
+        }
     </script>
 
 </body>

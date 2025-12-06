@@ -84,61 +84,11 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 <body>
 
     <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="indexadmin.php">
-                📱 Nevom - Admin Panel
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#agregar-usuario">Agregar Usuario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#ver-pedidos">Gestión de Pedidos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#ver-reparaciones">Ver Reparaciones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#agregar-movil">Agregar Móvil</a>
-                    </li>
-                    <li class="nav-item dropdown ms-3">
-                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                            👤 <?= htmlspecialchars($userName) ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="visorBBDD.php">Ver Base de Datos</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="../auth/logout.php">Cerrar Sesión</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section hero-admin">
         <div class="container hero-content">
-            <?php
-            // Mostrar mensaje flash si existe
-            if (!empty($_SESSION['flash'])) {
-                $flash = $_SESSION['flash'];
-                $alertType = ($flash['type'] ?? 'info') === 'success' ? 'success' : 'danger';
-                echo '<div class="alert alert-' . htmlspecialchars($alertType) . ' alert-dismissible fade show mb-4" role="alert">';
-                echo '<strong>' . ($alertType === 'success' ? '✅ ' : '❌ ') . '</strong>';
-                echo htmlspecialchars($flash['text']);
-                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                echo '</div>';
-                unset($_SESSION['flash']);
-            }
-            ?>
             <div class="row align-items-center">
                 <div class="col-lg-7">
                     <h1 class="hero-title">Panel de Administración</h1>
@@ -155,7 +105,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                     </div>
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <div style="font-size: 15rem; opacity: 0.9;">⚙️</div>
+                    <div style="font-size: 10rem; opacity: 0.9;">⚙️</div>
                 </div>
             </div>
         </div>
@@ -184,6 +134,19 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             </div>
         </div>
     </section>
+
+    <!-- Mensajes Flash -->
+    <?php if (!empty($_SESSION['flash'])): ?>
+        <?php $flash = $_SESSION['flash']; $alertType = ($flash['type'] ?? 'info') === 'success' ? 'success' : 'danger'; ?>
+        <div class="container py-4">
+            <div class="alert alert-<?= htmlspecialchars($alertType) ?> alert-dismissible fade show" role="alert">
+                <strong><?= $alertType === 'success' ? '✅ ' : '❌ ' ?></strong>
+                <?= htmlspecialchars($flash['text']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <?php unset($_SESSION['flash']); ?>
+    <?php endif; ?>
 
     <!-- Sección: Agregar Usuario -->
     <section class="py-5" id="agregar-usuario" style="padding-top: 80px !important;">

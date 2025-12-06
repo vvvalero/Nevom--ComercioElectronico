@@ -37,13 +37,17 @@ $conexion->close();
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
+<?php 
+// Iniciar sesión para el navbar
+if (session_status() === PHP_SESSION_NONE) session_start();
+require '../components/navbar.php'; 
+renderNavbar(['type' => 'admin', 'activeLink' => 'movil', 'basePath' => '../']); 
+?>
 
-<header class="bg-dark text-white py-4 mb-5 text-center shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
+<header class="bg-dark text-white py-4 mb-5 text-center shadow-sm" style="margin-top: 20px;">
+    <div class="container">
         <h1 class="mb-0">📱 Añadir Móvil</h1>
-        <div>
-            <a href="indexadmin.php" class="btn btn-outline-light me-2">← Volver al Inicio</a>
-        </div>
+        <p class="mb-0 mt-2 opacity-75">Agrega un nuevo dispositivo al inventario</p>
     </div>
 </header>
 

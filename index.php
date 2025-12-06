@@ -110,71 +110,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
 <body>
 
     <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="index.php">
-                📱 Nevom
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#productos">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#servicios">Servicios</a>
-                    </li>
-                    <?php if ($userName && $userRole === 'client'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link fw-semibold" href="carrito/carrito.php">
-                                Carrito
-                                <?php
-                                $cantidadCarrito = array_sum($_SESSION['carrito'] ?? []);
-                                if ($cantidadCarrito > 0):
-                                ?>
-                                    <span class="badge bg-danger"><?= $cantidadCarrito ?></span>
-                                <?php endif; ?>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="vender/vender_movil.php">Vender</a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if ($userName): ?>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                                👤 <?= htmlspecialchars($userName) ?>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <?php if ($userRole === 'admin'): ?>
-                                    <li><a class="dropdown-item" href="admin/indexadmin.php">Panel Admin</a></li>
-                                    <li><a class="dropdown-item" href="admin/addMovil.php">Añadir Móvil</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                <?php else: ?>
-                                    <!-- <li><a class="dropdown-item" href="admin/visorBBDD.php">Mis Pedidos</a></li> -->
-                                    <!-- <li>
-                                        <hr class="dropdown-divider">
-                                    </li> -->
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="auth/logout.php">Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="auth/signin.php">Iniciar Sesión</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a class="btn btn-primary btn-sm rounded-pill px-4" href="auth/signupcliente.php">Registrarse</a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php require 'components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '']); ?>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -195,7 +131,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <div style="font-size: 15rem; opacity: 0.9;">📱</div>
+                    <div style="font-size: 10rem; opacity: 0.9;">📱</div>
                 </div>
             </div>
         </div>
@@ -454,24 +390,32 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </section>
 
-    <div class="row mt-5 text-center">
-        <div class="col-md-4 mb-4 mb-md-0">
-            <div class="fs-1 mb-3">📍</div>
-            <h5 class="fw-bold">Dirección</h5>
-            <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
+    <!-- Contacto -->
+    <section class="py-5 bg-light" id="contacto">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Contacto</h2>
+                <p class="text-muted mt-4">¿Preguntas? Estamos aquí para ayudarte</p>
+            </div>
+
+            <div class="row mt-5 text-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="fs-1 mb-3">📍</div>
+                    <h5 class="fw-bold">Dirección</h5>
+                    <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="fs-1 mb-3">📞</div>
+                    <h5 class="fw-bold">Teléfono</h5>
+                    <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="fs-1 mb-3">✉️</div>
+                    <h5 class="fw-bold">Email</h5>
+                    <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-4 mb-md-0">
-            <div class="fs-1 mb-3">📞</div>
-            <h5 class="fw-bold">Teléfono</h5>
-            <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
-        </div>
-        <div class="col-md-4">
-            <div class="fs-1 mb-3">✉️</div>
-            <h5 class="fw-bold">Email</h5>
-            <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
-        </div>
-    </div>
-    </div>
     </section>
 
     <!-- Footer -->

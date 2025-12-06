@@ -75,32 +75,18 @@ $pedidosResult = $conexion->query($pedidosQuery);
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-success text-white py-4 mb-4 shadow-sm">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="mb-0"><i class="bi bi-cart-check"></i> Gestión de Compras</h1>
-                    <small class="text-white-50">Pedidos donde cliente COMPRA de la tienda</small>
-                </div>
-                <div>
-                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <a href="gestionar_ventas.php" class="btn btn-outline-light btn-sm me-2">
-                        <i class="bi bi-cash-coin"></i> Ver Ventas
-                    </a>
-                    <a href="indexadmin.php" class="btn btn-outline-light btn-sm me-2">
-                        <i class="bi bi-house"></i> Inicio
-                    </a>
-                    <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                    </a>
-                </div>
-            </div>
+    <header class="page-header success">
+        <div class="container text-center">
+            <h1><i class="bi bi-cart-check"></i> Gestión de Compras</h1>
+            <p>Pedidos donde cliente COMPRA de la tienda</p>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container py-4">
 
         <?php
         // Mostrar mensaje desde la sesión (si existe)
