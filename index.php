@@ -131,7 +131,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <div style="font-size: 15rem; opacity: 0.9;">📱</div>
+                    <div style="font-size: 10rem; opacity: 0.9;">📱</div>
                 </div>
             </div>
         </div>

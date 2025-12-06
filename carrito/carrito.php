@@ -92,7 +92,7 @@ $conexion->close();
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'activeLink' => 'carrito', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-dark text-white py-5 mb-5 text-center shadow-sm" style="margin-top: 56px;">
+    <header class="bg-dark text-white py-5 mb-5 text-center shadow-sm">
         <div class="container">
             <h1 class="mb-0">🛒 Mi Carrito de Compras</h1>
             <p class="mt-2 mb-0 opacity-75">Revisa tus productos y completa tu pedido</p>

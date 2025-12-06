@@ -87,70 +87,125 @@ $conexion->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="paypal-page">
+<body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Procesamiento de Pago', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
-    <div class="header-pago">
+    <!-- Header -->
+    <header class="page-header <?= empty($errores) ? '' : 'danger' ?>">
         <div class="container">
-            <h1>🔒 Confirmar Pago</h1>
-            <p>Revisa los detalles de tu compra antes de proceder con PayPal</p>
+            <h1><?= empty($errores) ? '🔒 Confirmar Pago' : '⚠️ Errores Encontrados' ?></h1>
+            <p><?= empty($errores) ? 'Revisa los detalles de tu compra antes de proceder con PayPal' : 'Por favor corrige los siguientes errores' ?></p>
         </div>
-    </div>
+    </header>
 
-    <div class="pago-wrapper">
+    <main class="container py-5">
         <?php if (!empty($errores)): ?>
-            <div class="pago-card">
-                <div class="pago-card-body">
-                    <div class="error-message">
-                        <h5>⚠️ Errores encontrados:</h5>
-                        <ul><?php foreach ($errores as $e): ?><li><?= htmlspecialchars($e) ?></li><?php endforeach; ?></ul>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="alert alert-danger mb-4" role="alert">
+                        <h5 class="alert-heading">⚠️ Errores encontrados:</h5>
+                        <ul class="mb-0">
+                            <?php foreach ($errores as $e): ?>
+                                <li><?= htmlspecialchars($e) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
-                    <a href="../carrito/carrito.php" class="btn btn-primary">← Volver al Carrito</a>
+                    <div class="text-center">
+                        <a href="../carrito/carrito.php" class="btn btn-primary btn-lg">← Volver al Carrito</a>
+                    </div>
                 </div>
             </div>
         <?php else: ?>
-            <div class="pago-card">
-                <div class="pago-card-header">📦 Resumen de tu compra</div>
-                <div class="pago-card-body">
-                    <?php foreach ($productosDetalle as $p): ?>
-                        <div class="resumen-item"><span><?= htmlspecialchars($p) ?></span></div>
-                    <?php endforeach; ?>
-                    <div class="resumen-total">
-                        <span>Total a pagar:</span>
-                        <span class="price">€<?= number_format($precioTotal, 2, ',', '.') ?></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pago-card">
-                <div class="pago-card-header">📍 Datos de envío</div>
-                <div class="pago-card-body">
-                    <div class="cliente-info">
-                        <div class="cliente-info-item"><span class="cliente-info-label">Nombre</span><span class="cliente-info-value"><?= htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellidos']) ?></span></div>
-                        <div class="cliente-info-item"><span class="cliente-info-label">Email</span><span class="cliente-info-value"><?= htmlspecialchars($cliente['email']) ?></span></div>
-                        <div class="cliente-info-item"><span class="cliente-info-label">Teléfono</span><span class="cliente-info-value"><?= htmlspecialchars($cliente['telefono']) ?></span></div>
-                        <div class="cliente-info-item"><span class="cliente-info-label">Dirección</span><span class="cliente-info-value"><?= htmlspecialchars($cliente['direccion']) ?></span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pago-card">
-                <div class="pago-card-body text-center">
-                    <form method="post">
-                        <div class="pago-buttons">
-                            <button type="submit" class="btn-pagar-paypal" id="btn-pagar">🔒 Pagar con PayPal</button>
-                            <a href="../carrito/carrito.php" class="btn-cancelar">← Cancelar</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Resumen de compra -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">📦 Resumen de tu compra</h5>
                         </div>
-                    </form>
-                </div>
-                <div class="loading-spinner" id="loading-spinner">
-                    <div class="spinner-border" role="status"></div>
-                    <p>🔄 Redirigiendo a PayPal...</p>
+                        <div class="card-body">
+                            <?php foreach ($productosDetalle as $p): ?>
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span><?= htmlspecialchars($p) ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                            <div class="d-flex justify-content-between align-items-center pt-3 mt-2">
+                                <strong class="fs-5">Total a pagar:</strong>
+                                <strong class="fs-4 text-success">€<?= number_format($precioTotal, 2, ',', '.') ?></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos de envío -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">📍 Datos de envío</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Nombre</small>
+                                        <strong><?= htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellidos']) ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Email</small>
+                                        <strong><?= htmlspecialchars($cliente['email']) ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Teléfono</small>
+                                        <strong><?= htmlspecialchars($cliente['telefono']) ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Dirección</small>
+                                        <strong><?= htmlspecialchars($cliente['direccion']) ?></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de pago -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body text-center py-4">
+                            <form method="post" id="form-pagar">
+                                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="btn-pagar">
+                                        🔒 Pagar con PayPal
+                                    </button>
+                                    <a href="../carrito/carrito.php" class="btn btn-outline-secondary btn-lg">
+                                        ← Cancelar
+                                    </a>
+                                </div>
+                            </form>
+                            <div class="mt-4" id="loading-spinner" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                                <p class="mt-2 text-muted">🔄 Redirigiendo a PayPal...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info de seguridad -->
+                    <div class="alert alert-info d-flex align-items-start">
+                        <span class="me-3" style="font-size: 1.25rem;">🔐</span>
+                        <div>
+                            <strong>Pago seguro</strong>
+                            <p class="mb-0 small">Serás redirigido a PayPal para completar tu pago de forma segura. No almacenamos datos de tu cuenta PayPal.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
-    </div>
+    </main>
 
     <?php if ($procesarPago && !empty($parametrosPayPal)): ?>
         <?= ProcesadorPayPal::generarFormularioOculto($parametrosPayPal) ?>
@@ -163,9 +218,9 @@ $conexion->close();
         </script>
     <?php endif; ?>
 
-    <footer>
-        <div class="container text-center text-muted py-3">
-            <p class="mb-0">&copy; <?= date('Y') ?> Nevom</p>
+    <footer class="site-footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

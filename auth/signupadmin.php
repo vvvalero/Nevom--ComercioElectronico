@@ -155,9 +155,8 @@ $conexion->close();
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-body p-5">
+        <div class="card shadow-lg rounded-4">
+            <div class="card-body p-5">
                     <div class="text-center mb-4">
                         <h2 class="mb-2">Nevom</h2>
                         <h3 class="mb-4">Crear Cuenta</h3>

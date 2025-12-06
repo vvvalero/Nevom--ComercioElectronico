@@ -94,9 +94,8 @@ $conexion->close();
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Iniciar Sesión', 'basePath' => '../']); ?>
 
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-body p-5">
+        <div class="card shadow-lg rounded-4">
+            <div class="card-body p-5">
                     <div class="text-center mb-4">
                         <h2 class="mb-2">Nevom</h2>
                         <h3 class="mb-4">Iniciar Sesión</h3>
@@ -127,8 +126,7 @@ $conexion->close();
                         <div class="text-center">
                             <a href="../index.php" class="text-muted text-decoration-none">← Volver al inicio</a>
                         </div>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>

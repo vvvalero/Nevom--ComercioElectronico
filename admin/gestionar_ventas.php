@@ -83,14 +83,14 @@ $pedidosResult = $conexion->query($pedidosQuery);
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-primary text-white py-4 mb-4 shadow-sm" style="margin-top: 20px;">
+    <header class="page-header">
         <div class="container text-center">
-            <h1 class="mb-0"><i class="bi bi-cash-coin"></i> Gestión de Ventas</h1>
-            <p class="mb-0 mt-2 opacity-75">Pedidos donde cliente VENDE a la tienda</p>
+            <h1><i class="bi bi-cash-coin"></i> Gestión de Ventas</h1>
+            <p>Pedidos donde cliente VENDE a la tienda</p>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container py-4">
 
         <?php
         // Mostrar mensaje desde la sesión (si existe)

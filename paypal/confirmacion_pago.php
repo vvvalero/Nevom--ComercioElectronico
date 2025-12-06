@@ -107,71 +107,140 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Pago - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">  
 </head>
 <body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Confirmación de Pago', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
-    <div class="header-confirmacion <?= $tipo_mensaje === 'danger' ? 'error' : ($tipo_mensaje === 'warning' ? 'warning' : '') ?>">
+    <!-- Header -->
+    <header class="page-header <?= $procesado ? 'success' : ($tipo_mensaje === 'danger' ? 'danger' : 'warning') ?>">
         <div class="container">
-            <h1><?= $procesado ? '¡Pago Confirmado!' : ($tipo_mensaje === 'danger' ? 'Error en el Pago' : 'Advertencia') ?></h1>
-            <p><?= $procesado ? 'Tu pedido ha sido procesado correctamente' : ($tipo_mensaje === 'danger' ? 'Hubo un problema' : 'Revisa la información') ?></p>
+            <h1><?= $procesado ? '✅ ¡Pago Confirmado!' : ($tipo_mensaje === 'danger' ? '❌ Error en el Pago' : '⚠️ Advertencia') ?></h1>
+            <p><?= $procesado ? 'Tu pedido ha sido procesado correctamente' : ($tipo_mensaje === 'danger' ? 'Hubo un problema al procesar tu pago' : 'Revisa la información') ?></p>
         </div>
-    </div>
+    </header>
 
-    <div class="confirmacion-wrapper">
+    <main class="container py-5">
         <?php if ($procesado): ?>
-            <div class="confirmacion-card">
-                <div class="confirmacion-card-body">
-                    <div class="mensaje-alert success">
-                        <span style="font-size:1.5rem">✓</span>
-                        <div><strong>¡Pago procesado!</strong><p style="margin:4px 0 0;font-size:0.9rem"><?= htmlspecialchars($mensaje) ?></p></div>
-                    </div>
-
-                    <div class="confirmacion-card" style="margin-bottom:0;background:#f9fafb">
-                        <div class="confirmacion-card-header" style="background:#f3f4f6;color:#1f2937;border-bottom:1px solid #e5e7eb">📋 Detalles del Pedido</div>
-                        <div class="confirmacion-card-body">
-                            <div class="detalle-item"><span class="detalle-item-label">Pedido:</span><span class="detalle-item-valor">#<?= htmlspecialchars($numeroPedido) ?></span></div>
-                            <div class="detalle-item"><span class="detalle-item-label">Total:</span><span class="detalle-item-valor">€<?= number_format($datosCompra['total'], 2, ',', '.') ?></span></div>
-                            <div class="detalle-item"><span class="detalle-item-label">Pago:</span><span style="font-weight:600;color:#2563eb">PayPal</span></div>
-                            <div class="detalle-item"><span class="detalle-item-label">Fecha:</span><span style="color:#6b7280"><?= date('d/m/Y H:i') ?></span></div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Mensaje de éxito -->
+                    <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                        <span class="me-3" style="font-size: 1.5rem;">✓</span>
+                        <div>
+                            <strong>¡Pago procesado correctamente!</strong>
+                            <p class="mb-0 small opacity-75"><?= htmlspecialchars($mensaje) ?></p>
                         </div>
                     </div>
 
-                    <div class="info-box" style="margin-top:20px">
-                        <strong>📧 Info:</strong> Tu pedido será procesado y enviado a la brevedad.
+                    <!-- Detalles del pedido -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">📋 Detalles del Pedido</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Número de Pedido</small>
+                                        <strong class="fs-5">#<?= htmlspecialchars($numeroPedido) ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Total Pagado</small>
+                                        <strong class="fs-5 text-success">€<?= number_format($datosCompra['total'], 2, ',', '.') ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Método de Pago</small>
+                                        <strong style="color: #0070ba;">💳 PayPal</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block">Fecha</small>
+                                        <strong><?= date('d/m/Y H:i') ?></strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="p-3 bg-light rounded d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <small class="text-muted d-block">Estado</small>
+                                            <span class="badge bg-info fs-6">Procesando</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="confirmacion-buttons">
-                        <a href="../index.php" class="btn-confirmacion">🏠 Tienda</a>
-                        <a href="../admin/indexadmin.php" class="btn-confirmacion-secondary">📦 Mis pedidos</a>
+                    <!-- Info adicional -->
+                    <div class="alert alert-info d-flex align-items-start mb-4">
+                        <span class="me-3" style="font-size: 1.25rem;">📧</span>
+                        <div>
+                            <strong>Próximos pasos</strong>
+                            <p class="mb-0 small">Tu pedido será preparado y enviado a la brevedad. Recibirás actualizaciones sobre el estado de tu envío.</p>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="../index.php" class="btn btn-primary btn-lg">
+                            🏠 Volver a la Tienda
+                        </a>
+                        <a href="../index.php#mis-compras" class="btn btn-outline-secondary btn-lg">
+                            📦 Ver Mis Pedidos
+                        </a>
                     </div>
                 </div>
             </div>
         <?php else: ?>
-            <div class="confirmacion-card">
-                <div class="confirmacion-card-body">
-                    <div class="mensaje-alert <?= htmlspecialchars($tipo_mensaje) ?>">
-                        <span style="font-size:1.5rem"><?= $tipo_mensaje === 'danger' ? '✕' : '⚠' ?></span>
-                        <div><strong><?= $tipo_mensaje === 'danger' ? 'Error' : 'Advertencia' ?></strong><p style="margin:4px 0 0;font-size:0.9rem"><?= htmlspecialchars($mensaje) ?></p></div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Mensaje de error/warning -->
+                    <div class="alert alert-<?= $tipo_mensaje ?> d-flex align-items-center mb-4" role="alert">
+                        <span class="me-3" style="font-size: 1.5rem;"><?= $tipo_mensaje === 'danger' ? '✕' : '⚠' ?></span>
+                        <div>
+                            <strong><?= $tipo_mensaje === 'danger' ? 'No se pudo completar el pago' : 'Información incompleta' ?></strong>
+                            <p class="mb-0 small"><?= htmlspecialchars($mensaje) ?></p>
+                        </div>
                     </div>
 
-                    <div class="info-box">
-                        <strong>¿Qué hacer?</strong>
-                        <ul style="margin:8px 0 0;padding-left:20px"><li>Verifica tu conexión</li><li>Intenta desde el carrito</li><li>Contacta soporte si persiste</li></ul>
+                    <!-- Sugerencias -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">💡 ¿Qué puedes hacer?</h5>
+                            <ul class="mb-0">
+                                <li>Verifica tu conexión a internet</li>
+                                <li>Intenta realizar la compra nuevamente desde el carrito</li>
+                                <li>Contacta a soporte si el problema persiste</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="confirmacion-buttons">
-                        <a href="../carrito/carrito.php" class="btn-confirmacion">🛒 Carrito</a>
-                        <a href="../index.php" class="btn-confirmacion-secondary">🏠 Inicio</a>
+                    <!-- Botones -->
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="../carrito/carrito.php" class="btn btn-primary btn-lg">
+                            🛒 Volver al Carrito
+                        </a>
+                        <a href="../index.php" class="btn btn-outline-secondary btn-lg">
+                            🏠 Ir al Inicio
+                        </a>
                     </div>
                 </div>
             </div>
         <?php endif; ?>
-    </div>
+    </main>
 
-    <footer><div class="container text-center text-muted py-3"><p class="mb-0">&copy; <?= date('Y') ?> Nevom</p></div></footer>
+    <footer class="site-footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
+        </div>
+    </footer>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
