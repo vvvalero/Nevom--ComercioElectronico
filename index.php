@@ -113,7 +113,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     <?php require 'components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '']); ?>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section wave-light">
         <div class="container hero-content">
             <div class="row align-items-center">
                 <div class="col-lg-7">

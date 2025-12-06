@@ -83,7 +83,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="page-header">
+    <header class="page-header wave-light">
         <div class="container text-center">
             <h1><i class="bi bi-cash-coin"></i> Gestión de Ventas</h1>
             <p>Pedidos donde cliente VENDE a la tienda</p>

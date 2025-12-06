@@ -25,65 +25,67 @@ registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="paypal-page">
+<body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Pago Cancelado', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
-    <div class="paypal-confirmation-wrapper">
-        <!-- Header con estilo warning -->
-        <div class="paypal-header warning">
-            <div class="paypal-header-content">
-                <h1>⚠️ Pago Cancelado</h1>
-                <p>Tu proceso de pago no se completó</p>
-            </div>
-            <svg class="paypal-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
-                <path d="M0,64 C288,120 576,0 864,64 C1152,128 1296,32 1440,64 L1440,120 L0,120 Z"></path>
-            </svg>
+    <!-- Header -->
+    <header class="page-header warning wave-light">
+        <div class="container">
+            <h1>⚠️ Pago Cancelado</h1>
+            <p>Tu proceso de pago no se completó</p>
         </div>
+    </header>
 
-        <!-- Tarjeta principal -->
-        <div class="paypal-card">
-            <div class="paypal-card-body">
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
                 <!-- Mensaje de cancelación -->
-                <div class="warning-message">
-                    <div class="warning-icon">⚠️</div>
-                    <h3>Pago cancelado</h3>
-                    <p>Tu carrito se ha mantenido intacto. Puedes intentarlo de nuevo cuando quieras.</p>
+                <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                    <span class="me-3" style="font-size: 1.5rem;">⚠️</span>
+                    <div>
+                        <strong>Pago cancelado</strong>
+                        <p class="mb-0 small">Tu carrito se ha mantenido intacto. Puedes intentarlo de nuevo cuando quieras.</p>
+                    </div>
                 </div>
 
                 <!-- Opciones disponibles -->
-                <div class="info-box">
-                    <h4>¿Qué puedes hacer?</h4>
-                    <ul class="options-list">
-                        <li>🔄 Volver al carrito y reintentar el pago</li>
-                        <li>📋 Revisar los artículos de tu compra</li>
-                        <li>💳 Usar otro método de pago</li>
-                        <li>🛒 Seguir comprando y añadir más productos</li>
-                    </ul>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">💡 ¿Qué puedes hacer?</h5>
+                        <ul class="mb-0">
+                            <li>🔄 Volver al carrito y reintentar el pago</li>
+                            <li>📋 Revisar los artículos de tu compra</li>
+                            <li>💳 Usar otro método de pago</li>
+                            <li>🛒 Seguir comprando y añadir más productos</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- Nota informativa -->
-                <div class="info-note">
-                    <span class="info-icon">ℹ️</span>
-                    <p>Tu carrito no ha sido eliminado. Todos tus productos siguen disponibles.</p>
+                <div class="alert alert-info d-flex align-items-start mb-4">
+                    <span class="me-3" style="font-size: 1.25rem;">ℹ️</span>
+                    <div>
+                        <p class="mb-0 small">Tu carrito no ha sido eliminado. Todos tus productos siguen disponibles.</p>
+                    </div>
                 </div>
 
                 <!-- Botones de acción -->
-                <div class="paypal-actions">
-                    <a href="../carrito/carrito.php" class="btn-paypal-primary">
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="../carrito/carrito.php" class="btn btn-primary btn-lg">
                         🛒 Volver al Carrito
                     </a>
-                    <a href="../index.php" class="btn-paypal-secondary">
+                    <a href="../index.php" class="btn btn-outline-secondary btn-lg">
                         🏠 Seguir Comprando
                     </a>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
+    <footer class="site-footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

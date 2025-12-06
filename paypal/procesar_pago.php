@@ -92,7 +92,7 @@ $conexion->close();
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="page-header <?= empty($errores) ? '' : 'danger' ?>">
+    <header class="page-header wave-light <?= empty($errores) ? '' : 'danger' ?>">
         <div class="container">
             <h1><?= empty($errores) ? '🔒 Confirmar Pago' : '⚠️ Errores Encontrados' ?></h1>
             <p><?= empty($errores) ? 'Revisa los detalles de tu compra antes de proceder con PayPal' : 'Por favor corrige los siguientes errores' ?></p>

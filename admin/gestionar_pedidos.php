@@ -77,7 +77,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'activeLink' => 'pedidos', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="page-header dark">
+    <header class="page-header dark wave-light">
         <div class="container text-center">
             <h1><i class="bi bi-box-seam"></i> Gestión de Pedidos</h1>
             <p>Administra todos los pedidos del sistema</p>

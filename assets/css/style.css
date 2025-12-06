@@ -918,6 +918,7 @@ a:hover {
    12. HERO SECTION - Dynamic Gradient
    ============================================ */
 .hero-section {
+    --wave-color: #f0f4f8; /* Color por defecto - fondo claro del body */
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-900) 50%, var(--darker-bg) 100%);
     color: white;
     padding: 2rem 0 2.5rem;
@@ -944,14 +945,30 @@ a:hover {
     left: 0;
     right: 0;
     height: 40px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath fill='%23f0f4f8' d='M0,64 C288,120 576,20 864,64 C1152,108 1296,40 1440,64 L1440,120 L0,120 Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
-    background-size: 100% 100%;
+    background: var(--wave-color);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,64 C288,120 576,20 864,64 C1152,108 1296,40 1440,64 L1440,120 L0,120 Z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,64 C288,120 576,20 864,64 C1152,108 1296,40 1440,64 L1440,120 L0,120 Z'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
 }
 
-/* Variante Admin - onda oscura para conectar con stats-section */
-.hero-section.hero-admin::after {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath fill='%231a2332' d='M0,64 C288,120 576,20 864,64 C1152,108 1296,40 1440,64 L1440,120 L0,120 Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
-    background-size: 100% 100%;
+/* Variantes de color de onda según la sección siguiente */
+.hero-section.wave-dark {
+    --wave-color: #1a2332;
+}
+
+.hero-section.wave-light {
+    --wave-color: #f0f4f8;
+}
+
+.hero-section.wave-white {
+    --wave-color: #ffffff;
+}
+
+.hero-section.wave-gray {
+    --wave-color: #f3f4f6;
 }
 
 .hero-content {
@@ -979,6 +996,7 @@ a:hover {
    13. PAGE HEADER
    ============================================ */
 .page-header {
+    --wave-color: #f0f4f8; /* Color por defecto */
     background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
     color: white;
     padding: 3rem 0 4rem;
@@ -1006,8 +1024,30 @@ a:hover {
     left: 0;
     right: 0;
     height: 50px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50'%3E%3Cpath fill='%23f0f4f8' d='M0,25L60,28C120,31,240,37,360,37C480,37,600,31,720,28C840,25,960,25,1080,28C1200,31,1320,37,1380,40L1440,43L1440,50L1380,50C1320,50,1200,50,1080,50C960,50,840,50,720,50C600,50,480,50,360,50C240,50,120,50,60,50L0,50Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
-    background-size: cover;
+    background: var(--wave-color);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,25L60,28C120,31,240,37,360,37C480,37,600,31,720,28C840,25,960,25,1080,28C1200,31,1320,37,1380,40L1440,43L1440,50L0,50Z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,25L60,28C120,31,240,37,360,37C480,37,600,31,720,28C840,25,960,25,1080,28C1200,31,1320,37,1380,40L1440,43L1440,50L0,50Z'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* Variantes de color de onda para page-header */
+.page-header.wave-dark {
+    --wave-color: #1a2332;
+}
+
+.page-header.wave-light {
+    --wave-color: #f0f4f8;
+}
+
+.page-header.wave-white {
+    --wave-color: #ffffff;
+}
+
+.page-header.wave-gray {
+    --wave-color: #f3f4f6;
 }
 
 .page-header h1 {

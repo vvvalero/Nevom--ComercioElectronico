@@ -114,7 +114,7 @@ $conexion->close();
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="page-header <?= $procesado ? 'success' : ($tipo_mensaje === 'danger' ? 'danger' : 'warning') ?>">
+    <header class="page-header wave-light <?= $procesado ? 'success' : ($tipo_mensaje === 'danger' ? 'danger' : 'warning') ?>">
         <div class="container">
             <h1><?= $procesado ? '✅ ¡Pago Confirmado!' : ($tipo_mensaje === 'danger' ? '❌ Error en el Pago' : '⚠️ Advertencia') ?></h1>
             <p><?= $procesado ? 'Tu pedido ha sido procesado correctamente' : ($tipo_mensaje === 'danger' ? 'Hubo un problema al procesar tu pago' : 'Revisa la información') ?></p>
