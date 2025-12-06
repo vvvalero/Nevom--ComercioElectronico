@@ -73,22 +73,14 @@ $pedidosResult = $conexion->query($pedidosQuery);
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'activeLink' => 'pedidos', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-dark text-white py-4 mb-4 shadow-sm">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1 class="mb-0"><i class="bi bi-box-seam"></i> Gestión de Pedidos</h1>
-                <div>
-                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <a href="indexadmin.php" class="btn btn-outline-light btn-sm me-2">
-                        <i class="bi bi-house"></i> Inicio
-                    </a>
-                    <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                    </a>
-                </div>
-            </div>
+    <header class="bg-dark text-white py-4 mb-4 shadow-sm" style="margin-top: 20px;">
+        <div class="container text-center">
+            <h1 class="mb-0"><i class="bi bi-box-seam"></i> Gestión de Pedidos</h1>
+            <p class="mb-0 mt-2 opacity-75">Administra todos los pedidos del sistema</p>
         </div>
     </header>
 

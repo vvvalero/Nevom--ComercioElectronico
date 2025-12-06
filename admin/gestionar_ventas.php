@@ -79,28 +79,14 @@ $pedidosResult = $conexion->query($pedidosQuery);
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="bg-primary text-white py-4 mb-4 shadow-sm">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="mb-0"><i class="bi bi-cash-coin"></i> Gestión de Ventas</h1>
-                    <small class="text-white-50">Pedidos donde cliente VENDE a la tienda</small>
-                </div>
-                <div>
-                    <span class="me-3">Hola, <?= htmlspecialchars($userName) ?> 👤</span>
-                    <a href="gestionar_compras.php" class="btn btn-outline-light btn-sm me-2">
-                        <i class="bi bi-cart-check"></i> Ver Compras
-                    </a>
-                    <a href="indexadmin.php" class="btn btn-outline-light btn-sm me-2">
-                        <i class="bi bi-house"></i> Inicio
-                    </a>
-                    <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                    </a>
-                </div>
-            </div>
+    <header class="bg-primary text-white py-4 mb-4 shadow-sm" style="margin-top: 20px;">
+        <div class="container text-center">
+            <h1 class="mb-0"><i class="bi bi-cash-coin"></i> Gestión de Ventas</h1>
+            <p class="mb-0 mt-2 opacity-75">Pedidos donde cliente VENDE a la tienda</p>
         </div>
     </header>
 

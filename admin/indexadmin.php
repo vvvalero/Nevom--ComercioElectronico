@@ -84,44 +84,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 <body>
 
     <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="indexadmin.php">
-                📱 Nevom - Admin Panel
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#agregar-usuario">Agregar Usuario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#ver-pedidos">Gestión de Pedidos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#ver-reparaciones">Ver Reparaciones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#agregar-movil">Agregar Móvil</a>
-                    </li>
-                    <li class="nav-item dropdown ms-3">
-                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                            👤 <?= htmlspecialchars($userName) ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="visorBBDD.php">Ver Base de Datos</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="../auth/logout.php">Cerrar Sesión</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Hero Section -->
     <section class="hero-section">

@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $stmt->bind_result($user_id, $nombre, $hash, $role);
             $stmt->fetch();
-            if (password_verify($password, $hash)) {
+            // Verificar que el hash existe y es válido
+            if ($hash !== null && password_verify($password, $hash)) {
                 // Login OK
                 session_regenerate_id(true); // Prevención de fijación de sesión
                 $_SESSION['user_id'] = $user_id;
@@ -89,6 +90,9 @@ $conexion->close();
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Iniciar Sesión', 'basePath' => '../']); ?>
+
     <div class="auth-container">
         <div class="auth-card">
             <div class="card shadow-lg rounded-4">

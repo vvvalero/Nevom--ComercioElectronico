@@ -116,6 +116,9 @@ $conexion->close();
 </head>
 
 <body>
+    <!-- Navegación -->
+    <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Registro de Cliente', 'basePath' => '../']); ?>
+
     <div class="auth-container">
         <div class="auth-card">
             <div class="card shadow-lg rounded-4">
