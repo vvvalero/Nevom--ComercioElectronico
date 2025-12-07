@@ -355,7 +355,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 <div class="col-md-6 col-lg-3">
                     <div class="card feature-card text-center p-4">
                         <div class="feature-icon">🛒</div>
-                        <h5 class="fw-bold mb-3">Venta</h5>
+                        <h5 class="fw-bold mb-3">Compra</h5>
                         <p class="text-muted">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
                     </div>
                 </div>
@@ -369,7 +369,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 <div class="col-md-6 col-lg-3">
                     <div class="card feature-card text-center p-4 h-100 d-flex flex-column">
                         <div class="feature-icon">💰</div>
-                        <h5 class="fw-bold mb-3">Compra</h5>
+                        <h5 class="fw-bold mb-3">Venta</h5>
                         <p class="text-muted flex-grow-1">Compramos tu móvil usado al mejor precio del mercado</p>
                         <?php if ($userName && $userRole === 'client'): ?>
                             <a href="vender/vender_movil.php" class="btn btn-primary btn-sm mt-3 rounded-pill">
