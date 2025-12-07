@@ -200,14 +200,14 @@ $pedidosResult = $conexion->query($pedidosQuery);
                                 <strong>Solicitud #<?= $pedido['id'] ?></strong>
                                 <span class="badge bg-primary ms-2">Venta</span>
                                 <span class="badge <?php
-                                                    echo match ($pedido['estado']) {
-                                                        'procesando' => 'bg-warning text-dark',
-                                                        'aprobado' => 'bg-success',
-                                                        'rechazado' => 'bg-danger',
-                                                        'pagado' => 'bg-info',
-                                                        default => 'bg-secondary'
-                                                    };
-                                                    ?> ms-2">
+                                    echo match ($pedido['estado']) {
+                                        'procesando' => 'bg-warning text-dark',
+                                        'aprobado' => 'bg-success',
+                                        'rechazado' => 'bg-danger',
+                                        'pagado' => 'bg-info',
+                                        default => 'bg-secondary'
+                                    };
+                                ?> ms-2">
                                     <?php
                                     echo match ($pedido['estado']) {
                                         'procesando' => 'Pendiente Revisión',
@@ -291,7 +291,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
                     <h5 class="modal-title"><i class="bi bi-currency-euro"></i> Ajustar Precio de Valoración</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="ajustar_precio_compra.php" method="POST">
+                <form action="ajustar_precio_venta.php" method="POST">
                     <div class="modal-body">
                         <input type="hidden" name="pedido_id" id="ajustar_pedido_id">
                         <div class="alert alert-info">
@@ -327,7 +327,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
                     <h5 class="modal-title"><i class="bi bi-check-circle"></i> Aprobar Solicitud de Venta</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="actualizar_estado_compra.php" method="POST">
+                <form action="actualizar_estado_venta.php" method="POST">
                     <div class="modal-body">
                         <input type="hidden" name="pedido_id" id="aprobar_pedido_id">
                         <input type="hidden" name="nuevo_estado" value="aprobado">
@@ -358,7 +358,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
                     <h5 class="modal-title"><i class="bi bi-x-circle"></i> Rechazar Solicitud de Venta</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="actualizar_estado_compra.php" method="POST">
+                <form action="actualizar_estado_venta.php" method="POST">
                     <div class="modal-body">
                         <input type="hidden" name="pedido_id" id="rechazar_pedido_id">
                         <input type="hidden" name="nuevo_estado" value="rechazado">
@@ -389,7 +389,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
                     <h5 class="modal-title"><i class="bi bi-currency-euro"></i> Marcar como Pagado</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="actualizar_estado_compra.php" method="POST">
+                <form action="actualizar_estado_venta.php" method="POST">
                     <div class="modal-body">
                         <input type="hidden" name="pedido_id" id="pagado_pedido_id">
                         <input type="hidden" name="nuevo_estado" value="pagado">

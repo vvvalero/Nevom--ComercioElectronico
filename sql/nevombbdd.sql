@@ -149,7 +149,7 @@ CREATE TABLE `pedido` (
   `idCompra` int(11) DEFAULT NULL,
   `idReparacion` int(11) DEFAULT NULL,
   `idCliente` int(11) NOT NULL,
-  `estado` enum('procesando','preparando','enviado','entregado') DEFAULT 'procesando',
+  `estado` enum('procesando','preparando','enviado','entregado','aprobado','rechazado','pagado') DEFAULT 'procesando',
   PRIMARY KEY (`id`),
   KEY `Pedido_Cliente_FK` (`idCliente`),
   KEY `Pedido_Venta_FK` (`idVenta`),

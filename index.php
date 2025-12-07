@@ -224,6 +224,9 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                         <?php
                                                         $estadoClass = 'secondary';
                                                         if ($venta['estado'] === 'procesando') $estadoClass = 'warning text-dark';
+                                                        elseif ($venta['estado'] === 'aprobado') $estadoClass = 'success';
+                                                        elseif ($venta['estado'] === 'rechazado') $estadoClass = 'danger';
+                                                        elseif ($venta['estado'] === 'pagado') $estadoClass = 'info';
                                                         elseif ($venta['estado'] === 'preparando') $estadoClass = 'info';
                                                         elseif ($venta['estado'] === 'enviado') $estadoClass = 'primary';
                                                         elseif ($venta['estado'] === 'entregado') $estadoClass = 'success';

@@ -26,7 +26,7 @@ if ($userRole !== 'admin') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['mensaje'] = 'Método no permitido';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_compras.php');
+    header('Location: gestionar_ventas.php');
     exit;
 }
 
@@ -38,16 +38,16 @@ $nuevoEstado = trim($_POST['nuevo_estado'] ?? '');
 if (!$pedidoId || empty($nuevoEstado)) {
     $_SESSION['mensaje'] = 'Datos inválidos';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_compras.php');
+    header('Location: gestionar_ventas.php');
     exit;
 }
 
-// Estados válidos para pedidos de compra
+// Estados válidos para pedidos de venta
 $estadosValidos = ['procesando', 'aprobado', 'rechazado', 'pagado'];
 if (!in_array($nuevoEstado, $estadosValidos)) {
     $_SESSION['mensaje'] = 'Estado no válido';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_compras.php');
+    header('Location: gestionar_ventas.php');
     exit;
 }
 
@@ -55,7 +55,7 @@ try {
     // Iniciar transacción
     $conexion->begin_transaction();
 
-    // Verificar que el pedido existe y es de tipo compra (idVenta IS NOT NULL)
+    // Verificar que el pedido existe y es de tipo venta (idVenta IS NOT NULL)
     $sqlVerificar = "SELECT id, estado FROM pedido WHERE id = ? AND idVenta IS NOT NULL";
     $stmtVerificar = $conexion->prepare($sqlVerificar);
     
@@ -68,7 +68,7 @@ try {
     $resultado = $stmtVerificar->get_result();
     
     if ($resultado->num_rows === 0) {
-        throw new Exception("Pedido no encontrado o no es una solicitud de compra");
+        throw new Exception("Pedido no encontrado o no es una solicitud de venta");
     }
     
     $pedido = $resultado->fetch_assoc();
@@ -96,17 +96,17 @@ try {
 
     // Mensaje de éxito según el estado
     $mensajes = [
-        'aprobado' => "Solicitud de compra #$pedidoId aprobada exitosamente",
-        'rechazado' => "Solicitud de compra #$pedidoId rechazada",
-        'pagado' => "Solicitud de compra #$pedidoId marcada como pagada",
-        'procesando' => "Solicitud de compra #$pedidoId actualizada a pendiente de revisión"
+        'aprobado' => "Solicitud de venta #$pedidoId aprobada exitosamente",
+        'rechazado' => "Solicitud de venta #$pedidoId rechazada",
+        'pagado' => "Solicitud de venta #$pedidoId marcada como pagada",
+        'procesando' => "Solicitud de venta #$pedidoId actualizada a pendiente de revisión"
     ];
 
     $_SESSION['mensaje'] = $mensajes[$nuevoEstado] ?? "Estado actualizado correctamente";
     $_SESSION['mensaje_tipo'] = 'success';
 
     // Log de la operación
-    error_log("Admin actualizó estado de compra - Pedido: $pedidoId, Estado anterior: $estadoAnterior, Nuevo estado: $nuevoEstado");
+    error_log("Admin actualizó estado de venta - Pedido: $pedidoId, Estado anterior: $estadoAnterior, Nuevo estado: $nuevoEstado");
 
 } catch (Exception $e) {
     // Rollback en caso de error
@@ -115,10 +115,10 @@ try {
     $_SESSION['mensaje'] = 'Error al actualizar el estado: ' . $e->getMessage();
     $_SESSION['mensaje_tipo'] = 'danger';
     
-    error_log("Error al actualizar estado de compra - Pedido: $pedidoId, Error: " . $e->getMessage());
+    error_log("Error al actualizar estado de venta - Pedido: $pedidoId, Error: " . $e->getMessage());
 }
 
 // Redirigir de vuelta
-header('Location: gestionar_compras.php');
+header('Location: gestionar_ventas.php');
 exit;
 ?>
