@@ -113,7 +113,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     <?php require 'components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '']); ?>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section wave-light">
         <div class="container hero-content">
             <div class="row align-items-center">
                 <div class="col-lg-7">
@@ -224,6 +224,9 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                         <?php
                                                         $estadoClass = 'secondary';
                                                         if ($venta['estado'] === 'procesando') $estadoClass = 'warning text-dark';
+                                                        elseif ($venta['estado'] === 'aprobado') $estadoClass = 'success';
+                                                        elseif ($venta['estado'] === 'rechazado') $estadoClass = 'danger';
+                                                        elseif ($venta['estado'] === 'pagado') $estadoClass = 'info';
                                                         elseif ($venta['estado'] === 'preparando') $estadoClass = 'info';
                                                         elseif ($venta['estado'] === 'enviado') $estadoClass = 'primary';
                                                         elseif ($venta['estado'] === 'entregado') $estadoClass = 'success';

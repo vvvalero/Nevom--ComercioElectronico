@@ -87,7 +87,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Hero Section -->
-    <section class="hero-section hero-admin">
+    <section class="hero-section wave-dark">
         <div class="container hero-content">
             <div class="row align-items-center">
                 <div class="col-lg-7">

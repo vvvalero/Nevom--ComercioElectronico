@@ -112,7 +112,8 @@ try {
     $precioTotal = $precioValoracion;
     $cantidadTotal = $cantidad;
     $formaPago = 'transferencia'; // Forma de pago por defecto para ventas del cliente
-    $estadoPedido = 'procesando';
+    // Estado inicial para pedidos de venta
+    $estadoPedido = 'procesando'; // Puede ser 'procesando', 'aprobado', 'rechazado', 'pagado' según el flujo
     
     $sqlPedido = "INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idVenta, idCliente, estado) 
                   VALUES (?, ?, ?, ?, ?, ?)";

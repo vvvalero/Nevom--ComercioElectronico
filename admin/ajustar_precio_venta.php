@@ -26,7 +26,7 @@ if ($userRole !== 'admin') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['mensaje'] = 'Método no permitido';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_compras.php');
+    header('Location: gestionar_ventas.php');
     exit;
 }
 
@@ -38,7 +38,7 @@ $nuevoPrecio = filter_input(INPUT_POST, 'nuevo_precio', FILTER_VALIDATE_FLOAT);
 if (!$pedidoId || $nuevoPrecio === false || $nuevoPrecio < 0) {
     $_SESSION['mensaje'] = 'Datos inválidos. El precio debe ser un número positivo.';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_compras.php');
+    header('Location: gestionar_ventas.php');
     exit;
 }
 
@@ -130,6 +130,6 @@ try {
 }
 
 // Redirigir de vuelta
-header('Location: gestionar_compras.php');
+header('Location: gestionar_ventas.php');
 exit;
 ?>

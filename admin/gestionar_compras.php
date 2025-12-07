@@ -79,7 +79,7 @@ $pedidosResult = $conexion->query($pedidosQuery);
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Header -->
-    <header class="page-header success">
+    <header class="page-header success wave-light">
         <div class="container text-center">
             <h1><i class="bi bi-cart-check"></i> Gestión de Compras</h1>
             <p>Pedidos donde cliente COMPRA de la tienda</p>

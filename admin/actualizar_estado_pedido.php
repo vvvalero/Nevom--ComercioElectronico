@@ -27,7 +27,7 @@ if ($userRole !== 'admin') {
 
 // Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: gestionar_ventas.php');
+    header('Location: gestionar_compras.php');
     exit;
 }
 
@@ -41,14 +41,14 @@ $estadosValidos = ['procesando', 'preparando', 'enviado', 'entregado'];
 if ($pedidoId <= 0) {
     $_SESSION['mensaje'] = 'ID de pedido inválido';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_ventas.php');
+    header('Location: gestionar_compras.php');
     exit;
 }
 
 if (!in_array($nuevoEstado, $estadosValidos)) {
     $_SESSION['mensaje'] = 'Estado inválido';
     $_SESSION['mensaje_tipo'] = 'danger';
-    header('Location: gestionar_ventas.php');
+    header('Location: gestionar_compras.php');
     exit;
 }
 
@@ -77,5 +77,5 @@ try {
     $conexion->close();
 }
 
-header('Location: gestionar_ventas.php');
+header('Location: gestionar_compras.php');
 exit;
