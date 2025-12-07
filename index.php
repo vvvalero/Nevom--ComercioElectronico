@@ -344,30 +344,29 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     </section>
 
     <!-- Servicios -->
-    <section class="py-5 bg-light" id="servicios" style="padding-top: 80px !important;">
+    <section class="py-5 bg-light" id="servicios" style="padding-top: 80px !important; ">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title">Nuestros Servicios</h2>
                 <p class="text-muted mt-4">Más que una tienda, somos tu partner tecnológico</p>
             </div>
-
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card feature-card text-center p-4">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                    <div class="card feature-card text-center p-4 w-100">
                         <div class="feature-icon">🛒</div>
                         <h5 class="fw-bold mb-3">Compra</h5>
                         <p class="text-muted">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card feature-card text-center p-4">
+                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                    <div class="card feature-card text-center p-4 w-100">
                         <div class="feature-icon">🔧</div>
                         <h5 class="fw-bold mb-3">Reparación</h5>
                         <p class="text-muted">Servicio técnico especializado para todo tipo de averías</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card feature-card text-center p-4 h-100 d-flex flex-column">
+                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                    <div class="card feature-card text-center p-4 h-100 d-flex flex-column w-100">
                         <div class="feature-icon">💰</div>
                         <h5 class="fw-bold mb-3">Venta</h5>
                         <p class="text-muted flex-grow-1">Compramos tu móvil usado al mejor precio del mercado</p>
@@ -381,41 +380,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                             </a>
                         <?php endif; ?>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card feature-card text-center p-4">
-                        <div class="feature-icon">🚚</div>
-                        <h5 class="fw-bold mb-3">Envío Gratis</h5>
-                        <p class="text-muted">Envío gratuito en pedidos superiores a 50€</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contacto -->
-    <section class="py-5 bg-light" id="contacto">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title">Contacto</h2>
-                <p class="text-muted mt-4">¿Preguntas? Estamos aquí para ayudarte</p>
-            </div>
-
-            <div class="row mt-5 text-center">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="fs-1 mb-3">📍</div>
-                    <h5 class="fw-bold">Dirección</h5>
-                    <p class="text-muted">Calle Principal, 123<br>28001 Madrid</p>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="fs-1 mb-3">📞</div>
-                    <h5 class="fw-bold">Teléfono</h5>
-                    <p class="text-muted">+34 900 123 456<br>Lun - Vie: 9:00 - 20:00</p>
-                </div>
-                <div class="col-md-4">
-                    <div class="fs-1 mb-3">✉️</div>
-                    <h5 class="fw-bold">Email</h5>
-                    <p class="text-muted">info@nevom.com<br>soporte@nevom.com</p>
                 </div>
             </div>
         </div>
@@ -449,17 +413,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                         <li class="mb-2"><span class="text-light opacity-75">Venta de móviles</span></li>
                         <li class="mb-2"><span class="text-light opacity-75">Reparaciones</span></li>
                         <li class="mb-2"><span class="text-light opacity-75">Compra de usados</span></li>
-                        <li class="mb-2"><span class="text-light opacity-75">Accesorios</span></li>
                     </ul>
-                </div>
-                <div class="col-lg-3 col-md-4">
-                    <h5 class="fw-bold mb-3">Síguenos</h5>
-                    <div class="d-flex gap-3">
-                        <a href="#" class="text-light fs-4">📘</a>
-                        <a href="#" class="text-light fs-4">📷</a>
-                        <a href="#" class="text-light fs-4">🐦</a>
-                        <a href="#" class="text-light fs-4">📺</a>
-                    </div>
                 </div>
             </div>
             <hr class="border-light opacity-25 my-4">
