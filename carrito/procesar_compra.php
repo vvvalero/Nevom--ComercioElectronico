@@ -126,57 +126,37 @@ try {
 
     // === CREAR REGISTROS EN LA BASE DE DATOS ===
 
-    // 1. Crear líneas de compra (una por cada producto)
-    $lineaCompraIds = [];
+    // 1. Crear una sola compra (encabezado)
+    $stmtCompra = $conexion->prepare("INSERT INTO compra () VALUES ()");
+    if (!$stmtCompra->execute()) {
+        throw new Exception("Error al crear compra");
+    }
+    $compraId = $conexion->insert_id;
+    $stmtCompra->close();
+
+    // 2. Crear líneas de compra para cada producto
     foreach ($productosComprados as $producto) {
-        $stmtLineaCompra = $conexion->prepare("INSERT INTO linea_compra (idMovil, cantidad) VALUES (?, ?)");
-        $stmtLineaCompra->bind_param('ii', $producto['id'], $producto['cantidad']);
+        $stmtLineaCompra = $conexion->prepare("INSERT INTO linea_compra (idMovil, cantidad, idCompra) VALUES (?, ?, ?)");
+        $stmtLineaCompra->bind_param('iii', $producto['id'], $producto['cantidad'], $compraId);
 
         if (!$stmtLineaCompra->execute()) {
             throw new Exception("Error al crear línea de compra");
         }
-
-        $lineaCompraIds[] = $conexion->insert_id;
         $stmtLineaCompra->close();
     }
 
-    // 2. Crear registros de compra (uno por cada línea de compra)
-    $compraIds = [];
-    foreach ($lineaCompraIds as $lineaCompraId) {
-        $stmtCompra = $conexion->prepare("INSERT INTO compra (idLineaCompra) VALUES (?)");
-        $stmtCompra->bind_param('i', $lineaCompraId);
+    // 3. Crear un solo pedido con la compra
+    $estado = 'procesando';
+    $cantidadTotalFloat = (float)$cantidadTotal;
+    $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
 
-        if (!$stmtCompra->execute()) {
-            throw new Exception("Error al crear compra");
-        }
+    $stmtPedido = $conexion->prepare("INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmtPedido->bind_param('sddsiis', $numSeguimiento, $precioTotal, $cantidadTotalFloat, $formaPago, $compraId, $clienteId, $estado);
 
-        $compraIds[] = $conexion->insert_id;
-        $stmtCompra->close();
+    if (!$stmtPedido->execute()) {
+        throw new Exception("Error al crear pedido");
     }
-
-    // 3. Crear un pedido por cada compra con estado 'procesando'
-    foreach ($compraIds as $index => $compraId) {
-        $producto = $productosComprados[$index];
-        $precioParcial = $producto['precio'] * $producto['cantidad'];
-
-        // Agregar el costo de envío proporcionalmente al último pedido
-        if ($index === count($compraIds) - 1) {
-            $precioParcial += $costoEnvio;
-        }
-
-        // ✅ Declarar el estado ANTES de bind_param
-        $estado = 'procesando';
-        $cantidadFloat = (float)$producto['cantidad'];
-
-        // ✅ Insertar pedido CON estado
-        $stmtPedido = $conexion->prepare("INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmtPedido->bind_param('ddsiis', $precioParcial, $cantidadFloat, $formaPago, $compraId, $clienteId, $estado);
-
-        if (!$stmtPedido->execute()) {
-            throw new Exception("Error al crear pedido");
-        }
-        $stmtPedido->close();
-    }
+    $stmtPedido->close();
 
     // Confirmar transacción
     $conexion->commit();

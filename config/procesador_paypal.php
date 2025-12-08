@@ -34,7 +34,7 @@ class ProcesadorPayPal {
         if (!empty($datosCompra['cliente_ciudad'])) $params['city'] = $datosCompra['cliente_ciudad'];
         if (!empty($datosCompra['cliente_codigo_postal'])) $params['zip'] = $datosCompra['cliente_codigo_postal'];
         if (!empty($datosCompra['cliente_pais'])) $params['country'] = $datosCompra['cliente_pais'];
-        if (!empty($datosCompra['cantidad'])) $params['quantity'] = $datosCompra['cantidad'];
+        // No enviar 'quantity' porque el total ya está multiplicado por la cantidad
         if (PAYPAL_NO_SHIPPING == '1') $params['no_shipping'] = '1';
         
         return $params;

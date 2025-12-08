@@ -49,11 +49,11 @@ $pedidosQuery = "SELECT
     c.email as cliente_email,
     c.telefono as cliente_telefono,
     c.direccion as cliente_direccion,
-    GROUP_CONCAT(CONCAT(m.marca, ' ', m.modelo, ' ', m.capacidad, 'GB') SEPARATOR ', ') as productos
+    GROUP_CONCAT(CONCAT(m.marca, ' ', m.modelo, ' ', m.capacidad, 'GB (x', lc.cantidad, ')') SEPARATOR ', ') as productos
 FROM pedido p
 LEFT JOIN cliente c ON p.idCliente = c.id
 LEFT JOIN compra co ON p.idCompra = co.id
-LEFT JOIN linea_compra lc ON co.idLineaCompra = lc.id
+LEFT JOIN linea_compra lc ON (lc.idCompra = co.id OR (lc.idCompra IS NULL AND lc.id = co.idLineaCompra))
 LEFT JOIN movil m ON lc.idMovil = m.id
 WHERE p.idCompra IS NOT NULL
 GROUP BY p.id

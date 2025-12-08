@@ -27,24 +27,24 @@ if (!$userName || $userRole !== 'client' || !$clienteId) {
 }
 
 // Obtener ID del pedido
-$pedidoId = intval($_GET['pedido_id'] ?? 0);
+$numSeguimiento = trim($_GET['numSeguimiento'] ?? '');
 
-if ($pedidoId <= 0) {
+if (empty($numSeguimiento)) {
     header('Location: vender_movil.php');
     exit;
 }
 
 // Obtener detalles del pedido y venta
-$sql = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
+$sql = "SELECT p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
                m.marca, m.modelo, m.capacidad, m.color, m.precio
         FROM pedido p
         JOIN venta v ON p.idVenta = v.id
         JOIN linea_venta lv ON v.idLineaVenta = lv.id
         JOIN movil m ON lv.idMovil = m.id
-        WHERE p.id = ? AND p.idCliente = ?";
+        WHERE p.numSeguimiento = ? AND p.idCliente = ?";
 
 $stmt = $conexion->prepare($sql);
-$stmt->bind_param('ii', $pedidoId, $clienteId);
+$stmt->bind_param('si', $numSeguimiento, $clienteId);
 $stmt->execute();
 $resultado = $stmt->get_result();
 
@@ -130,7 +130,7 @@ $stmt->close();
                             </p>
 
                             <div class="alert alert-info mb-4">
-                                <strong>📋 Número de Pedido:</strong> #<?= htmlspecialchars($pedido['id']) ?>
+                                <strong>📋 Número de Seguimiento:</strong> <?= htmlspecialchars($pedido['numSeguimiento']) ?>
                             </div>
                         </div>
                     </div>
