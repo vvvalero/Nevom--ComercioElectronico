@@ -71,6 +71,7 @@ CREATE TABLE `linea_compra` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idMovil` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
+  `idCompra` int(11) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `LineaCompra_Movil_FK` FOREIGN KEY (`idMovil`) REFERENCES `movil` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -83,7 +84,7 @@ INSERT INTO `linea_compra` (`idMovil`, `cantidad`) VALUES
 -- --------------------------------------------------------
 CREATE TABLE `compra` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idLineaCompra` int(11) NOT NULL,
+  `idLineaCompra` int(11) NULL,
   PRIMARY KEY (`id`),
   KEY `Compra_LineaCompra_FK` (`idLineaCompra`),
   CONSTRAINT `Compra_LineaCompra_FK` FOREIGN KEY (`idLineaCompra`) REFERENCES `linea_compra` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -195,3 +196,6 @@ CREATE TABLE IF NOT EXISTS `log_paypal` (
   INDEX `idx_tipo` (`tipo`),
   INDEX `idx_fecha` (`fecha_log`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Agregar foreign keys después de crear todas las tablas
+ALTER TABLE linea_compra ADD CONSTRAINT LineaCompra_Compra_FK FOREIGN KEY (idCompra) REFERENCES compra(id) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -36,30 +36,23 @@ if (!empty($datosCompra) && !empty($carrito)) {
 
         $conexion->begin_transaction();
 
-        // Crear líneas de compra y compras
-        $lineaCompraIds = [];
-        $compraIds = [];
-        
+        // Crear una sola compra
+        $stmt = $conexion->prepare("INSERT INTO compra () VALUES ()");
+        if (!$stmt->execute()) throw new Exception('Error al crear compra');
+        $compraId = $conexion->insert_id;
+        $stmt->close();
+
+        // Crear líneas de compra
         foreach ($carrito as $movilId => $cantidad) {
-            $stmt = $conexion->prepare("INSERT INTO linea_compra (idMovil, cantidad) VALUES (?, ?)");
-            $stmt->bind_param('ii', $movilId, $cantidad);
+            $stmt = $conexion->prepare("INSERT INTO linea_compra (idMovil, cantidad, idCompra) VALUES (?, ?, ?)");
+            $stmt->bind_param('iii', $movilId, $cantidad, $compraId);
             if (!$stmt->execute()) throw new Exception('Error al crear línea de compra');
-            $lineaCompraIds[] = $conexion->insert_id;
-            $stmt->close();
-        }
-        
-        foreach ($lineaCompraIds as $lineaId) {
-            $stmt = $conexion->prepare("INSERT INTO compra (idLineaCompra) VALUES (?)");
-            $stmt->bind_param('i', $lineaId);
-            if (!$stmt->execute()) throw new Exception('Error al crear compra');
-            $compraIds[] = $conexion->insert_id;
             $stmt->close();
         }
 
         // Crear pedido
         $precioTotal = $datosCompra['total'];
         $cantidadTotal = array_sum($carrito);
-        $compraId = $compraIds[0];
 
         $stmt = $conexion->prepare("INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, 'paypal', ?, ?, 'procesando')");
         $stmt->bind_param('ddii', $precioTotal, $cantidadTotal, $compraId, $clienteId);

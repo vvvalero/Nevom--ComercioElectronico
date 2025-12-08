@@ -44,12 +44,13 @@ $reparacionesCliente = null;
 if ($userRole === 'client' && $clienteId) {
     // Consultar COMPRAS del cliente (cuando el cliente compra móviles de la tienda)
     $sqlCompras = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
-                          m.marca, m.modelo
+                          GROUP_CONCAT(CONCAT(m.marca, ' ', m.modelo, ' (x', lc.cantidad, ')') SEPARATOR ', ') as productos
                    FROM pedido p 
                    JOIN compra c ON p.idCompra = c.id
-                   JOIN linea_compra lc ON c.idLineaCompra = lc.id
+                   JOIN linea_compra lc ON (lc.idCompra = c.id OR (lc.idCompra IS NULL AND lc.id = c.idLineaCompra))
                    JOIN movil m ON lc.idMovil = m.id
                    WHERE p.idCliente = ? AND p.idCompra IS NOT NULL
+                   GROUP BY p.id
                    ORDER BY p.id DESC 
                    LIMIT 5";
     $stmtCompras = $conexion->prepare($sqlCompras);
@@ -156,14 +157,26 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                             <div class="card-body">
                                 <?php if ($comprasCliente && $comprasCliente->num_rows > 0): ?>
                                     <div class="list-group">
-                                        <?php while ($compra = $comprasCliente->fetch_assoc()): ?>
+                                        <?php while ($compra = $comprasCliente->fetch_assoc()): 
+                                            $productos_list = explode(', ', $compra['productos']);
+                                            $multiple = count($productos_list) > 1;
+                                        ?>
                                             <div class="list-group-item">
                                                 <div class="d-flex w-100 justify-content-between align-items-start">
                                                     <div>
                                                         <h6 class="mb-1">
                                                             <span class="badge bg-secondary me-2">#<?= htmlspecialchars($compra['id']) ?></span>
-                                                            <?= htmlspecialchars($compra['marca']) ?> <?= htmlspecialchars($compra['modelo']) ?>
+                                                            <?php if (!$multiple): ?>
+                                                                <?= htmlspecialchars($productos_list[0]) ?>
+                                                            <?php endif; ?>
                                                         </h6>
+                                                        <?php if ($multiple): ?>
+                                                            <ul class="mb-1">
+                                                                <?php foreach ($productos_list as $prod): ?>
+                                                                    <li><?= htmlspecialchars($prod) ?></li>
+                                                                <?php endforeach; ?>
+                                                            </ul>
+                                                        <?php endif; ?>
                                                         <p class="mb-1">
                                                             <strong class="text-success"><?= number_format($compra['precioTotal'], 2) ?>€</strong>
                                                             <span class="text-muted ms-2">(<?= htmlspecialchars($compra['cantidadTotal']) ?> ud.)</span>
