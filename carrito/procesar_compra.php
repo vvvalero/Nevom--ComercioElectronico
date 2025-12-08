@@ -156,6 +156,7 @@ try {
     if (!$stmtPedido->execute()) {
         throw new Exception("Error al crear pedido");
     }
+    $pedidoId = $conexion->insert_id;
     $stmtPedido->close();
 
     // Confirmar transacción
@@ -168,8 +169,8 @@ try {
     $_SESSION['mensaje'] = "¡Compra realizada con éxito! Total: " . number_format($precioTotal, 2) . "€";
     $_SESSION['mensaje_tipo'] = 'success';
 
-    // Redirigir a página de confirmación o pedidos
-    header('Location: ../index.php');
+    // Redirigir a página de confirmación
+    header('Location: confirmacion_pedido.php?numero_pedido=' . urlencode($numSeguimiento));
     exit;
 } catch (Exception $e) {
     // Revertir transacción en caso de error

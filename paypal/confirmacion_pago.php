@@ -79,6 +79,10 @@ if (!empty($datosCompra) && !empty($carrito)) {
         $numeroPedido = $numSeguimiento;
         registrarLogPayPal("Pago confirmado - Pedido $numeroPedido - Cliente $clienteId", 'SUCCESS');
 
+        // Redirigir a página unificada de confirmación
+        header('Location: ../carrito/confirmacion_pedido.php?numero_pedido=' . urlencode($numSeguimiento));
+        exit;
+
     } catch (Exception $e) {
         $conexion->rollback();
         $tipo_mensaje = 'danger';
@@ -182,6 +186,9 @@ $conexion->close();
 
                     <!-- Botones -->
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="../carrito/descargar_factura.php?pedido_id=<?= $pedidoId ?>" class="btn btn-success btn-lg">
+                            📄 Descargar Factura (Facturae)
+                        </a>
                         <a href="../index.php" class="btn btn-primary btn-lg">
                             🏠 Volver a la Tienda
                         </a>
