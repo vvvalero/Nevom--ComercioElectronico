@@ -143,6 +143,7 @@ CREATE TABLE `reparacion` (
 -- --------------------------------------------------------
 CREATE TABLE `pedido` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `numSeguimiento` varchar(50) NOT NULL,
   `precioTotal` float NOT NULL,
   `cantidadTotal` float NOT NULL,
   `formaPago` varchar(300) NOT NULL,
@@ -152,6 +153,7 @@ CREATE TABLE `pedido` (
   `idCliente` int(11) NOT NULL,
   `estado` enum('procesando','preparando','enviado','entregado','aprobado','rechazado','pagado') DEFAULT 'procesando',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `numSeguimiento_unique` (`numSeguimiento`),
   KEY `Pedido_Cliente_FK` (`idCliente`),
   KEY `Pedido_Venta_FK` (`idVenta`),
   KEY `Pedido_Reparacion_FK` (`idReparacion`),
@@ -162,8 +164,8 @@ CREATE TABLE `pedido` (
   CONSTRAINT `Pedido_Compra_FK` FOREIGN KEY (`idCompra`) REFERENCES `compra` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
-INSERT INTO `pedido` (`precioTotal`, `cantidadTotal`, `formaPago`, `idCompra`, `idCliente`, `estado`) VALUES
-(100, 1, 'tarjeta', 1, 1, 'procesando');
+INSERT INTO `pedido` (`numSeguimiento`, `precioTotal`, `cantidadTotal`, `formaPago`, `idCompra`, `idCliente`, `estado`) VALUES
+('NV-20251208-123456-789', 100, 1, 'tarjeta', 1, 1, 'procesando');
 
 -- Tabla para almacenar transacciones de PayPal
 CREATE TABLE IF NOT EXISTS `transaccion_paypal` (

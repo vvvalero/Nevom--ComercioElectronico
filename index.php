@@ -43,14 +43,14 @@ $ventasCliente = null;
 $reparacionesCliente = null;
 if ($userRole === 'client' && $clienteId) {
     // Consultar COMPRAS del cliente (cuando el cliente compra móviles de la tienda)
-    $sqlCompras = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
+    $sqlCompras = "SELECT p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
                           GROUP_CONCAT(CONCAT(m.marca, ' ', m.modelo, ' (x', lc.cantidad, ')') SEPARATOR ', ') as productos
                    FROM pedido p 
                    JOIN compra c ON p.idCompra = c.id
                    JOIN linea_compra lc ON (lc.idCompra = c.id OR (lc.idCompra IS NULL AND lc.id = c.idLineaCompra))
                    JOIN movil m ON lc.idMovil = m.id
                    WHERE p.idCliente = ? AND p.idCompra IS NOT NULL
-                   GROUP BY p.id
+                   GROUP BY p.numSeguimiento
                    ORDER BY p.id DESC 
                    LIMIT 5";
     $stmtCompras = $conexion->prepare($sqlCompras);
@@ -60,7 +60,7 @@ if ($userRole === 'client' && $clienteId) {
     $stmtCompras->close();
 
     // Consultar VENTAS del cliente (cuando el cliente vende móviles a la tienda)
-    $sqlVentas = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
+    $sqlVentas = "SELECT p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
                          m.marca, m.modelo
                   FROM pedido p 
                   JOIN venta v ON p.idVenta = v.id
@@ -165,7 +165,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                 <div class="d-flex w-100 justify-content-between align-items-start">
                                                     <div>
                                                         <h6 class="mb-1">
-                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($compra['id']) ?></span>
+                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($compra['numSeguimiento']) ?></span>
                                                             <?php if (!$multiple): ?>
                                                                 <?= htmlspecialchars($productos_list[0]) ?>
                                                             <?php endif; ?>
@@ -222,7 +222,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                                 <div class="d-flex w-100 justify-content-between align-items-start">
                                                     <div>
                                                         <h6 class="mb-1">
-                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($venta['id']) ?></span>
+                                                            <span class="badge bg-secondary me-2">#<?= htmlspecialchars($venta['numSeguimiento']) ?></span>
                                                             <?= htmlspecialchars($venta['marca']) ?> <?= htmlspecialchars($venta['modelo']) ?>
                                                         </h6>
                                                         <p class="mb-1">

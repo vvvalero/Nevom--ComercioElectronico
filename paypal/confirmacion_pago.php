@@ -53,9 +53,10 @@ if (!empty($datosCompra) && !empty($carrito)) {
         // Crear pedido
         $precioTotal = $datosCompra['total'];
         $cantidadTotal = array_sum($carrito);
+        $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
 
-        $stmt = $conexion->prepare("INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, 'paypal', ?, ?, 'procesando')");
-        $stmt->bind_param('ddii', $precioTotal, $cantidadTotal, $compraId, $clienteId);
+        $stmt = $conexion->prepare("INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, 'paypal', ?, ?, 'procesando')");
+        $stmt->bind_param('sddii', $numSeguimiento, $precioTotal, $cantidadTotal, $compraId, $clienteId);
         if (!$stmt->execute()) throw new Exception('Error al crear pedido');
         $pedidoId = $conexion->insert_id;
         $stmt->close();
@@ -74,9 +75,9 @@ if (!empty($datosCompra) && !empty($carrito)) {
         unset($_SESSION['carrito'], $_SESSION['carrito_paypal'], $_SESSION['datos_compra_paypal']);
 
         $procesado = true;
-        $mensaje = "¡Pago confirmado! Tu pedido #{$pedidoId} ha sido creado.";
-        $numeroPedido = $pedidoId;
-        registrarLogPayPal("Pago confirmado - Pedido $pedidoId - Cliente $clienteId", 'SUCCESS');
+        $mensaje = "¡Pago confirmado! Tu pedido ha sido creado.";
+        $numeroPedido = $numSeguimiento;
+        registrarLogPayPal("Pago confirmado - Pedido $numeroPedido - Cliente $clienteId", 'SUCCESS');
 
     } catch (Exception $e) {
         $conexion->rollback();
@@ -137,7 +138,7 @@ $conexion->close();
                                 <div class="col-md-6">
                                     <div class="p-3 bg-light rounded">
                                         <small class="text-muted d-block">Número de Pedido</small>
-                                        <strong class="fs-5">#<?= htmlspecialchars($numeroPedido) ?></strong>
+                                        <strong class="fs-5"><?= htmlspecialchars($numeroPedido) ?></strong>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

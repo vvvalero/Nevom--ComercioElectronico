@@ -114,16 +114,17 @@ try {
     $formaPago = 'transferencia'; // Forma de pago por defecto para ventas del cliente
     // Estado inicial para pedidos de venta
     $estadoPedido = 'procesando'; // Puede ser 'procesando', 'aprobado', 'rechazado', 'pagado' según el flujo
+    $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
     
-    $sqlPedido = "INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idVenta, idCliente, estado) 
-                  VALUES (?, ?, ?, ?, ?, ?)";
+    $sqlPedido = "INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idVenta, idCliente, estado) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmtPedido = $conexion->prepare($sqlPedido);
     
     if (!$stmtPedido) {
         throw new Exception("Error al preparar la consulta de pedido: " . $conexion->error);
     }
     
-    $stmtPedido->bind_param('ddsiis', $precioTotal, $cantidadTotal, $formaPago, $ventaId, $clienteId, $estadoPedido);
+    $stmtPedido->bind_param('sddsiis', $numSeguimiento, $precioTotal, $cantidadTotal, $formaPago, $ventaId, $clienteId, $estadoPedido);
     
     if (!$stmtPedido->execute()) {
         throw new Exception("Error al insertar pedido: " . $stmtPedido->error);
@@ -137,12 +138,12 @@ try {
 
     // Mensaje de éxito
     $_SESSION['mensaje_venta'] = "¡Valoración completada! Tu móvil $marca $modelo ha sido valorado en $precioTotal€. 
-                                   Hemos registrado tu solicitud de venta (Pedido #$pedidoId). 
+                                   Hemos registrado tu solicitud de venta (Número de Seguimiento: $numSeguimiento). 
                                    Nos pondremos en contacto contigo para coordinar la recogida.";
     $_SESSION['tipo_mensaje'] = 'success';
     
     // Redirigir a confirmación
-    header('Location: confirmacion_venta.php?pedido_id=' . $pedidoId);
+    header('Location: confirmacion_venta.php?numSeguimiento=' . urlencode($numSeguimiento));
     exit;
 
 } catch (Exception $e) {

@@ -148,9 +148,10 @@ try {
     // 3. Crear un solo pedido con la compra
     $estado = 'procesando';
     $cantidadTotalFloat = (float)$cantidadTotal;
+    $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
 
-    $stmtPedido = $conexion->prepare("INSERT INTO pedido (precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmtPedido->bind_param('ddsiis', $precioTotal, $cantidadTotalFloat, $formaPago, $compraId, $clienteId, $estado);
+    $stmtPedido = $conexion->prepare("INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmtPedido->bind_param('sddsiis', $numSeguimiento, $precioTotal, $cantidadTotalFloat, $formaPago, $compraId, $clienteId, $estado);
 
     if (!$stmtPedido->execute()) {
         throw new Exception("Error al crear pedido");
