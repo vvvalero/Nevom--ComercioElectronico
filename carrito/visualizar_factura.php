@@ -97,7 +97,7 @@ $baseImponible = $pedido['precioTotal'] - $iva;
                         </div>
                         <div class="info-item">
                             <span class="info-label">Forma de Pago:</span>
-                            <span>PayPal</span>
+                            <span><?php echo htmlspecialchars($pedido['formaPago']); ?></span>
                         </div>
                     </div>
                 </div>
