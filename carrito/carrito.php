@@ -44,18 +44,18 @@ if (!empty($_SESSION['carrito'])) {
         $stmt->bind_param('i', $movilId);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         if ($movil = $result->fetch_assoc()) {
             // Verificar que la cantidad solicitada no exceda el stock
             $cantidadReal = min($cantidad, $movil['stock']);
-            
+
             $movil['cantidad'] = $cantidadReal;
             $movil['subtotal'] = $movil['precio'] * $cantidadReal;
             $productosCarrito[] = $movil;
-            
+
             $totalCarrito += $movil['subtotal'];
             $cantidadTotal += $cantidadReal;
-            
+
             // Actualizar cantidad en sesión si fue ajustada
             if ($cantidadReal != $cantidad) {
                 $_SESSION['carrito'][$movilId] = $cantidadReal;
@@ -83,18 +83,20 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'activeLink' => 'carrito', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'activeLink' => 'carrito', 'basePath' => '../']); ?>
 
     <!-- Header -->
     <header class="bg-dark text-white py-5 mb-5 text-center shadow-sm">
         <div class="container">
-            <h1 class="mb-0">🛒 Mi Carrito de Compras</h1>
+            <h1 class="mb-0"><i class="fas fa-shopping-cart"></i> Mi Carrito de Compras</h1>
             <p class="mt-2 mb-0 opacity-75">Revisa tus productos y completa tu pedido</p>
         </div>
     </header>
@@ -113,7 +115,7 @@ $conexion->close();
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="card shadow-lg text-center p-5">
-                        <div style="font-size: 5rem; opacity: 0.3;">🛒</div>
+                        <i class="fas fa-shopping-cart" style="font-size: 5rem; opacity: 0.3;"></i>
                         <h3 class="mt-4 mb-3">Tu carrito está vacío</h3>
                         <p class="text-muted mb-4">¡Agrega productos de nuestro catálogo para comenzar!</p>
                         <a href="../index.php#productos" class="btn btn-primary btn-lg rounded-pill px-5">
@@ -129,7 +131,7 @@ $conexion->close();
                 <div class="col-lg-8">
                     <div class="card shadow-lg">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">📦 Productos en tu Carrito</h5>
+                            <h5 class="mb-0"><i class="fas fa-box"></i> Productos en tu Carrito</h5>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -148,7 +150,7 @@ $conexion->close();
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <div class="me-3" style="font-size: 2rem;">📱</div>
+                                                        <i class="fas fa-mobile-alt me-3" style="font-size: 2rem;"></i>
                                                         <div>
                                                             <strong><?= htmlspecialchars($producto['marca']) ?> <?= htmlspecialchars($producto['modelo']) ?></strong>
                                                             <br>
@@ -166,15 +168,15 @@ $conexion->close();
                                                 </td>
                                                 <td class="align-middle">
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <input type="number" 
-                                                               name="cantidad" 
-                                                               value="<?= $producto['cantidad'] ?>" 
-                                                               min="1" 
-                                                               max="<?= $producto['stock'] ?>" 
-                                                               class="form-control form-control-sm text-center cantidad-input" 
-                                                               style="width: 70px;"
-                                                               data-movil-id="<?= $producto['id'] ?>"
-                                                               data-precio="<?= $producto['precio'] ?>">
+                                                        <input type="number"
+                                                            name="cantidad"
+                                                            value="<?= $producto['cantidad'] ?>"
+                                                            min="1"
+                                                            max="<?= $producto['stock'] ?>"
+                                                            class="form-control form-control-sm text-center cantidad-input"
+                                                            style="width: 70px;"
+                                                            data-movil-id="<?= $producto['id'] ?>"
+                                                            data-precio="<?= $producto['precio'] ?>">
                                                         <div class="spinner-border spinner-border-sm text-primary d-none" role="status">
                                                             <span class="visually-hidden">Actualizando...</span>
                                                         </div>
@@ -186,9 +188,9 @@ $conexion->close();
                                                 <td class="align-middle text-center">
                                                     <form method="post" action="eliminar_carrito.php" class="d-inline">
                                                         <input type="hidden" name="movil_id" value="<?= $producto['id'] ?>">
-                                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                                onclick="return confirm('¿Eliminar este producto del carrito?')">
-                                                            🗑️
+                                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                            onclick="return confirm('¿Eliminar este producto del carrito?')">
+                                                            <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </td>
@@ -204,9 +206,9 @@ $conexion->close();
                                     Seguir Comprando
                                 </a>
                                 <form method="post" action="vaciar_carrito.php" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger" 
-                                            onclick="return confirm('¿Vaciar todo el carrito?')">
-                                        🗑️ Vaciar Carrito
+                                    <button type="submit" class="btn btn-outline-danger"
+                                        onclick="return confirm('¿Vaciar todo el carrito?')">
+                                        <i class="fas fa-trash"></i> Vaciar Carrito
                                     </button>
                                 </form>
                             </div>
@@ -219,7 +221,7 @@ $conexion->close();
                     <!-- Resumen del Pedido -->
                     <div class="card shadow-lg mb-4">
                         <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">📊 Resumen del Pedido</h5>
+                            <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Resumen del Pedido</h5>
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-2">
@@ -247,17 +249,17 @@ $conexion->close();
                                     Finalizar Compra
                                 </button>
                             </form>
-                            
+
                             <!-- Información de PayPal -->
                             <div class="alert alert-info mt-3" id="info_paypal" style="display: none;">
-                                <strong>🔒 PayPal Seguro:</strong> Serás redirigido a PayPal para completar el pago de forma segura.
+                                <strong><i class="fas fa-lock"></i> PayPal Seguro:</strong> Serás redirigido a PayPal para completar el pago de forma segura.
                             </div>
                         </div>
                     </div>
                     <!-- Información de Entrega -->
                     <div class="card shadow-lg">
                         <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">📍 Información de Entrega</h5>
+                            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Información de Entrega</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-2"><strong>Nombre:</strong><br><?= htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellidos']) ?></p>
@@ -283,16 +285,16 @@ $conexion->close();
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Función para actualizar el carrito automáticamente
         let timeoutId;
-        
+
         document.querySelectorAll('.cantidad-input').forEach(input => {
             input.addEventListener('change', function() {
                 actualizarCantidad(this);
             });
-            
+
             // También actualizar cuando se usan las flechas del input
             input.addEventListener('input', function() {
                 clearTimeout(timeoutId);
@@ -301,93 +303,93 @@ $conexion->close();
                 }, 800); // Espera 800ms después de que el usuario deje de escribir
             });
         });
-        
+
         function actualizarCantidad(input) {
             const movilId = input.dataset.movilId;
             const cantidad = parseInt(input.value);
             const precio = parseFloat(input.dataset.precio);
             const row = input.closest('tr');
             const spinner = row.querySelector('.spinner-border');
-            
+
             // Validación básica
             if (isNaN(cantidad) || cantidad < 0) {
                 return;
             }
-            
+
             // Mostrar spinner
             spinner.classList.remove('d-none');
             input.disabled = true;
-            
+
             // Enviar petición AJAX
             const formData = new FormData();
             formData.append('movil_id', movilId);
             formData.append('cantidad', cantidad);
             formData.append('ajax', 'true');
-            
+
             fetch('actualizar_carrito.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.accion === 'eliminar') {
-                        // Eliminar la fila con animación
-                        row.style.transition = 'opacity 0.3s';
-                        row.style.opacity = '0';
-                        setTimeout(() => {
-                            location.reload(); // Recargar para actualizar todo
-                        }, 300);
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.accion === 'eliminar') {
+                            // Eliminar la fila con animación
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => {
+                                location.reload(); // Recargar para actualizar todo
+                            }, 300);
+                        } else {
+                            // Actualizar subtotal de la fila
+                            const subtotalElement = row.querySelector('td:nth-child(4) strong');
+                            subtotalElement.textContent = data.subtotal + '€';
+
+                            // Actualizar totales generales
+                            actualizarTotales(data);
+
+                            // Mostrar mensaje de éxito (opcional, comentado para no saturar)
+                            // mostrarMensaje('success', data.mensaje);
+                        }
                     } else {
-                        // Actualizar subtotal de la fila
-                        const subtotalElement = row.querySelector('td:nth-child(4) strong');
-                        subtotalElement.textContent = data.subtotal + '€';
-                        
-                        // Actualizar totales generales
-                        actualizarTotales(data);
-                        
-                        // Mostrar mensaje de éxito (opcional, comentado para no saturar)
-                        // mostrarMensaje('success', data.mensaje);
+                        // Error: restaurar valor anterior o ajustar según stock
+                        if (data.stock_disponible !== undefined) {
+                            input.value = data.stock_disponible;
+                            input.max = data.stock_disponible;
+                        }
+                        mostrarMensaje('warning', data.mensaje);
                     }
-                } else {
-                    // Error: restaurar valor anterior o ajustar según stock
-                    if (data.stock_disponible !== undefined) {
-                        input.value = data.stock_disponible;
-                        input.max = data.stock_disponible;
-                    }
-                    mostrarMensaje('warning', data.mensaje);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mostrarMensaje('danger', 'Error al actualizar el carrito');
-            })
-            .finally(() => {
-                // Ocultar spinner
-                spinner.classList.add('d-none');
-                input.disabled = false;
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarMensaje('danger', 'Error al actualizar el carrito');
+                })
+                .finally(() => {
+                    // Ocultar spinner
+                    spinner.classList.add('d-none');
+                    input.disabled = false;
+                });
         }
-        
+
         function actualizarTotales(data) {
             // Actualizar cantidad en el navbar
             const cantidadCarrito = document.getElementById('cantidad-carrito');
             if (cantidadCarrito) {
                 cantidadCarrito.textContent = data.cantidad_total;
             }
-            
+
             // Actualizar cantidad de productos en resumen
             const cantidadProductos = document.getElementById('cantidad-productos');
             if (cantidadProductos) {
                 cantidadProductos.textContent = data.cantidad_total;
             }
-            
+
             // Actualizar subtotal de productos
             const totalProductos = document.getElementById('total-productos');
             if (totalProductos) {
                 totalProductos.textContent = data.total_carrito + '€';
             }
-            
+
             // Actualizar envío
             const costoEnvio = document.getElementById('costo-envio');
             if (costoEnvio) {
@@ -399,7 +401,7 @@ $conexion->close();
                     costoEnvio.classList.remove('text-success');
                 }
             }
-            
+
             // Actualizar mensaje de envío gratis
             const mensajeEnvio = document.getElementById('mensaje-envio');
             if (mensajeEnvio) {
@@ -408,25 +410,25 @@ $conexion->close();
                     mensajeEnvio.classList.remove('text-muted');
                     mensajeEnvio.classList.add('text-success');
                 } else {
-                    mensajeEnvio.innerHTML = `💡 Añade ${data.falta_envio_gratis}€ más para envío gratis`;
+                    mensajeEnvio.innerHTML = `<i class="fas fa-lightbulb"></i> Añade ${data.falta_envio_gratis}€ más para envío gratis`;
                     mensajeEnvio.classList.remove('text-success');
                     mensajeEnvio.classList.add('text-muted');
                 }
             }
-            
+
             // Actualizar total final
             const totalFinal = document.getElementById('total-final');
             if (totalFinal) {
                 totalFinal.textContent = data.total_final + '€';
             }
-            
+
             // Actualizar el total en el confirmación del botón
             const formCompra = document.getElementById('formProcesarCompra');
             if (formCompra) {
                 formCompra.dataset.total = data.total_final;
             }
         }
-        
+
         function mostrarMensaje(tipo, mensaje) {
             // Crear alerta temporal
             const alertDiv = document.createElement('div');
@@ -436,15 +438,15 @@ $conexion->close();
                 ${mensaje}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
-            
+
             document.body.appendChild(alertDiv);
-            
+
             // Auto-eliminar después de 3 segundos
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
         }
-        
+
         // Validación del formulario de compra
         document.getElementById('formProcesarCompra')?.addEventListener('submit', function(e) {
             const formaPago = this.querySelector('[name="forma_pago"]').value;
@@ -453,14 +455,14 @@ $conexion->close();
                 alert('Por favor, selecciona una forma de pago');
                 return false;
             }
-            
+
             // Si selecciona PayPal, redirigir a procesar_pago.php
             if (formaPago === 'paypal') {
                 e.preventDefault();
                 window.location.href = '../paypal/procesar_pago.php';
                 return false;
             }
-            
+
             // Confirmación de compra
             const total = this.dataset.total || '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
             if (!confirm('¿Confirmar la compra por ' + total + '€?')) {
@@ -468,11 +470,11 @@ $conexion->close();
                 return false;
             }
         });
-        
+
         // Mostrar/ocultar información de PayPal según la forma de pago seleccionada
         const formaPagoSelect = document.getElementById('forma_pago_select');
         const infoPyapal = document.getElementById('info_paypal');
-        
+
         if (formaPagoSelect) {
             formaPagoSelect.addEventListener('change', function() {
                 if (this.value === 'paypal') {

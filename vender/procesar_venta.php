@@ -116,8 +116,8 @@ try {
     $estadoPedido = 'procesando'; // Puede ser 'procesando', 'aprobado', 'rechazado', 'pagado' según el flujo
     $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
     
-    $sqlPedido = "INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idVenta, idCliente, estado) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sqlPedido = "INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idVenta, idCliente, estado, fecha_creacion) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
     $stmtPedido = $conexion->prepare($sqlPedido);
     
     if (!$stmtPedido) {

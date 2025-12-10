@@ -78,13 +78,15 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nevom - Tu Tienda de Móviles de Confianza</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
     <!-- Hero Section -->
     <section class="hero-section wave-dark">
@@ -97,10 +99,10 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
                         <a href="#agregar-movil" class="btn btn-primary-custom btn-custom">
-                            📱 Agregar Móvil
+                            <i class="fas fa-mobile-alt"></i> Agregar Móvil
                         </a>
                         <a href="#ver-pedidos" class="btn btn-outline-custom btn-custom">
-                            📦 Ver Pedidos
+                            <i class="fas fa-box"></i> Ver Pedidos
                         </a>
                     </div>
                 </div>
@@ -137,7 +139,8 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 
     <!-- Mensajes Flash -->
     <?php if (!empty($_SESSION['flash'])): ?>
-        <?php $flash = $_SESSION['flash']; $alertType = ($flash['type'] ?? 'info') === 'success' ? 'success' : 'danger'; ?>
+        <?php $flash = $_SESSION['flash'];
+        $alertType = ($flash['type'] ?? 'info') === 'success' ? 'success' : 'danger'; ?>
         <div class="container py-4">
             <div class="alert alert-<?= htmlspecialchars($alertType) ?> alert-dismissible fade show" role="alert">
                 <strong><?= $alertType === 'success' ? '✅ ' : '❌ ' ?></strong>
@@ -152,7 +155,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <section class="py-5" id="agregar-usuario" style="padding-top: 80px !important;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="section-title">👥 Gestión de Usuarios</h2>
+                <h2 class="section-title"><i class="fas fa-users"></i> Gestión de Usuarios</h2>
                 <p class="text-muted mt-4">Consulta usuarios registrados y crea nuevas cuentas</p>
             </div>
 
@@ -170,7 +173,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                 <div class="col-lg-10">
                     <div class="card shadow-lg rounded-4">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">📋 Últimos Usuarios Registrados</h5>
+                            <h5 class="mb-0"><i class="fas fa-clipboard"></i> Últimos Usuarios Registrados</h5>
                         </div>
                         <div class="card-body p-4">
                             <?php if ($resultUsuarios && $resultUsuarios->num_rows > 0): ?>
@@ -218,7 +221,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <section class="py-5 bg-light" id="ver-pedidos" style="padding-top: 80px !important;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="section-title">📦 Gestión de Pedidos</h2>
+                <h2 class="section-title"><i class="fas fa-box"></i> Gestión de Pedidos</h2>
                 <p class="text-muted mt-4">Consulta y gestiona los pedidos del sistema</p>
             </div>
             <div class="row justify-content-center mb-4">
@@ -362,7 +365,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <section class="py-5" id="ver-reparaciones" style="padding-top: 80px !important;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="section-title">🔧 Gestión de Reparaciones</h2>
+                <h2 class="section-title"><i class="fas fa-wrench"></i> Gestión de Reparaciones</h2>
                 <p class="text-muted mt-4">Consulta todas las reparaciones solicitadas por los clientes</p>
             </div>
 
@@ -370,7 +373,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                 <div class="col-lg-10">
                     <div class="card shadow-lg rounded-4 border-warning">
                         <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0">🛠️ Últimas Reparaciones Registradas</h5>
+                            <h5 class="mb-0"><i class="fas fa-tools"></i> Últimas Reparaciones Registradas</h5>
                         </div>
                         <div class="card-body p-4">
                             <?php if ($resultReparaciones && $resultReparaciones->num_rows > 0): ?>
@@ -418,7 +421,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     <section class="py-5 bg-light" id="agregar-movil" style="padding-top: 80px !important;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="section-title">📱 Gestión de Móviles</h2>
+                <h2 class="section-title"><i class="fas fa-mobile-alt"></i> Gestión de Móviles</h2>
                 <p class="text-muted mt-4">Consulta el inventario y añade nuevos productos</p>
             </div>
 
@@ -436,7 +439,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                 <div class="col-lg-10">
                     <div class="card shadow-lg rounded-4 border-success">
                         <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">📋 Últimos Móviles Registrados</h5>
+                            <h5 class="mb-0"><i class="fas fa-clipboard"></i> Últimos Móviles Registrados</h5>
                         </div>
                         <div class="card-body p-4">
                             <?php if ($resultMoviles && $resultMoviles->num_rows > 0): ?>
@@ -494,7 +497,7 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 mb-4 mb-lg-0">
-                        <h4 class="fw-bold mb-1">📱 Nevom</h4>
+                        <h4 class="fw-bold mb-1"><i class="fas fa-mobile-alt"></i> Nevom</h4>
                         <p class="text-light opacity-75">
                             Tu tienda de confianza para comprar, vender y reparar móviles.
                             Calidad y servicio garantizados.

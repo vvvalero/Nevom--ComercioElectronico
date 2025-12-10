@@ -105,13 +105,15 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEVOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- Navegación -->
-    <?php require 'components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '']); ?>
+    <?php require 'components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '']); ?>
 
     <!-- Hero Section -->
     <section class="hero-section wave-light">
@@ -132,7 +134,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <div style="font-size: 10rem; opacity: 0.9;">📱</div>
+                    <div style="font-size: 10rem; opacity: 0.9;"><i class="fas fa-mobile-alt"></i></div>
                 </div>
             </div>
         </div>
@@ -152,12 +154,12 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     <div class="col-lg-4">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">🛒 Mis Compras</h5>
+                                <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Mis Compras</h5>
                             </div>
                             <div class="card-body">
                                 <?php if ($comprasCliente && $comprasCliente->num_rows > 0): ?>
                                     <div class="list-group">
-                                        <?php while ($compra = $comprasCliente->fetch_assoc()): 
+                                        <?php while ($compra = $comprasCliente->fetch_assoc()):
                                             $productos_list = explode(', ', $compra['productos']);
                                             $multiple = count($productos_list) > 1;
                                         ?>
@@ -201,7 +203,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                     </div>
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
-                                        <p class="mb-0">🛒 No has comprado móviles aún.<br>¡Explora nuestro catálogo!</p>
+                                        <p class="mb-0"><i class="fas fa-shopping-cart"></i> No has comprado móviles aún.<br>¡Explora nuestro catálogo!</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -263,7 +265,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     <div class="col-lg-4">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0">🔧 Mis Reparaciones</h5>
+                                <h5 class="mb-0"><i class="fas fa-wrench"></i> Mis Reparaciones</h5>
                             </div>
                             <div class="card-body">
                                 <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
@@ -284,7 +286,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                     </div>
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
-                                        <p class="mb-0">🔧 No tienes reparaciones registradas.</p>
+                                        <p class="mb-0"><i class="fas fa-wrench"></i> No tienes reparaciones registradas.</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -310,7 +312,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                             <div class="card product-card">
                                 <div class="position-relative">
                                     <div class="product-image">
-                                        📱
+                                        <i class="fas fa-mobile-alt"></i>
                                     </div>
                                     <?php if ($movil['stock'] <= 5): ?>
                                         <span class="product-badge">¡Últimas unidades!</span>
@@ -332,7 +334,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                             <input type="hidden" name="cantidad" value="1">
                                             <input type="hidden" name="redirect" value="productos">
                                             <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                                                🛒 Agregar al Carrito
+                                                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                                             </button>
                                         </form>
                                     <?php else: ?>
@@ -347,7 +349,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 <?php else: ?>
                     <div class="col-12">
                         <div class="alert alert-info text-center">
-                            <h4>🔍 Próximamente nuevos productos</h4>
+                            <h4><i class="fas fa-search"></i> Próximamente nuevos productos</h4>
                             <p class="mb-0">Estamos preparando nuestro catálogo. ¡Vuelve pronto!</p>
                         </div>
                     </div>
@@ -366,21 +368,21 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
             <div class="row g-4 justify-content-center">
                 <div class="col-md-6 col-lg-3 d-flex justify-content-center">
                     <div class="card feature-card text-center p-4 w-100">
-                        <div class="feature-icon">🛒</div>
+                        <div class="feature-icon"><i class="fas fa-shopping-cart"></i></div>
                         <h5 class="fw-bold mb-3">Compra</h5>
                         <p class="text-muted">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 d-flex justify-content-center">
                     <div class="card feature-card text-center p-4 w-100">
-                        <div class="feature-icon">🔧</div>
+                        <div class="feature-icon"><i class="fas fa-wrench"></i></div>
                         <h5 class="fw-bold mb-3">Reparación</h5>
                         <p class="text-muted">Servicio técnico especializado para todo tipo de averías</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 d-flex justify-content-center">
                     <div class="card feature-card text-center p-4 h-100 d-flex flex-column w-100">
-                        <div class="feature-icon">💰</div>
+                        <div class="feature-icon"><i class="fas fa-money-bill"></i></div>
                         <h5 class="fw-bold mb-3">Venta</h5>
                         <p class="text-muted flex-grow-1">Compramos tu móvil usado al mejor precio del mercado</p>
                         <?php if ($userName && $userRole === 'client'): ?>
@@ -403,7 +405,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h4 class="fw-bold mb-3">📱 Nevom</h4>
+                    <h4 class="fw-bold mb-3"><i class="fas fa-mobile-alt"></i> Nevom</h4>
                     <p class="text-light opacity-75">
                         Tu tienda de confianza para comprar, vender y reparar móviles.
                         Calidad y servicio garantizados.

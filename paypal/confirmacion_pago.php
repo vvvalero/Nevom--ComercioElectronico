@@ -31,7 +31,7 @@ if (!empty($datosCompra) && !empty($carrito)) {
         $stmt->execute();
         $clienteId = $stmt->get_result()->fetch_assoc()['id'] ?? null;
         $stmt->close();
-        
+
         if (!$clienteId) throw new Exception('No se encontró el perfil de cliente');
 
         $conexion->begin_transaction();
@@ -82,7 +82,6 @@ if (!empty($datosCompra) && !empty($carrito)) {
         // Redirigir a página unificada de confirmación
         header('Location: ../carrito/confirmacion_pedido.php?numero_pedido=' . urlencode($numSeguimiento));
         exit;
-
     } catch (Exception $e) {
         $conexion->rollback();
         $tipo_mensaje = 'danger';
@@ -100,16 +99,20 @@ $conexion->close();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Pago - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+
 <body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
     <header class="page-header wave-light <?= $procesado ? 'success' : ($tipo_mensaje === 'danger' ? 'danger' : 'warning') ?>">
@@ -135,7 +138,7 @@ $conexion->close();
                     <!-- Detalles del pedido -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">📋 Detalles del Pedido</h5>
+                            <h5 class="mb-0"><i class="fas fa-clipboard"></i> Detalles del Pedido</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
@@ -154,7 +157,7 @@ $conexion->close();
                                 <div class="col-md-6">
                                     <div class="p-3 bg-light rounded">
                                         <small class="text-muted d-block">Método de Pago</small>
-                                        <strong style="color: #0070ba;">💳 PayPal</strong>
+                                        <strong style="color: #0070ba;"><i class="fas fa-credit-card"></i> PayPal</strong>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -177,7 +180,7 @@ $conexion->close();
 
                     <!-- Info adicional -->
                     <div class="alert alert-info d-flex align-items-start mb-4">
-                        <span class="me-3" style="font-size: 1.25rem;">📧</span>
+                        <i class="fas fa-envelope me-3" style="font-size: 1.25rem;"></i>
                         <div>
                             <strong>Próximos pasos</strong>
                             <p class="mb-0 small">Tu pedido será preparado y enviado a la brevedad. Recibirás actualizaciones sobre el estado de tu envío.</p>
@@ -186,14 +189,17 @@ $conexion->close();
 
                     <!-- Botones -->
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="../carrito/descargar_factura.php?pedido_id=<?= $pedidoId ?>" class="btn btn-success btn-lg">
-                            📄 Descargar Factura (Facturae)
+                        <a href="../carrito/visualizar_factura.php?numero_pedido=<?= urlencode($numeroPedido) ?>" class="btn btn-info btn-lg">
+                            <i class="fas fa-eye"></i> Visualizar Factura
+                        </a>
+                        <a href="../carrito/descargar_factura.php?numero_pedido=<?= urlencode($numeroPedido) ?>" class="btn btn-success btn-lg">
+                            <i class="fas fa-file"></i> Descargar Factura (Facturae)
                         </a>
                         <a href="../index.php" class="btn btn-primary btn-lg">
-                            🏠 Volver a la Tienda
+                            <i class="fas fa-home"></i> Volver a la Tienda
                         </a>
                         <a href="../index.php#mis-compras" class="btn btn-outline-secondary btn-lg">
-                            📦 Ver Mis Pedidos
+                            <i class="fas fa-box"></i> Ver Mis Pedidos
                         </a>
                     </div>
                 </div>
@@ -213,7 +219,7 @@ $conexion->close();
                     <!-- Sugerencias -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">💡 ¿Qué puedes hacer?</h5>
+                            <h5 class="card-title"><i class="fas fa-lightbulb"></i> ¿Qué puedes hacer?</h5>
                             <ul class="mb-0">
                                 <li>Verifica tu conexión a internet</li>
                                 <li>Intenta realizar la compra nuevamente desde el carrito</li>
@@ -225,10 +231,10 @@ $conexion->close();
                     <!-- Botones -->
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
                         <a href="../carrito/carrito.php" class="btn btn-primary btn-lg">
-                            🛒 Volver al Carrito
+                            <i class="fas fa-shopping-cart"></i> Volver al Carrito
                         </a>
                         <a href="../index.php" class="btn btn-outline-secondary btn-lg">
-                            🏠 Ir al Inicio
+                            <i class="fas fa-home"></i> Ir al Inicio
                         </a>
                     </div>
                 </div>
@@ -241,7 +247,8 @@ $conexion->close();
             <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
         </div>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

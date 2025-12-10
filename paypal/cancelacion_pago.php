@@ -18,16 +18,20 @@ registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago Cancelado - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+
 <body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
     <header class="page-header warning wave-light">
@@ -52,12 +56,12 @@ registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
                 <!-- Opciones disponibles -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">💡 ¿Qué puedes hacer?</h5>
+                        <h5 class="card-title"><i class="fas fa-lightbulb"></i> ¿Qué puedes hacer?</h5>
                         <ul class="mb-0">
-                            <li>🔄 Volver al carrito y reintentar el pago</li>
-                            <li>📋 Revisar los artículos de tu compra</li>
-                            <li>💳 Usar otro método de pago</li>
-                            <li>🛒 Seguir comprando y añadir más productos</li>
+                            <li><i class="fas fa-redo"></i> Volver al carrito y reintentar el pago</li>
+                            <li><i class="fas fa-clipboard"></i> Revisar los artículos de tu compra</li>
+                            <li><i class="fas fa-credit-card"></i> Usar otro método de pago</li>
+                            <li><i class="fas fa-shopping-cart"></i> Seguir comprando y añadir más productos</li>
                         </ul>
                     </div>
                 </div>
@@ -73,10 +77,10 @@ registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
                 <!-- Botones de acción -->
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="../carrito/carrito.php" class="btn btn-primary btn-lg">
-                        🛒 Volver al Carrito
+                        <i class="fas fa-shopping-cart"></i> Volver al Carrito
                     </a>
                     <a href="../index.php" class="btn btn-outline-secondary btn-lg">
-                        🏠 Seguir Comprando
+                        <i class="fas fa-home"></i> Seguir Comprando
                     </a>
                 </div>
             </div>
@@ -90,4 +94,5 @@ registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

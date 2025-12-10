@@ -41,11 +41,11 @@ function renderNavbar($options = []) {
         <div class="container">
             <?php if ($type === 'admin'): ?>
                 <a class="navbar-brand" href="<?= $basePath ?>admin/indexadmin.php">
-                    <span style="font-size: 1.5rem;">📱</span> Nevom <span class="badge bg-primary ms-2" style="font-size: 0.65rem; vertical-align: middle;">Admin</span>
+                    <i class="fas fa-mobile-alt" style="font-size: 1.5rem;"></i> Nevom <span class="badge bg-primary ms-2" style="font-size: 0.65rem; vertical-align: middle;">Admin</span>
                 </a>
             <?php else: ?>
                 <a class="navbar-brand" href="<?= $basePath ?>index.php">
-                    <span style="font-size: 1.5rem;">📱</span> Nevom
+                    <i class="fas fa-mobile-alt" style="font-size: 1.5rem;"></i> Nevom
                 </a>
             <?php endif; ?>
             
@@ -64,22 +64,22 @@ function renderNavbar($options = []) {
                             <!-- Enlaces de administrador -->
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('usuarios') ?>" href="<?= $basePath ?>admin/indexadmin.php#agregar-usuario">
-                                    👤 Usuarios
+                                    <i class="fas fa-users"></i> Usuarios
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('pedidos') ?>" href="<?= $basePath ?>admin/indexadmin.php#ver-pedidos">
-                                    📦 Pedidos
+                                    <i class="fas fa-box"></i> Pedidos
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('reparaciones') ?>" href="<?= $basePath ?>admin/indexadmin.php#ver-reparaciones">
-                                    🔧 Reparaciones
+                                    <i class="fas fa-wrench"></i> Reparaciones
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('movil') ?>" href="<?= $basePath ?>admin/indexadmin.php#agregar-movil">
-                                    ➕ Móvil
+                                    <i class="fas fa-plus"></i> Móvil
                                 </a>
                             </li>
                             <li class="nav-item dropdown ms-2">
@@ -90,10 +90,10 @@ function renderNavbar($options = []) {
                                     <?= htmlspecialchars($userName) ?>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="<?= $basePath ?>admin/visorBBDD.php">🗄️ Base de Datos</a></li>
-                                    <li><a class="dropdown-item" href="<?= $basePath ?>index.php">🏪 Ver Tienda</a></li>
+                                    <li><a class="dropdown-item" href="<?= $basePath ?>admin/visorBBDD.php"><i class="fas fa-database"></i> Base de Datos</a></li>
+                                    <li><a class="dropdown-item" href="<?= $basePath ?>index.php"><i class="fas fa-store"></i> Ver Tienda</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="<?= $basePath ?>auth/logout.php">🚪 Cerrar Sesión</a></li>
+                                    <li><a class="dropdown-item text-danger" href="<?= $basePath ?>auth/logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                                 </ul>
                             </li>
                             
@@ -101,12 +101,12 @@ function renderNavbar($options = []) {
                             <!-- Enlaces principales (main) -->
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('productos') ?>" href="<?= $basePath ?>index.php#productos">
-                                    🛍️ Productos
+                                    <i class="fas fa-shopping-bag"></i> Productos
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?= $isActive('servicios') ?>" href="<?= $basePath ?>index.php#servicios">
-                                    ⚙️ Servicios
+                                    <i class="fas fa-cog"></i> Servicios
                                 </a>
                             </li>
                             
@@ -114,7 +114,7 @@ function renderNavbar($options = []) {
                                 <!-- Enlaces solo para clientes logueados -->
                                 <li class="nav-item">
                                     <a class="nav-link <?= $isActive('carrito') ?>" href="<?= $basePath ?>carrito/carrito.php">
-                                        🛒 Carrito
+                                        <i class="fas fa-shopping-cart"></i> Carrito
                                         <?php if ($cantidadCarrito > 0): ?>
                                             <span class="badge bg-danger"><?= $cantidadCarrito ?></span>
                                         <?php endif; ?>
@@ -122,7 +122,7 @@ function renderNavbar($options = []) {
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link <?= $isActive('vender') ?>" href="<?= $basePath ?>vender/vender_movil.php">
-                                        💰 Vender
+                                        <i class="fas fa-money-bill"></i> Vender
                                     </a>
                                 </li>
                             <?php endif; ?>
@@ -138,14 +138,15 @@ function renderNavbar($options = []) {
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <?php if ($userRole === 'admin'): ?>
-                                            <li><a class="dropdown-item" href="<?= $basePath ?>admin/indexadmin.php">🎛️ Panel Admin</a></li>
-                                            <li><a class="dropdown-item" href="<?= $basePath ?>admin/addMovil.php">➕ Añadir Móvil</a></li>
+                                            <li><a class="dropdown-item" href="<?= $basePath ?>admin/indexadmin.php"><i class="fas fa-sliders-h"></i> Panel Admin</a></li>
+                                            <li><a class="dropdown-item" href="<?= $basePath ?>admin/addMovil.php"><i class="fas fa-plus"></i> Añadir Móvil</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                         <?php else: ?>
-                                            <li><a class="dropdown-item" href="<?= $basePath ?>admin/visorBBDD.php">📋 Mis Pedidos</a></li>
+                                            <li><a class="dropdown-item" href="<?= $basePath ?>cliente/perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                                            <li><a class="dropdown-item" href="<?= $basePath ?>cliente/mis_pedidos.php"><i class="fas fa-clipboard"></i> Mis Pedidos</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                         <?php endif; ?>
-                                        <li><a class="dropdown-item text-danger" href="<?= $basePath ?>auth/logout.php">🚪 Cerrar Sesión</a></li>
+                                        <li><a class="dropdown-item text-danger" href="<?= $basePath ?>auth/logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                                     </ul>
                                 </li>
                             <?php else: ?>
@@ -157,7 +158,7 @@ function renderNavbar($options = []) {
                                 </li>
                                 <li class="nav-item ms-2">
                                     <a class="btn btn-primary btn-sm rounded-pill px-4" href="<?= $basePath ?>auth/signupcliente.php">
-                                        ✨ Registrarse
+                                        <i class="fas fa-sparkles"></i> Registrarse
                                     </a>
                                 </li>
                             <?php endif; ?>
