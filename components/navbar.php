@@ -24,10 +24,10 @@ function renderNavbar($options = []) {
     $userName = $_SESSION['user_name'] ?? null;
     $userRole = $_SESSION['user_role'] ?? null;
     
-    // Calcular cantidad del carrito
+    // Calcular cantidad del carrito (número de móviles distintos)
     $cantidadCarrito = 0;
     if (isset($_SESSION['carrito']) && is_array($_SESSION['carrito'])) {
-        $cantidadCarrito = array_sum($_SESSION['carrito']);
+        $cantidadCarrito = count($_SESSION['carrito']);
     }
     
     // Función helper para marcar link activo

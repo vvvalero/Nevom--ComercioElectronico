@@ -47,12 +47,22 @@ $conexion->close();
     renderNavbar(['type' => 'admin', 'activeLink' => 'movil', 'basePath' => '../']);
     ?>
 
-    <header class="bg-dark text-white py-4 mb-5 text-center shadow-sm" style="margin-top: 20px;">
-        <div class="container">
-            <h1 class="mb-0"><i class="fas fa-mobile-alt"></i> Añadir Móvil</h1>
-            <p class="mb-0 mt-2 opacity-75">Agrega un nuevo dispositivo al inventario</p>
+    <!-- Hero Section -->
+    <section class="hero-section wave-light">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">Añadir Móvil</h1>
+                    <p class="hero-subtitle">
+                        Agrega un nuevo dispositivo al inventario de Nevom
+                    </p>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <i class="fas fa-mobile-alt" style="font-size: 10rem; opacity: 0.9;"></i>
+                </div>
+            </div>
         </div>
-    </header>
+    </section>
 
     <div class="container">
         <?php
@@ -65,37 +75,67 @@ $conexion->close();
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card shadow-lg">
-                    <div class="card-body p-5">
-                        <h3 class="card-title mb-4 text-center">Formulario de Nuevo Móvil</h3>
-
-                        <form action="" method="post">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Información del Nuevo Móvil</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="" method="post" class="needs-validation" novalidate>
                             <div class="row g-4">
                                 <div class="col-md-6">
-                                    <label class="form-label">Marca</label>
+                                    <label class="form-label fw-bold">Marca</label>
                                     <input type="text" name="marca" class="form-control" placeholder="Ej: Samsung" required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingresa la marca del móvil
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Modelo</label>
+                                    <label class="form-label fw-bold">Modelo</label>
                                     <input type="text" name="modelo" class="form-control" placeholder="Ej: Galaxy S23" required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingresa el modelo del móvil
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Capacidad (GB)</label>
-                                    <input type="number" name="capacidad" class="form-control" placeholder="128" required>
+                                    <label class="form-label fw-bold">Capacidad (GB)</label>
+                                    <select class="form-select" name="capacidad" required>
+                                        <option value="">Selecciona una capacidad</option>
+                                        <option value="16">16 GB</option>
+                                        <option value="32">32 GB</option>
+                                        <option value="64">64 GB</option>
+                                        <option value="128">128 GB</option>
+                                        <option value="256">256 GB</option>
+                                        <option value="512">512 GB</option>
+                                        <option value="1024">1 TB</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor, selecciona la capacidad
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Stock</label>
+                                    <label class="form-label fw-bold">Stock</label>
                                     <input type="number" name="stock" class="form-control" placeholder="10" required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingresa el stock disponible
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Color</label>
+                                    <label class="form-label fw-bold">Color</label>
                                     <input type="text" name="color" class="form-control" placeholder="Negro" required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingresa el color del móvil
+                                    </div>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Precio (€)</label>
+                                    <label class="form-label fw-bold">Precio (€)</label>
                                     <input type="number" step="0.01" name="precio" class="form-control" placeholder="599.99" required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingresa el precio del móvil
+                                    </div>
                                 </div>
                                 <div class="col-12 text-center mt-4">
-                                    <input type="submit" name="enviar" value="➕ Añadir Móvil" class="btn btn-primary btn-lg rounded-pill px-5">
+                                    <button type="submit" name="enviar" class="btn btn-primary btn-lg rounded-pill px-5">
+                                        <i class="fas fa-plus"></i> Añadir Móvil
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -114,6 +154,23 @@ $conexion->close();
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validación de formulario de Bootstrap
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 
 </body>
 

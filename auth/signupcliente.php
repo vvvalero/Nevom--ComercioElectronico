@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono = trim($_POST['telefono'] ?? '');
     $direccion = trim($_POST['direccion'] ?? '');
     $password = $_POST['password'] ?? '';
-    $password_confirm = $_POST['password_confirm'] ?? '';
+    $password_confirm = $_POST['confirm_password'] ?? '';
 
     // Validar que todos los campos estén llenos
     if ($nombre === '' || $apellidos === '' || $email === '' || $telefono === '' || $direccion === '' || $password === '') {
@@ -111,7 +111,7 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registro de Cliente - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
@@ -119,89 +119,128 @@ $conexion->close();
     <!-- Navegación -->
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Registro de Cliente', 'basePath' => '../']); ?>
 
-    <div class="auth-container">
-        <div class="card shadow-lg rounded-4">
-            <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold mb-2">Nevom</h2>
-                        <h3 class="mb-3">Crear Cuenta de Cliente</h3>
-                        <p class="text-muted">Completa el formulario para registrarte</p>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section wave-light">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">Crear Cuenta de Cliente</h1>
+                    <p class="hero-subtitle">
+                        Únete a Nevom y comienza a comprar y vender móviles de forma segura
+                    </p>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <i class="fas fa-user-plus" style="font-size: 10rem; opacity: 0.9;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- Formulario de Registro -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Registro de Cliente</h4>
+                        </div>
+                        <div class="card-body p-4">
                     <?php if ($error): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <i class="fas fa-exclamation-triangle me-2"></i>
                             <?= $error ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
 
-                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="clientSignupForm">
+                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="clientSignupForm" class="needs-validation" novalidate>
                         
                         <!-- Información Personal -->
                         <div class="mb-4">
-                            <h5 class="text-muted mb-3"><i class="bi bi-person-circle me-2"></i>Información Personal</h5>
+                            <h5 class="text-muted mb-3"><i class="fas fa-user me-2"></i>Información Personal</h5>
                             
                             <div class="mb-3">
-                                <label class="form-label">Nombre *</label>
+                                <label class="form-label fw-bold">Nombre *</label>
                                 <input type="text" name="nombre" class="form-control form-control-lg" 
                                        placeholder="Ej: Juan" value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tu nombre
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Apellidos *</label>
+                                <label class="form-label fw-bold">Apellidos *</label>
                                 <input type="text" name="apellidos" class="form-control form-control-lg" 
                                        placeholder="Ej: García López" value="<?= htmlspecialchars($_POST['apellidos'] ?? '') ?>" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tus apellidos
+                                </div>
                             </div>
                         </div>
 
                         <!-- Información de Contacto -->
                         <div class="mb-4">
-                            <h5 class="text-muted mb-3"><i class="bi bi-envelope me-2"></i>Información de Contacto</h5>
+                            <h5 class="text-muted mb-3"><i class="fas fa-envelope me-2"></i>Información de Contacto</h5>
                             
                             <div class="mb-3">
-                                <label class="form-label">Email *</label>
+                                <label class="form-label fw-bold">Email *</label>
                                 <input type="email" name="email" class="form-control form-control-lg" 
                                        placeholder="tu@email.com" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa un email válido
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Teléfono *</label>
+                                <label class="form-label fw-bold">Teléfono *</label>
                                 <input type="tel" name="telefono" class="form-control form-control-lg" 
                                        placeholder="666777888" 
                                        value="<?= htmlspecialchars($_POST['telefono'] ?? '') ?>" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tu teléfono
+                                </div>
                                 <small class="text-muted">Solo números, sin espacios</small>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Dirección *</label>
+                                <label class="form-label fw-bold">Dirección *</label>
                                 <input type="text" name="direccion" class="form-control form-control-lg" 
                                        placeholder="Calle Mayor 123, 28001 Madrid" 
                                        value="<?= htmlspecialchars($_POST['direccion'] ?? '') ?>" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tu dirección
+                                </div>
                             </div>
                         </div>
 
                         <!-- Seguridad -->
                         <div class="mb-4">
-                            <h5 class="text-muted mb-3"><i class="bi bi-shield-lock me-2"></i>Seguridad</h5>
+                            <h5 class="text-muted mb-3"><i class="fas fa-shield-alt me-2"></i>Seguridad</h5>
                             
                             <div class="mb-3">
-                                <label class="form-label">Contraseña *</label>
+                                <label class="form-label fw-bold">Contraseña *</label>
                                 <input type="password" name="password" class="form-control form-control-lg" 
-                                       placeholder="Mínimo 6 caracteres" minlength="6" id="password" required>
+                                       placeholder="Mínimo 6 caracteres" minlength="6" required>
+                                <div class="invalid-feedback">
+                                    La contraseña debe tener al menos 6 caracteres
+                                </div>
+                                <small class="text-muted">Mínimo 6 caracteres, incluye mayúsculas, minúsculas y números</small>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Confirmar Contraseña *</label>
-                                <input type="password" name="password_confirm" class="form-control form-control-lg" 
-                                       placeholder="Repite tu contraseña" minlength="6" id="password_confirm" required>
-                                <small class="text-danger d-none" id="passwordError">Las contraseñas no coinciden</small>
+                                <label class="form-label fw-bold">Confirmar Contraseña *</label>
+                                <input type="password" name="confirm_password" class="form-control form-control-lg" 
+                                       placeholder="Repite tu contraseña" minlength="6" required>
+                                <div class="invalid-feedback">
+                                    Las contraseñas no coinciden
+                                </div>
                             </div>
                         </div>
 
                         <!-- Botón de Registro -->
                         <button class="btn btn-primary w-100 btn-lg rounded-pill mb-3" type="submit">
-                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
                         </button>
 
                         <div class="text-center">
@@ -213,7 +252,7 @@ $conexion->close();
 
                         <div class="text-center">
                             <a href="../index.php" class="text-muted text-decoration-none">
-                                <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+                                <i class="fas fa-arrow-left me-1"></i>Volver al inicio
                             </a>
                         </div>
                     </form>
@@ -224,33 +263,21 @@ $conexion->close();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Validación de contraseñas en tiempo real
-        const password = document.getElementById('password');
-        const passwordConfirm = document.getElementById('password_confirm');
-        const passwordError = document.getElementById('passwordError');
-
-        function checkPasswords() {
-            if (passwordConfirm.value !== '' && password.value !== passwordConfirm.value) {
-                passwordError.classList.remove('d-none');
-                passwordConfirm.classList.add('is-invalid');
-            } else {
-                passwordError.classList.add('d-none');
-                passwordConfirm.classList.remove('is-invalid');
-            }
-        }
-
-        password.addEventListener('input', checkPasswords);
-        passwordConfirm.addEventListener('input', checkPasswords);
-
-        // Validación del formulario
-        document.getElementById('clientSignupForm').addEventListener('submit', function(e) {
-            if (password.value !== passwordConfirm.value) {
-                e.preventDefault();
-                passwordError.classList.remove('d-none');
-                passwordConfirm.focus();
-                return false;
-            }
-        });
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
     </script>
 </body>
 

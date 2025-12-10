@@ -147,6 +147,7 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registro - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
@@ -154,18 +155,37 @@ $conexion->close();
     <!-- Navegación -->
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'admin', 'basePath' => '../']); ?>
 
-    <div class="auth-container">
-        <div class="card shadow-lg rounded-4">
-            <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="mb-2">Nevom</h2>
-                        <h3 class="mb-4">Crear Cuenta</h3>
-                        <p class="text-muted">Registra una cuenta con su rol</p>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section wave-light">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">Crear Nueva Cuenta</h1>
+                    <p class="hero-subtitle">
+                        Registra usuarios clientes o administradores en el sistema Nevom
+                    </p>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <i class="fas fa-user-plus" style="font-size: 10rem; opacity: 0.9;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Registro -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Registro de Usuario</h4>
+                        </div>
+                        <div class="card-body p-4">
 
                     <?php if ($error): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <i class="fas fa-exclamation-triangle me-2"></i>
                             <?= htmlspecialchars($error) ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
@@ -173,13 +193,13 @@ $conexion->close();
 
                     <?php if ($success): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <i class="fas fa-check-circle me-2"></i>
                             <?= htmlspecialchars($success) ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
 
-                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="registerForm">
+                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="registerForm" class="needs-validation" novalidate>
                         <!-- Selector de Rol (Primero) -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Tipo de Cuenta *</label>
@@ -188,44 +208,65 @@ $conexion->close();
                                 <option value="client">Cliente</option>
                                 <option value="admin">Administrador</option>
                             </select>
+                            <div class="invalid-feedback">
+                                Por favor, selecciona un tipo de cuenta
+                            </div>
                             <small class="text-muted">Los administradores pueden gestionar productos y pedidos</small>
                         </div>
 
                         <!-- Campos Comunes -->
                         <div id="commonFields" style="display: none;">
                             <div class="mb-3">
-                                <label class="form-label">Nombre Completo *</label>
+                                <label class="form-label fw-bold">Nombre Completo *</label>
                                 <input type="text" name="nombre" class="form-control form-control-lg" 
                                        placeholder="Ej: Juan" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa el nombre completo
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Email *</label>
+                                <label class="form-label fw-bold">Email *</label>
                                 <input type="email" name="email" class="form-control form-control-lg" 
                                        placeholder="tu@email.com" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa un email válido
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Contraseña *</label>
+                                <label class="form-label fw-bold">Contraseña *</label>
                                 <input type="password" name="password" class="form-control form-control-lg" 
                                        placeholder="Mínimo 6 caracteres" minlength="6" required>
+                                <div class="invalid-feedback">
+                                    La contraseña debe tener al menos 6 caracteres
+                                </div>
                             </div>
                         </div>
 
                         <!-- Campos Solo para Clientes -->
                         <div id="clientFields" style="display: none;">
                             <div class="mb-3">
-                                <label class="form-label">Apellidos *</label>
+                                <label class="form-label fw-bold">Apellidos *</label>
                                 <input type="text" name="apellidos" class="form-control form-control-lg" 
                                        placeholder="Ej: García López" id="apellidosInput">
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa los apellidos
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Dirección *</label>
+                                <label class="form-label fw-bold">Dirección *</label>
                                 <input type="text" name="direccion" class="form-control form-control-lg" 
                                        placeholder="Ej: Calle Mayor 123, Madrid" id="direccionInput">
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa la dirección
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Teléfono *</label>
+                                <label class="form-label fw-bold">Teléfono *</label>
                                 <input type="tel" name="telefono" class="form-control form-control-lg" 
                                        placeholder="Ej: 666 777 888" id="telefonoInput">
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa el teléfono
+                                </div>
                                 <small class="text-muted">Solo números, sin espacios ni guiones</small>
                             </div>
                         </div>
@@ -244,17 +285,33 @@ $conexion->close();
                         <hr class="my-4">
                         <div class="text-center">
                             <a href="../admin/indexadmin.php" class="text-muted text-decoration-none">
-                                <i class="bi bi-arrow-left"></i> Volver al inicio
+                                <i class="fas fa-arrow-left"></i> Volver al inicio
                             </a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Validación de formulario de Bootstrap
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
         // Manejo dinámico de campos según el rol seleccionado
         document.getElementById('roleSelect').addEventListener('change', function() {
             const role = this.value;

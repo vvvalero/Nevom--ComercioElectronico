@@ -329,7 +329,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                         <span class="text-muted">Stock: <?= $movil['stock'] ?></span>
                                     </div>
                                     <?php if ($userName && $userRole === 'client'): ?>
-                                        <form method="post" action="carrito/agregar_carrito.php" class="mt-3">
+                                        <form method="post" action="carrito/agregar_carrito.php" class="mt-3 add-to-cart-form">
                                             <input type="hidden" name="movil_id" value="<?= $movil['id'] ?>">
                                             <input type="hidden" name="cantidad" value="1">
                                             <input type="hidden" name="redirect" value="productos">
@@ -464,9 +464,138 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
             }
         });
-    </script>
 
-</body>
+        // Agregar al carrito interceptando formularios POST tradicionales
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+            
+            addToCartForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevenir recarga de página
+                    
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    
+                    // Deshabilitar botón mientras procesa
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agregando...';
+                    
+                    // Crear FormData desde el formulario
+                    const formData = new FormData(form);
+                    
+                    // Enviar petición AJAX
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Mostrar mensaje de éxito
+                            showToast(data.message, 'success');
+                            
+                            // Actualizar contador del carrito
+                            updateCartCount(data.cart_count);
+                            
+                            // Animación de éxito en el botón
+                            submitButton.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+                            submitButton.classList.remove('btn-primary');
+                            submitButton.classList.add('btn-success');
+                            
+                            setTimeout(() => {
+                                submitButton.disabled = false;
+                                submitButton.innerHTML = originalText;
+                                submitButton.classList.remove('btn-success');
+                                submitButton.classList.add('btn-primary');
+                            }, 300);
+                        } else {
+                            // Mostrar mensaje de error
+                            showToast(data.message, 'danger');
+                            
+                            // Restaurar botón
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalText;
+                            
+                            // Si necesita redirección (login)
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, 2000);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Error al agregar al carrito', 'danger');
+                        
+                        // Restaurar botón
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    });
+                });
+            });
+        });
+        
+        // Función para mostrar toast
+        function showToast(message, type) {
+            // Crear toast si no existe
+            let toastContainer = document.querySelector('.toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '9999';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-white bg-' + type + ' border-0';
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = 
+                '<div class="d-flex">' +
+                    '<div class="toast-body">' +
+                        '<i class="fas ' + (type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle') + ' me-2"></i>' +
+                        message +
+                    '</div>' +
+                    '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>' +
+                '</div>';
+            
+            toastContainer.appendChild(toast);
+            
+            // Inicializar y mostrar toast
+            const bsToast = new bootstrap.Toast(toast, {
+                delay: 1000 // 1.5 segundos
+            });
+            bsToast.show();
+            
+            // Remover toast después de que se oculte
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+        
+        // Función para actualizar contador del carrito
+        function updateCartCount(count) {
+            const cartLink = document.querySelector('a[href*="carrito.php"]');
+            if (cartLink) {
+                let cartBadge = cartLink.querySelector('.badge');
+                if (count > 0) {
+                    if (!cartBadge) {
+                        cartBadge = document.createElement('span');
+                        cartBadge.className = 'badge bg-danger ms-1';
+                        cartLink.appendChild(cartBadge);
+                    }
+                    cartBadge.textContent = count;
+                } else {
+                    if (cartBadge) {
+                        cartBadge.remove();
+                    }
+                }
+            }
+        }
+    </script>
 
 </html>
 

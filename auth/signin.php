@@ -87,36 +87,67 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Iniciar Sesión - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navegación -->
     <?php require '../components/navbar.php'; renderNavbar(['type' => 'simple', 'simpleText' => 'Iniciar Sesión', 'basePath' => '../']); ?>
 
-    <div class="auth-container">
-        <div class="card shadow-lg rounded-4">
-            <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="mb-2">Nevom</h2>
-                        <h3 class="mb-4">Iniciar Sesión</h3>
-                        <p class="text-muted">Accede a tu cuenta para continuar</p>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section wave-light">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title">Bienvenido de vuelta</h1>
+                    <p class="hero-subtitle">
+                        Accede a tu cuenta de Nevom para comprar y vender móviles de forma segura
+                    </p>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <i class="fas fa-sign-in-alt" style="font-size: 10rem; opacity: 0.9;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Login -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Iniciar Sesión</h4>
+                        </div>
+                        <div class="card-body p-4">
+
                     
                     <?php if ($error): ?>
-                        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <?= htmlspecialchars($error) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
                     <?php endif; ?>
-                    
-                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+
+                    <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" id="loginForm" class="needs-validation" novalidate>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label fw-bold">Email *</label>
                             <input type="email" name="email" class="form-control form-control-lg" placeholder="tu@email.com" required>
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un email válido
+                            </div>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label">Contraseña</label>
+                            <label class="form-label fw-bold">Contraseña *</label>
                             <input type="password" name="password" class="form-control form-control-lg" placeholder="••••••••" required>
+                            <div class="invalid-feedback">
+                                Por favor, ingresa tu contraseña
+                            </div>
                         </div>
                         <button class="btn btn-primary w-100 btn-lg rounded-pill mb-3" type="submit">
-                            Iniciar Sesión
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </button>
                         <div class="text-center">
                             <span class="text-muted">¿No tienes cuenta?</span>
@@ -124,13 +155,33 @@ $conexion->close();
                         </div>
                         <hr class="my-4">
                         <div class="text-center">
-                            <a href="../index.php" class="text-muted text-decoration-none">← Volver al inicio</a>
+                            <a href="../index.php" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Volver al inicio
+                            </a>
                         </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 </body>
 </html>
