@@ -62,7 +62,7 @@ $baseImponible = $pedido['precioTotal'] - $iva;
     <title>Factura - <?php echo htmlspecialchars($numeroPedido); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="/nevom/assets/css/style.css" rel="stylesheet">
 </head>
 <body style="font-family: 'Roboto', sans-serif; background-color: var(--gray-50); color: var(--gray-800);">
     <div class="container-fluid py-4">
@@ -195,7 +195,7 @@ $baseImponible = $pedido['precioTotal'] - $iva;
                     <button onclick="window.print()" class="btn btn-primary">
                         🖨️ Imprimir
                     </button>
-                    <a href="confirmacion_pedido.php" class="btn btn-secondary">
+                    <a href="confirmacion_pedido.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-secondary">
                         ← Volver
                     </a>
                 </div>

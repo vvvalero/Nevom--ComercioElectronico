@@ -1537,6 +1537,12 @@ footer a:hover,
     color: white;
 }
 
+.invoice-container .actions-section .btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+    color: white;
+}
+
 /* Estilos de impresión */
 @media print {
     body {

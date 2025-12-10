@@ -157,9 +157,6 @@ try {
                     <a href="../index.php" class="btn btn-primary btn-lg">
                         🏠 Volver a la Tienda
                     </a>
-                    <a href="../index.php#mis-compras" class="btn btn-outline-secondary btn-lg">
-                        📦 Ver Mis Pedidos
-                    </a>
                 </div>
             </div>
         </div>
