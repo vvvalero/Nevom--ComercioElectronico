@@ -1606,3 +1606,10 @@ footer a:hover,
         gap: 0.5rem;
     }
 }
+
+/* ============================================
+   GRADIENT BACKGROUNDS
+   ============================================ */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+}

@@ -80,21 +80,25 @@ $conexion->close();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+
 <body>
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
     <header class="page-header wave-light <?= empty($errores) ? '' : 'danger' ?>">
         <div class="container">
-            <h1><?= empty($errores) ? '🔒 Confirmar Pago' : '⚠️ Errores Encontrados' ?></h1>
+            <h1><?= empty($errores) ? '<i class="fas fa-lock"></i> Confirmar Pago' : '<i class="fas fa-exclamation-triangle"></i> Errores Encontrados' ?></h1>
             <p><?= empty($errores) ? 'Revisa los detalles de tu compra antes de proceder con PayPal' : 'Por favor corrige los siguientes errores' ?></p>
         </div>
     </header>
@@ -122,7 +126,7 @@ $conexion->close();
                     <!-- Resumen de compra -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">📦 Resumen de tu compra</h5>
+                            <h5 class="mb-0"><i class="fas fa-box"></i> Resumen de tu compra</h5>
                         </div>
                         <div class="card-body">
                             <?php foreach ($productosDetalle as $p): ?>
@@ -140,7 +144,7 @@ $conexion->close();
                     <!-- Datos de envío -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">📍 Datos de envío</h5>
+                            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Datos de envío</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
@@ -178,7 +182,7 @@ $conexion->close();
                             <form method="post" id="form-pagar">
                                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                                     <button type="submit" class="btn btn-primary btn-lg" id="btn-pagar">
-                                        🔒 Pagar con PayPal
+                                        <i class="fas fa-lock"></i> Pagar con PayPal
                                     </button>
                                     <a href="../carrito/carrito.php" class="btn btn-outline-secondary btn-lg">
                                         ← Cancelar
@@ -189,14 +193,14 @@ $conexion->close();
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Cargando...</span>
                                 </div>
-                                <p class="mt-2 text-muted">🔄 Redirigiendo a PayPal...</p>
+                                <p class="mt-2 text-muted"><i class="fas fa-redo"></i> Redirigiendo a PayPal...</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Info de seguridad -->
                     <div class="alert alert-info d-flex align-items-start">
-                        <span class="me-3" style="font-size: 1.25rem;">🔐</span>
+                        <i class="fas fa-lock me-3" style="font-size: 1.25rem;"></i>
                         <div>
                             <strong>Pago seguro</strong>
                             <p class="mb-0 small">Serás redirigido a PayPal para completar tu pago de forma segura. No almacenamos datos de tu cuenta PayPal.</p>
@@ -225,4 +229,5 @@ $conexion->close();
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

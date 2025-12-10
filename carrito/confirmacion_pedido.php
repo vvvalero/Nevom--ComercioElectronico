@@ -92,7 +92,7 @@ try {
                 <!-- Detalles del pedido -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">📋 Detalles del Pedido</h5>
+                        <h5 class="mb-0"><i class="fas fa-clipboard"></i> Detalles del Pedido</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -113,7 +113,7 @@ try {
                                     <small class="text-muted d-block">Método de Pago</small>
                                     <strong style="color: <?php echo $pedido['formaPago'] === 'paypal' ? '#0070ba' : '#28a745'; ?>;">
                                         <?php 
-                                        $icon = $pedido['formaPago'] === 'paypal' ? '💳' : ($pedido['formaPago'] === 'tarjeta' ? '💳' : '💰');
+                                        $icon = $pedido['formaPago'] === 'paypal' ? '<i class="fas fa-credit-card"></i>' : ($pedido['formaPago'] === 'tarjeta' ? '<i class="fas fa-credit-card"></i>' : '<i class="fas fa-money-bill"></i>');
                                         echo $icon . ' ' . ucfirst($pedido['formaPago']);
                                         ?>
                                     </strong>
@@ -139,7 +139,7 @@ try {
 
                 <!-- Info adicional -->
                 <div class="alert alert-info d-flex align-items-start mb-4">
-                    <span class="me-3" style="font-size: 1.25rem;">📧</span>
+                    <i class="fas fa-envelope me-3" style="font-size: 1.25rem;"></i>
                     <div>
                         <strong>Próximos pasos</strong>
                         <p class="mb-0 small">Tu pedido será preparado y enviado a la brevedad. Recibirás actualizaciones sobre el estado de tu envío.</p>
@@ -149,13 +149,13 @@ try {
                 <!-- Botones -->
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="visualizar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-info btn-lg">
-                        👁️ Visualizar Factura
+                        <i class="fas fa-eye"></i> Visualizar Factura
                     </a>
                     <a href="descargar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success btn-lg">
-                        📄 Descargar Factura (Facturae)
+                        <i class="fas fa-file"></i> Descargar Factura (Facturae)
                     </a>
                     <a href="../index.php" class="btn btn-primary btn-lg">
-                        🏠 Volver a la Tienda
+                        <i class="fas fa-home"></i> Volver a la Tienda
                     </a>
                 </div>
             </div>

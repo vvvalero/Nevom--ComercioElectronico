@@ -130,7 +130,7 @@ $stmt->close();
                             </p>
 
                             <div class="alert alert-info mb-4">
-                                <strong>📋 Número de Seguimiento:</strong> <?= htmlspecialchars($pedido['numSeguimiento']) ?>
+                                <strong><i class="fas fa-clipboard"></i> Número de Seguimiento:</strong> <?= htmlspecialchars($pedido['numSeguimiento']) ?>
                             </div>
                         </div>
                     </div>
@@ -138,7 +138,7 @@ $stmt->close();
                     <!-- Detalles de la Venta -->
                     <div class="card shadow-sm mt-4">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">📱 Detalles de Tu Móvil</h5>
+                            <h5 class="mb-0"><i class="fas fa-mobile-alt"></i> Detalles de Tu Móvil</h5>
                         </div>
                         <div class="card-body">
                             <div class="info-row">
@@ -171,7 +171,7 @@ $stmt->close();
                     <!-- Valoración -->
                     <div class="card shadow-sm mt-4 border-success">
                         <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">💰 Valoración</h5>
+                            <h5 class="mb-0"><i class="fas fa-money-bill"></i> Valoración</h5>
                         </div>
                         <div class="card-body">
                             <div class="text-center">
@@ -217,10 +217,10 @@ $stmt->close();
                     <!-- Acciones -->
                     <div class="d-grid gap-2 mt-4">
                         <a href="../index.php" class="btn btn-primary btn-lg">
-                            🏠 Volver al Inicio
+                            <i class="fas fa-home"></i> Volver al Inicio
                         </a>
                         <a href="vender_movil.php" class="btn btn-outline-secondary">
-                            💰 Vender Otro Móvil
+                            <i class="fas fa-money-bill"></i> Vender Otro Móvil
                         </a>
                     </div>
 

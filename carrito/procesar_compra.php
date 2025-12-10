@@ -150,7 +150,7 @@ try {
     $cantidadTotalFloat = (float)$cantidadTotal;
     $numSeguimiento = 'NV-' . date('Ymd-His') . '-' . rand(100, 999);
 
-    $stmtPedido = $conexion->prepare("INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmtPedido = $conexion->prepare("INSERT INTO pedido (numSeguimiento, precioTotal, cantidadTotal, formaPago, idCompra, idCliente, estado, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
     $stmtPedido->bind_param('sddsiis', $numSeguimiento, $precioTotal, $cantidadTotalFloat, $formaPago, $compraId, $clienteId, $estado);
 
     if (!$stmtPedido->execute()) {

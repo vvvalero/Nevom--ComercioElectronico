@@ -152,6 +152,8 @@ CREATE TABLE `pedido` (
   `idReparacion` int(11) DEFAULT NULL,
   `idCliente` int(11) NOT NULL,
   `estado` enum('procesando','preparando','enviado','entregado','aprobado','rechazado','pagado') DEFAULT 'procesando',
+  `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `fecha_entrega` TIMESTAMP NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `numSeguimiento_unique` (`numSeguimiento`),
   KEY `Pedido_Cliente_FK` (`idCliente`),

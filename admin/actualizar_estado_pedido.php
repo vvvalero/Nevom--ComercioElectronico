@@ -54,8 +54,13 @@ if (!in_array($nuevoEstado, $estadosValidos)) {
 
 try {
     // Actualizar el estado del pedido
-    $stmt = $conexion->prepare("UPDATE pedido SET estado = ? WHERE id = ?");
-    $stmt->bind_param('si', $nuevoEstado, $pedidoId);
+    if ($nuevoEstado === 'entregado') {
+        $stmt = $conexion->prepare("UPDATE pedido SET estado = ?, fecha_entrega = NOW() WHERE id = ?");
+        $stmt->bind_param('si', $nuevoEstado, $pedidoId);
+    } else {
+        $stmt = $conexion->prepare("UPDATE pedido SET estado = ? WHERE id = ?");
+        $stmt->bind_param('si', $nuevoEstado, $pedidoId);
+    }
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {

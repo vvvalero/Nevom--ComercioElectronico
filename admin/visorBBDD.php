@@ -134,13 +134,14 @@ if ($userRole === 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor de Base de Datos - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
     <!-- Navegación -->
-    <?php 
-    require '../components/navbar.php'; 
+    <?php
+    require '../components/navbar.php';
     if ($userRole === 'admin') {
         renderNavbar(['type' => 'admin', 'basePath' => '../']);
     } else {
@@ -150,7 +151,7 @@ if ($userRole === 'admin') {
 
     <header class="bg-dark text-white py-4 mb-5 shadow-sm" style="margin-top: 20px;">
         <div class="container text-center">
-            <h1 class="mb-0">📊 Visor de Base de Datos</h1>
+            <h1 class="mb-0"><i class="fas fa-chart-bar"></i> Visor de Base de Datos</h1>
             <p class="mb-0 mt-2 opacity-75">Consulta la información del sistema</p>
         </div>
     </header>

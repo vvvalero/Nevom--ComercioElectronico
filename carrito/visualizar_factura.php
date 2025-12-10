@@ -35,7 +35,6 @@ try {
     $stmt->execute();
     $lineas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-
 } catch (Exception $e) {
     die('Error al obtener datos del pedido: ' . $e->getMessage());
 }
@@ -56,14 +55,17 @@ $baseImponible = $pedido['precioTotal'] - $iva;
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factura - <?php echo htmlspecialchars($numeroPedido); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/nevom/assets/css/style.css" rel="stylesheet">
 </head>
+
 <body style="font-family: 'Roboto', sans-serif; background-color: var(--gray-50); color: var(--gray-800);">
     <div class="container-fluid py-4">
         <div class="invoice-container">
@@ -190,10 +192,10 @@ $baseImponible = $pedido['precioTotal'] - $iva;
             <div class="actions-section">
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="descargar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success">
-                        📄 Descargar Factura (XML)
+                        <i class="fas fa-file"></i> Descargar Factura (XML)
                     </a>
                     <button onclick="window.print()" class="btn btn-primary">
-                        🖨️ Imprimir
+                        <i class="fas fa-print"></i> Imprimir
                     </button>
                     <a href="confirmacion_pedido.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-secondary">
                         ← Volver
@@ -205,4 +207,5 @@ $baseImponible = $pedido['precioTotal'] - $iva;
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
