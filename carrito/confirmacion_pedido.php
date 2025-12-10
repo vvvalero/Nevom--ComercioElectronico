@@ -148,6 +148,9 @@ try {
 
                 <!-- Botones -->
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="visualizar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-info btn-lg">
+                        👁️ Visualizar Factura
+                    </a>
                     <a href="descargar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success btn-lg">
                         📄 Descargar Factura (Facturae)
                     </a>

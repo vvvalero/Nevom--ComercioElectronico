@@ -186,7 +186,10 @@ $conexion->close();
 
                     <!-- Botones -->
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="../carrito/descargar_factura.php?pedido_id=<?= $pedidoId ?>" class="btn btn-success btn-lg">
+                        <a href="../carrito/visualizar_factura.php?numero_pedido=<?= urlencode($numeroPedido) ?>" class="btn btn-info btn-lg">
+                            👁️ Visualizar Factura
+                        </a>
+                        <a href="../carrito/descargar_factura.php?numero_pedido=<?= urlencode($numeroPedido) ?>" class="btn btn-success btn-lg">
                             📄 Descargar Factura (Facturae)
                         </a>
                         <a href="../index.php" class="btn btn-primary btn-lg">
