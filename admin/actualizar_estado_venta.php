@@ -91,6 +91,52 @@ try {
     
     $stmtActualizar->close();
 
+    // Si se aprueba la venta, actualizar stock y precio del móvil
+    if ($nuevoEstado === 'aprobado') {
+        // Obtener idMovil y precioTotal
+        $sqlObtenerMovil = "SELECT m.id as movil_id, p.precioTotal 
+                           FROM pedido p 
+                           JOIN venta v ON p.idVenta = v.id 
+                           JOIN linea_venta lv ON v.idLineaVenta = lv.id 
+                           JOIN movil m ON lv.idMovil = m.id 
+                           WHERE p.id = ?";
+        $stmtObtenerMovil = $conexion->prepare($sqlObtenerMovil);
+        
+        if (!$stmtObtenerMovil) {
+            throw new Exception("Error al preparar consulta de móvil: " . $conexion->error);
+        }
+        
+        $stmtObtenerMovil->bind_param('i', $pedidoId);
+        $stmtObtenerMovil->execute();
+        $resultadoMovil = $stmtObtenerMovil->get_result();
+        
+        if ($resultadoMovil->num_rows === 0) {
+            throw new Exception("Móvil no encontrado para el pedido");
+        }
+        
+        $movilData = $resultadoMovil->fetch_assoc();
+        $movilId = $movilData['movil_id'];
+        $precioCompra = $movilData['precioTotal'];
+        $nuevoPrecioVenta = $precioCompra * 1.10; // 10% más caro
+        $stmtObtenerMovil->close();
+
+        // Actualizar stock y precio del móvil
+        $sqlActualizarMovil = "UPDATE movil SET stock = 1, precio = ? WHERE id = ?";
+        $stmtActualizarMovil = $conexion->prepare($sqlActualizarMovil);
+        
+        if (!$stmtActualizarMovil) {
+            throw new Exception("Error al preparar actualización de móvil: " . $conexion->error);
+        }
+        
+        $stmtActualizarMovil->bind_param('di', $nuevoPrecioVenta, $movilId);
+        
+        if (!$stmtActualizarMovil->execute()) {
+            throw new Exception("Error al actualizar móvil: " . $stmtActualizarMovil->error);
+        }
+        
+        $stmtActualizarMovil->close();
+    }
+
     // Commit de la transacción
     $conexion->commit();
 
