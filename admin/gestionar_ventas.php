@@ -393,10 +393,6 @@ $pedidosResult = $conexion->query($pedidosQuery);
                     <div class="modal-body">
                         <input type="hidden" name="pedido_id" id="pagado_pedido_id">
                         <input type="hidden" name="nuevo_estado" value="pagado">
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i> 
-                            ¿Has transferido el pago al cliente?
-                        </div>
                         <p>Al marcar como pagado, se registrará que ya has pagado al cliente por su móvil.</p>
                     </div>
                     <div class="modal-footer">
