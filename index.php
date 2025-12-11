@@ -51,8 +51,8 @@ if ($userRole === 'client' && $clienteId) {
                    JOIN movil m ON lc.idMovil = m.id
                    WHERE p.idCliente = ? AND p.idCompra IS NOT NULL
                    GROUP BY p.numSeguimiento
-                   ORDER BY p.id DESC 
-                   LIMIT 5";
+                   ORDER BY p.fecha_creacion DESC 
+                   LIMIT 3";
     $stmtCompras = $conexion->prepare($sqlCompras);
     $stmtCompras->bind_param('i', $clienteId);
     $stmtCompras->execute();
@@ -67,8 +67,8 @@ if ($userRole === 'client' && $clienteId) {
                   JOIN linea_venta lv ON v.idLineaVenta = lv.id
                   JOIN movil m ON lv.idMovil = m.id
                   WHERE p.idCliente = ? AND p.idVenta IS NOT NULL
-                  ORDER BY p.id DESC 
-                  LIMIT 5";
+                  ORDER BY p.fecha_creacion DESC 
+                  LIMIT 3";
     $stmtVentas = $conexion->prepare($sqlVentas);
     $stmtVentas->bind_param('i', $clienteId);
     $stmtVentas->execute();
@@ -83,7 +83,7 @@ if ($userRole === 'client' && $clienteId) {
                         JOIN movil m ON lr.idMovil = m.id
                         WHERE p.idCliente = ?
                         ORDER BY r.id DESC
-                        LIMIT 5";
+                        LIMIT 3";
     $stmtReparaciones = $conexion->prepare($sqlReparaciones);
     $stmtReparaciones->bind_param('i', $clienteId);
     $stmtReparaciones->execute();
@@ -154,7 +154,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     <div class="col-lg-4">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Mis Compras</h5>
+                                <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Mis Últimas Compras</h5>
                             </div>
                             <div class="card-body">
                                 <?php if ($comprasCliente && $comprasCliente->num_rows > 0): ?>

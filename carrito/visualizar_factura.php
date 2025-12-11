@@ -67,6 +67,13 @@ $baseImponible = $pedido['precioTotal'] - $iva;
 </head>
 
 <body style="font-family: 'Roboto', sans-serif; background-color: var(--gray-50); color: var(--gray-800);">
+    <?php
+    // Iniciar sesión para el navbar
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    require '../components/navbar.php';
+    renderNavbar(['type' => 'cliente', 'activeLink' => 'movil', 'basePath' => '../']);
+    ?>
+
     <div class="container-fluid py-4">
         <div class="invoice-container">
             <!-- Header -->

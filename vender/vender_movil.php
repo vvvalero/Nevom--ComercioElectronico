@@ -40,13 +40,15 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vender Mi Móvil - NEVOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'activeLink' => 'vender', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'activeLink' => 'vender', 'basePath' => '../']); ?>
 
     <!-- Hero Section -->
     <section class="hero-section wave-light">
@@ -60,6 +62,7 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                 </div>
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
                     <div style="font-size: 10rem; opacity: 0.9;"></div>
+                    <i class="fas fa-mobile-alt" style="font-size: 5rem; opacity: 0.9;"></i>
                 </div>
             </div>
         </div>
@@ -82,22 +85,12 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                             <h4 class="mb-0">Información de Tu Móvil</h4>
                         </div>
                         <div class="card-body p-4">
-                            <div class="alert alert-info">
-                                <h5>ℹ️ Cómo funciona:</h5>
-                                <ul class="mb-0">
-                                    <li>Completa la información de tu móvil</li>
-                                    <li>Recibirás una <strong>valoración instantánea</strong></li>
-                                    <li>Si aceptas, procesaremos tu solicitud de venta</li>
-                                    <li>Te contactaremos para coordinar la recogida</li>
-                                </ul>
-                            </div>
-
                             <form action="procesar_venta.php" method="POST" class="needs-validation" novalidate>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="marca" class="form-label fw-bold">Marca *</label>
-                                        <input type="text" class="form-control" id="marca" name="marca" required 
-                                               placeholder="Ej: Samsung, Apple, Xiaomi">
+                                        <input type="text" class="form-control" id="marca" name="marca" required
+                                            placeholder="Ej: Samsung, Apple, Xiaomi">
                                         <div class="invalid-feedback">
                                             Por favor, ingresa la marca del móvil
                                         </div>
@@ -106,7 +99,7 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                                     <div class="col-md-6">
                                         <label for="modelo" class="form-label fw-bold">Modelo *</label>
                                         <input type="text" class="form-control" id="modelo" name="modelo" required
-                                               placeholder="Ej: Galaxy S21, iPhone 13">
+                                            placeholder="Ej: Galaxy S21, iPhone 13">
                                         <div class="invalid-feedback">
                                             Por favor, ingresa el modelo del móvil
                                         </div>
@@ -132,7 +125,7 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                                     <div class="col-md-6">
                                         <label for="color" class="form-label fw-bold">Color *</label>
                                         <input type="text" class="form-control" id="color" name="color" required
-                                               placeholder="Ej: Negro, Blanco, Azul">
+                                            placeholder="Ej: Negro, Blanco, Azul">
                                         <div class="invalid-feedback">
                                             Por favor, ingresa el color del móvil
                                         </div>
@@ -156,7 +149,7 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                                     <div class="col-md-12">
                                         <label for="comentarios" class="form-label fw-bold">Comentarios Adicionales</label>
                                         <textarea class="form-control" id="comentarios" name="comentarios" rows="4"
-                                                  placeholder="Describe cualquier detalle adicional sobre el móvil (opcional)"></textarea>
+                                            placeholder="Describe cualquier detalle adicional sobre el móvil (opcional)"></textarea>
                                         <small class="text-muted">Menciona si tiene accesorios, caja original, etc.</small>
                                     </div>
                                 </div>
@@ -187,7 +180,7 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Validación de formularios Bootstrap
         (function() {

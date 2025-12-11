@@ -48,7 +48,6 @@ try {
     $stmt->execute();
     $lineas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-
 } catch (Exception $e) {
     $_SESSION['mensaje'] = "Error: " . $e->getMessage();
     $_SESSION['mensaje_tipo'] = 'danger';
@@ -59,15 +58,19 @@ try {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Pedido - Nevom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Header -->
     <header class="page-header wave-light success">
@@ -112,7 +115,7 @@ try {
                                 <div class="p-3 bg-light rounded">
                                     <small class="text-muted d-block">Método de Pago</small>
                                     <strong style="color: <?php echo $pedido['formaPago'] === 'paypal' ? '#0070ba' : '#28a745'; ?>;">
-                                        <?php 
+                                        <?php
                                         $icon = $pedido['formaPago'] === 'paypal' ? '<i class="fas fa-credit-card"></i>' : ($pedido['formaPago'] === 'tarjeta' ? '<i class="fas fa-credit-card"></i>' : '<i class="fas fa-money-bill"></i>');
                                         echo $icon . ' ' . ucfirst($pedido['formaPago']);
                                         ?>
@@ -134,15 +137,6 @@ try {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Info adicional -->
-                <div class="alert alert-info d-flex align-items-start mb-4">
-                    <i class="fas fa-envelope me-3" style="font-size: 1.25rem;"></i>
-                    <div>
-                        <strong>Próximos pasos</strong>
-                        <p class="mb-0 small">Tu pedido será preparado y enviado a la brevedad. Recibirás actualizaciones sobre el estado de tu envío.</p>
                     </div>
                 </div>
 
@@ -170,4 +164,5 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

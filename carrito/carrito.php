@@ -135,7 +135,7 @@ $conexion->close();
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table class="table table-hover mb-0" id="productos-table">
                                     <thead class="table-light">
                                         <tr>
                                             <th>Producto</th>
@@ -285,6 +285,57 @@ $conexion->close();
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal de Confirmación de Compra -->
+    <div class="modal fade" id="confirmarCompraModal" tabindex="-1" aria-labelledby="confirmarCompraModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="confirmarCompraModalLabel">
+                        <i class="fas fa-shopping-cart me-2"></i>Confirmar Compra
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-info-circle me-2"></i>Resumen de tu Pedido
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-euro-sign me-2"></i><strong>Total a Pagar:</strong> <span id="modal-total" class="text-primary fs-5"></span></p>
+                                    <p><i class="fas fa-credit-card me-2"></i><strong>Forma de Pago:</strong> <span id="modal-forma-pago"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-boxes me-2"></i><strong>Cantidad Total:</strong> <span id="modal-cantidad"></span></p>
+                                    <p><i class="fas fa-truck me-2"></i><strong>Envío:</strong> <span id="modal-envio"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-secondary">
+                        <div class="card-header bg-dark text-white">
+                            <i class="fas fa-mobile-alt me-2"></i>Productos en tu Carrito
+                        </div>
+                        <div class="card-body">
+                            <div id="modal-productos-lista">
+                                <!-- Productos se cargarán aquí dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btn-confirmar-compra">
+                        <i class="fas fa-check me-2"></i>Confirmar Compra
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Función para actualizar el carrito automáticamente
@@ -449,27 +500,85 @@ $conexion->close();
 
         // Validación del formulario de compra
         document.getElementById('formProcesarCompra')?.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir submit inmediato
+
             const formaPago = this.querySelector('[name="forma_pago"]').value;
             if (!formaPago) {
-                e.preventDefault();
                 alert('Por favor, selecciona una forma de pago');
                 return false;
             }
 
-            // Si selecciona PayPal, redirigir a procesar_pago.php
+            // Si selecciona PayPal, redirigir directamente
             if (formaPago === 'paypal') {
-                e.preventDefault();
                 window.location.href = '../paypal/procesar_pago.php';
                 return false;
             }
 
-            // Confirmación de compra
-            const total = this.dataset.total || '<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>';
-            if (!confirm('¿Confirmar la compra por ' + total + '€?')) {
-                e.preventDefault();
-                return false;
-            }
+            // Para otros métodos de pago, mostrar modal de confirmación
+            mostrarModalConfirmacion(formaPago, this.dataset.total);
         });
+
+        function mostrarModalConfirmacion(formaPago, total) {
+            // Actualizar información en la modal
+            document.getElementById('modal-total').textContent = total + '€';
+            document.getElementById('modal-forma-pago').textContent = formaPago.charAt(0).toUpperCase() + formaPago.slice(1);
+            document.getElementById('modal-cantidad').textContent = document.getElementById('cantidad-productos').textContent;
+            
+            const totalNum = parseFloat(total.replace(',', '.'));
+            const envio = totalNum >= 50 ? 'Gratis' : '5.00€';
+            document.getElementById('modal-envio').textContent = envio;
+
+            // Poblar lista de productos
+            const productosLista = document.getElementById('modal-productos-lista');
+            productosLista.innerHTML = ''; // Limpiar contenido anterior
+
+            // Obtener productos de la tabla
+            const filasProductos = document.querySelectorAll('#productos-table tbody tr');
+            if (filasProductos.length === 0) {
+                productosLista.innerHTML = '<p class="text-muted">No hay productos en el carrito.</p>';
+            } else {
+                filasProductos.forEach(fila => {
+                    const celdas = fila.querySelectorAll('td');
+                    if (celdas.length >= 5) {
+                        const productoDiv = document.createElement('div');
+                        productoDiv.className = 'd-flex justify-content-between align-items-center border-bottom pb-2 mb-2';
+                        
+                        const infoProducto = celdas[0].querySelector('.d-flex');
+                        const nombreProducto = infoProducto ? infoProducto.querySelector('strong').textContent + ' ' + infoProducto.querySelectorAll('small')[0].textContent : 'Producto';
+                        const precio = celdas[1].querySelector('strong').textContent;
+                        const cantidad = celdas[2].querySelector('input').value;
+                        const subtotal = celdas[3].querySelector('strong').textContent;
+
+                        productoDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-mobile-alt me-3 text-primary"></i>
+                                <div>
+                                    <strong>${nombreProducto}</strong><br>
+                                    <small class="text-muted">Cantidad: ${cantidad}</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div>${precio}</div>
+                                <small class="text-muted">Subtotal: ${subtotal}</small>
+                            </div>
+                        `;
+                        productosLista.appendChild(productoDiv);
+                    }
+                });
+            }
+
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('confirmarCompraModal'));
+            modal.show();
+
+            // Configurar botón de confirmar
+            document.getElementById('btn-confirmar-compra').onclick = function() {
+                // Cerrar modal
+                modal.hide();
+                // Enviar formulario
+                document.getElementById('formProcesarCompra').submit();
+            };
+        }
 
         // Mostrar/ocultar información de PayPal según la forma de pago seleccionada
         const formaPagoSelect = document.getElementById('forma_pago_select');

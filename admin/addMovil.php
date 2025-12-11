@@ -17,8 +17,6 @@ if (isset($_POST['enviar'])) {
 
     if ($conexion->query($sql) === TRUE) {
         $mensaje = "<div class='alert alert-success'>Móvil añadido correctamente.</div>";
-        // Redirigir a indexadmin.php después de 1 segundo
-        header("refresh:1;url=indexadmin.php");
     } else {
         $mensaje = "<div class='alert alert-danger'>Error al añadir el móvil: " . $conexion->error . "</div>";
     }
