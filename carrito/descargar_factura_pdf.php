@@ -49,8 +49,13 @@ $empresa = [
 ];
 
 // Calcular IVA (21%)
-$iva = $pedido['precioTotal'] * 0.21;
-$baseImponible = $pedido['precioTotal'] - $iva;
+$iva = $pedido['precioTotal'] - ($pedido['precioTotal'] / 1.21);
+$baseImponible = $pedido['precioTotal'] / 1.21;
+
+// Agregar cálculos al array del pedido
+$pedido['baseImponible'] = $baseImponible;
+$pedido['iva'] = $iva;
+$pedido['fecha'] = date('d/m/Y', strtotime($pedido['fecha_creacion']));
 
 // Generar HTML con jsPDF para crear PDF
 ?>
@@ -71,108 +76,132 @@ $baseImponible = $pedido['precioTotal'] - $iva;
             const doc = new jsPDF();
 
             // Datos de la empresa
-            const empresa = {
-                nombre: "<?php echo addslashes($empresa['nombre']); ?>",
-                nif: "<?php echo addslashes($empresa['nif']); ?>",
-                direccion: "<?php echo addslashes($empresa['direccion']); ?>",
-                telefono: "<?php echo addslashes($empresa['telefono']); ?>",
-                email: "<?php echo addslashes($empresa['email']); ?>"
-            };
+            const empresa = <?php echo json_encode($empresa); ?>;
 
             // Datos del pedido
-            const pedido = {
-                numero: "<?php echo addslashes($numeroPedido); ?>",
-                fecha: "<?php echo date('d/m/Y'); ?>",
-                nombre: "<?php echo addslashes($pedido['nombre'] . ' ' . $pedido['apellidos']); ?>",
-                direccion: "<?php echo addslashes($pedido['direccion']); ?>",
-                telefono: "<?php echo addslashes($pedido['telefono']); ?>",
-                email: "<?php echo addslashes($pedido['email']); ?>",
-                precioTotal: <?php echo $pedido['precioTotal']; ?>,
-                baseImponible: <?php echo $baseImponible; ?>,
-                iva: <?php echo $iva; ?>
-            };
+            const pedido = <?php echo json_encode(array_merge($pedido, ['numero' => $numeroPedido])); ?>;
 
             // Líneas del pedido
-            const lineas = [
-                <?php
-                $lineas_js = [];
-                foreach ($lineas as $linea) {
-                    $subtotal = $linea['precio'] * $linea['cantidad'];
-                    $iva_linea = $subtotal * 0.21;
-                    $lineas_js[] = '["' . addslashes($linea['marca'] . ' ' . $linea['modelo']) . '", ' . $linea['cantidad'] . ', "' . number_format($linea['precio'], 2, ',', ' ') . ' €", "' . number_format($subtotal, 2, ',', ' ') . ' €", "' . number_format($iva_linea, 2, ',', ' ') . ' €", "' . number_format($subtotal + $iva_linea, 2, ',', ' ') . ' €"]';
-                }
-                echo implode(',', $lineas_js);
-                ?>
-            ];
+            const lineas = <?php echo json_encode(array_map(function($linea) {
+                $subtotal = $linea['precio'] * $linea['cantidad'];
+                $iva_linea = $subtotal * 0.21;
+                return [
+                    $linea['marca'] . ' ' . $linea['modelo'],
+                    $linea['cantidad'],
+                    number_format($linea['precio'], 2, ',', ' ') . ' €',
+                    number_format($subtotal, 2, ',', ' ') . ' €',
+                    number_format($iva_linea, 2, ',', ' ') . ' €',
+                    number_format($subtotal + $iva_linea, 2, ',', ' ') . ' €'
+                ];
+            }, $lineas)); ?>;
 
             // Configurar fuente
             doc.setFont("helvetica", "normal");
 
-            // Título de la empresa
+            // Header - Empresa con fondo
+            doc.setFillColor(248, 249, 250); // Gris claro
+            doc.rect(0, 0, 210, 45, 'F'); // Rectángulo de fondo
             doc.setFontSize(16);
-            doc.setTextColor(0, 123, 255);
-            doc.text(empresa.nombre, 105, 20, { align: 'center' });
+            doc.setTextColor(0, 123, 255); // Azul
+            doc.text(empresa.nombre || '', 105, 20, { align: 'center' });
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(empresa.direccion, 105, 30, { align: 'center' });
-            doc.text(`NIF: ${empresa.nif} | Tel: ${empresa.telefono} | Email: ${empresa.email}`, 105, 35, { align: 'center' });
+            doc.text(empresa.direccion || '', 105, 30, { align: 'center' });
+            doc.text(`NIF: ${empresa.nif || ''} | Tel: ${empresa.telefono || ''} | Email: ${empresa.email || ''}`, 105, 35, { align: 'center' });
 
-            // Título de la factura
+            // Línea separadora
+            doc.setDrawColor(0, 123, 255);
+            doc.setLineWidth(0.5);
+            doc.line(10, 50, 200, 50);
+
+            // Título Factura
             doc.setFontSize(14);
             doc.setTextColor(0, 123, 255);
-            doc.text("Factura Electrónica", 105, 50, { align: 'center' });
+            doc.text("Factura Electrónica", 105, 60, { align: 'center' });
+
+            // Invoice Info - Grid like
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(`Número de Factura: ${pedido.numero} | Serie: NV | Fecha: ${pedido.fecha}`, 105, 60, { align: 'center' });
+            doc.text("Número de Factura:", 20, 70);
+            doc.text(pedido.numero || '', 60, 70);
+            doc.text("Forma de Pago:", 20, 75);
+            doc.text(pedido.formaPago || '', 60, 75);
+            doc.text("Fecha de Emisión:", 110, 70);
+            doc.text(pedido.fecha || '', 150, 70);
 
-            // Vendedor
+            // Línea separadora
+            doc.line(10, 85, 200, 86);
+
+            // Parties - Vendedor y Cliente con cajas
+            let yPos = 105;
             doc.setFontSize(12);
             doc.setTextColor(0, 123, 255);
-            doc.text("Vendedor", 20, 80);
+            doc.text("Vendedor", 20, yPos);
+            doc.text("Cliente", 115, yPos);
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.2);
+            doc.rect(10, yPos - 5, 95, 40); // Caja vendedor ampliada
+            doc.rect(110, yPos - 5, 85, 40); // Caja cliente ampliada
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(empresa.nombre, 20, 90);
-            doc.text(empresa.direccion, 20, 95);
-            doc.text(`NIF: ${empresa.nif}`, 20, 100);
-            doc.text(`Tel: ${empresa.telefono}`, 20, 105);
-            doc.text(`Email: ${empresa.email}`, 20, 110);
+            yPos += 10;
+            doc.text(empresa.nombre || '', 15, yPos);
+            doc.text(pedido.nombre || '', 115, yPos);
+            yPos += 5;
+            doc.text(empresa.direccion || '', 15, yPos);
+            doc.text(pedido.direccion || '', 115, yPos);
+            yPos += 5;
+            doc.text(`NIF: ${empresa.nif || ''}`, 15, yPos);
+            doc.text("NIF: 12345678Z", 115, yPos);
+            yPos += 5;
+            doc.text(`Tel: ${empresa.telefono || ''}`, 15, yPos);
+            doc.text(`Tel: ${pedido.telefono || ''}`, 115, yPos);
+            yPos += 5;
+            doc.text(`Email: ${empresa.email || ''}`, 15, yPos);
+            doc.text(`Email: ${pedido.email || ''}`, 115, yPos);
 
-            // Cliente
-            doc.setFontSize(12);
-            doc.setTextColor(0, 123, 255);
-            doc.text("Cliente", 110, 80);
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
-            doc.text(pedido.nombre, 110, 90);
-            doc.text(pedido.direccion, 110, 95);
-            doc.text("NIF: 12345678Z", 110, 100);
-            doc.text(`Tel: ${pedido.telefono}`, 110, 105);
-            doc.text(`Email: ${pedido.email}`, 110, 110);
-
-            // Tabla de productos
+            // Tabla de productos con filas alternas
             const tableColumn = ["Descripción", "Cantidad", "Precio Unit.", "Base Imponible", "IVA (21%)", "Total"];
             const tableRows = lineas;
 
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
-                startY: 125,
+                startY: yPos + 15,
                 theme: 'grid',
-                headStyles: { fillColor: [248, 249, 250], textColor: 0 },
-                styles: { fontSize: 8 }
+                headStyles: { fillColor: [0, 123, 255], textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [245, 245, 245] },
+                styles: { fontSize: 8, cellPadding: 4 },
+                columnStyles: {
+                    0: { cellWidth: 50 },
+                    1: { cellWidth: 20, halign: 'center' },
+                    2: { cellWidth: 25, halign: 'right' },
+                    3: { cellWidth: 25, halign: 'right' },
+                    4: { cellWidth: 25, halign: 'right' },
+                    5: { cellWidth: 25, halign: 'right' }
+                }
             });
 
-            // Totales
+            // Totales con caja
             let finalY = doc.lastAutoTable.finalY + 10;
+            doc.setDrawColor(0, 123, 255);
+            doc.setLineWidth(0.5);
+            doc.rect(100, finalY - 5, 95, 20); // Caja totales ajustada
             doc.setFontSize(10);
-            doc.text(`Base Imponible: ${pedido.baseImponible.toFixed(2).replace('.', ',')} €`, 140, finalY);
-            doc.text(`IVA (21%): ${pedido.iva.toFixed(2).replace('.', ',')} €`, 140, finalY + 5);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Base Imponible: ${pedido.baseImponible ? pedido.baseImponible.toFixed(2).replace('.', ',') : '0,00'} €`, 190, finalY, { align: 'right' });
+            doc.text(`IVA (21%): ${pedido.iva ? pedido.iva.toFixed(2).replace('.', ',') : '0,00'} €`, 190, finalY + 5, { align: 'right' });
             doc.setFontSize(12);
             doc.setTextColor(0, 123, 255);
-            doc.text(`Total Factura: ${pedido.precioTotal.toFixed(2).replace('.', ',')} €`, 140, finalY + 10);
+            doc.text(`Total Factura: ${pedido.precioTotal ? pedido.precioTotal.toFixed(2).replace('.', ',') : '0,00'} €`, 190, finalY + 10, { align: 'right' });
+
+            // Pie de página
+            doc.setFontSize(8);
+            doc.setTextColor(128, 128, 128);
+            doc.text("Gracias por su compra - Nevom Comercio Electrónico", 105, 280, { align: 'center' });
 
             // Descargar
-            doc.save(`factura_${pedido.numero}.pdf`);
+            doc.save(`factura_${pedido.numero || 'sin_numero'}.pdf`);
         };
     </script>
 </body>

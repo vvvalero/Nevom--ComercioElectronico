@@ -199,7 +199,7 @@ $baseImponible = $pedido['precioTotal'] - $iva;
             <div class="actions-section">
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="descargar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success">
-                        <i class="fas fa-file"></i> Descargar Factura (XML)
+                        <i class="fas fa-file"></i> Descargar Factura (Facturae)
                     </a>
                     <button onclick="descargarPDF('<?php echo urlencode($numeroPedido); ?>')" class="btn btn-danger">
                         <i class="fas fa-file-pdf"></i> Descargar Factura (PDF)
@@ -222,10 +222,6 @@ $baseImponible = $pedido['precioTotal'] - $iva;
             iframe.src = 'descargar_factura_pdf.php?numero_pedido=' + numeroPedido;
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-            // Opcional: remover el iframe después de un tiempo
-            setTimeout(function() {
-                document.body.removeChild(iframe);
-            }, 5000);
         }
     </script>
 </body>

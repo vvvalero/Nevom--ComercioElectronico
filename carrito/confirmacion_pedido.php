@@ -172,10 +172,6 @@ try {
             iframe.src = 'descargar_factura_pdf.php?numero_pedido=' + numeroPedido;
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-            // Opcional: remover el iframe después de un tiempo
-            setTimeout(function() {
-                document.body.removeChild(iframe);
-            }, 5000);
         }
     </script>
 </body>
