@@ -67,6 +67,7 @@ $stmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmación de Venta - NEVOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     <style>
         .checkmark-circle {
@@ -90,6 +91,7 @@ $stmt->close();
             from {
                 transform: scale(0);
             }
+
             to {
                 transform: scale(1);
             }
@@ -109,21 +111,22 @@ $stmt->close();
 <body>
 
     <!-- Navegación -->
-    <?php require '../components/navbar.php'; renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
+    <?php require '../components/navbar.php';
+    renderNavbar(['type' => 'main', 'basePath' => '../']); ?>
 
     <!-- Contenido Principal -->
     <section class="py-5 mt-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    
+
                     <!-- Tarjeta de Confirmación -->
                     <div class="card shadow-lg border-0">
                         <div class="card-body p-5 text-center">
                             <div class="checkmark-circle">
                                 <div class="checkmark">✓</div>
                             </div>
-                            
+
                             <h1 class="display-5 fw-bold text-success mb-3">¡Venta Registrada!</h1>
                             <p class="lead text-muted mb-4">
                                 Tu solicitud de venta ha sido procesada exitosamente
@@ -181,16 +184,6 @@ $stmt->close();
                                 <p class="text-muted">
                                     Método de pago: <span class="badge bg-info"><?= htmlspecialchars($pedido['formaPago']) ?></span>
                                 </p>
-                            </div>
-                            
-                            <div class="alert alert-warning mt-3">
-                                <h6 class="alert-heading">⏳ Próximos Pasos:</h6>
-                                <ul class="mb-0">
-                                    <li>Nuestro equipo revisará tu solicitud</li>
-                                    <li>Te contactaremos en las próximas 24-48 horas</li>
-                                    <li>Coordinaremos la recogida de tu dispositivo</li>
-                                    <li>Una vez recibido y verificado, procesaremos el pago</li>
-                                </ul>
                             </div>
                         </div>
                     </div>

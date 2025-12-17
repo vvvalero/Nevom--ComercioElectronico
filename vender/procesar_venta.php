@@ -53,17 +53,22 @@ function calcularPrecioMovil($marca, $modelo, $capacidad, $estado) {
     // Precios base por marca y modelo (aproximados en €, basados en mercado)
     $preciosBase = [
         'Apple' => [
-            'iPhone 15 Pro Max' => 1200,
-            'iPhone 15 Pro' => 1100,
-            'iPhone 15' => 900,
-            'iPhone 14 Pro Max' => 1000,
-            'iPhone 14 Pro' => 900,
-            'iPhone 14' => 700,
-            'iPhone 13 Pro Max' => 800,
-            'iPhone 13 Pro' => 700,
-            'iPhone 13' => 600,
-            'iPhone 12' => 500,
-            'default' => 400, // Para modelos no listados
+            'iPhone 16 Pro Max' => 1050,
+            'iPhone 16 Pro' => 850,
+            'iPhone 16' => 750,
+            'iPhone 15 Pro Max' => 800,
+            'iPhone 15 Pro' => 720,
+            'iPhone 15' => 750,
+            'iPhone 14 Pro Max' => 800,
+            'iPhone 14 Pro' => 700,
+            'iPhone 14' => 550,
+            'iPhone 13 Pro Max' => 650,
+            'iPhone 13 Pro' => 550,
+            'iPhone 13' => 450,
+            'iPhone 12' => 350,
+            'iPhone 11' => 220,
+            'iPhone SE (3rd gen)' => 180,
+            'default' => 300, // Para modelos no listados
         ],
         'Samsung' => [
             'Galaxy S23 Ultra' => 1000,
@@ -71,27 +76,69 @@ function calcularPrecioMovil($marca, $modelo, $capacidad, $estado) {
             'Galaxy S23' => 700,
             'Galaxy S22 Ultra' => 800,
             'Galaxy S22' => 600,
+            'Galaxy S21 Ultra' => 700,
+            'Galaxy S21' => 500,
+            'Galaxy Note 20' => 400,
             'Galaxy A54' => 300,
             'Galaxy A34' => 250,
+            'Galaxy A14' => 200,
             'default' => 350,
         ],
         'Xiaomi' => [
             '13 Pro' => 600,
             '13' => 500,
             '12 Pro' => 400,
+            '12' => 350,
+            '11 Pro' => 300,
+            'Mi 11' => 250,
             'default' => 300,
         ],
         'Huawei' => [
             'P60 Pro' => 700,
             'Mate 50 Pro' => 600,
+            'Mate 40 Pro' => 500,
+            'P40 Pro' => 400,
             'default' => 400,
+        ],
+        'Google' => [
+            'Pixel 8 Pro' => 900,
+            'Pixel 8' => 700,
+            'Pixel 7 Pro' => 600,
+            'Pixel 7' => 500,
+            'Pixel 6 Pro' => 400,
+            'Pixel 6' => 350,
+            'default' => 450,
+        ],
+        'OnePlus' => [
+            '12' => 800,
+            '11' => 600,
+            '10 Pro' => 500,
+            '9 Pro' => 400,
+            '8 Pro' => 300,
+            'default' => 400,
+        ],
+        'Sony' => [
+            'Xperia 1 V' => 1000,
+            'Xperia 5 V' => 800,
+            'Xperia 10 V' => 400,
+            'Xperia 1 IV' => 700,
+            'Xperia 5 IV' => 600,
+            'default' => 350,
+        ],
+        'Motorola' => [
+            'Edge 40 Pro' => 600,
+            'Edge 30 Pro' => 500,
+            'Moto G Stylus' => 300,
+            'Moto G Power' => 250,
+            'Moto G Play' => 200,
+            'default' => 250,
         ],
         'default' => 250, // Para marcas no listadas
     ];
 
     // Normalizar marca y modelo para comparación insensible a mayúsculas
     $marcaNorm = ucfirst(strtolower($marca));
-    $modeloNorm = strtolower($modelo);
+    $modeloNorm = $modelo;
 
     // Obtener precio base
     $precioBase = $preciosBase[$marcaNorm][$modeloNorm] ?? $preciosBase[$marcaNorm]['default'] ?? $preciosBase['default'];
@@ -214,7 +261,7 @@ try {
     $conexion->commit();
 
     // Mensaje de éxito
-    $_SESSION['mensaje_venta'] = "¡Valoración completada! Tu móvil $marca $modelo ha sido valorado en $precioTotal€. 
+    $_SESSION['mensaje_venta'] = "¡Valoración completada! Tu móvil $marca $modelo ha sido valorado en " . $precioTotal . "€. 
                                    Hemos registrado tu solicitud de venta (Número de Seguimiento: $numSeguimiento). 
                                    Nos pondremos en contacto contigo para coordinar la recogida.";
     $_SESSION['tipo_mensaje'] = 'success';
