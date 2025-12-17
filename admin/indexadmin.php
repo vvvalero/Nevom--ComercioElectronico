@@ -24,9 +24,6 @@ $totalMoviles = $conexion->query($sqlTotalMoviles)->fetch_assoc()['total'];
 $sqlTotalPedidos = "SELECT COUNT(*) as total FROM pedido";
 $totalPedidos = $conexion->query($sqlTotalPedidos)->fetch_assoc()['total'];
 
-$sqlTotalReparaciones = "SELECT COUNT(*) as total FROM reparacion";
-$totalReparaciones = $conexion->query($sqlTotalReparaciones)->fetch_assoc()['total'];
-
 $sqlTotalUsuarios = "SELECT COUNT(*) as total FROM users";
 $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
 
@@ -51,16 +48,6 @@ $sqlPedidosCompra = "SELECT p.id, p.precioTotal, p.cantidadTotal, p.formaPago, p
                      ORDER BY p.id DESC 
                      LIMIT 10";
 $resultPedidosCompra = $conexion->query($sqlPedidosCompra);
-
-$sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo, p.idCliente, c.nombre as nombreCliente
-                    FROM reparacion r
-                    LEFT JOIN linea_reparacion lr ON r.idLineaReparacion = lr.id
-                    LEFT JOIN movil m ON lr.idMovil = m.id
-                    LEFT JOIN pedido p ON p.idReparacion = r.id
-                    LEFT JOIN cliente c ON p.idCliente = c.id
-                    ORDER BY r.id DESC
-                    LIMIT 10";
-$resultReparaciones = $conexion->query($sqlReparaciones);
 
 $sqlMoviles = "SELECT id, marca, modelo, capacidad, stock, color, precio 
                FROM movil 
@@ -121,15 +108,11 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
                     <div class="stat-number"><?= $totalMoviles ?></div>
                     <div class="stat-label">Móviles en Stock</div>
                 </div>
-                <div class="col-md-3 stat-item mb-4 mb-md-0">
+                <div class="col-md-4 stat-item mb-4 mb-md-0">
                     <div class="stat-number"><?= $totalPedidos ?></div>
                     <div class="stat-label">Pedidos Totales</div>
                 </div>
-                <div class="col-md-3 stat-item mb-4 mb-md-0">
-                    <div class="stat-number"><?= $totalReparaciones ?></div>
-                    <div class="stat-label">Reparaciones</div>
-                </div>
-                <div class="col-md-3 stat-item">
+                <div class="col-md-4 stat-item mb-4 mb-md-0">
                     <div class="stat-number"><?= $totalUsuarios ?></div>
                     <div class="stat-label">Usuarios Registrados</div>
                 </div>
@@ -361,62 +344,6 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
         </div>
     </section>
 
-    <!-- Sección: Ver Reparaciones -->
-    <section class="py-5" id="ver-reparaciones" style="padding-top: 80px !important;">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title"><i class="fas fa-wrench"></i> Gestión de Reparaciones</h2>
-                <p class="text-muted mt-4">Consulta todas las reparaciones solicitadas por los clientes</p>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="card shadow-lg rounded-4 border-warning">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0"><i class="fas fa-tools"></i> Últimas Reparaciones Registradas</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <?php if ($resultReparaciones && $resultReparaciones->num_rows > 0): ?>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>ID Reparación</th>
-                                                <th>Cliente</th>
-                                                <th>Móvil</th>
-                                                <th>Tipo de Reparación</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php while ($reparacion = $resultReparaciones->fetch_assoc()): ?>
-                                                <tr>
-                                                    <td><strong>#<?= htmlspecialchars($reparacion['id']) ?></strong></td>
-                                                    <td><?= htmlspecialchars($reparacion['nombreCliente'] ?? 'N/A') ?></td>
-                                                    <td>
-                                                        <?php if ($reparacion['marca']): ?>
-                                                            <?= htmlspecialchars($reparacion['marca']) ?> <?= htmlspecialchars($reparacion['modelo']) ?>
-                                                        <?php else: ?>
-                                                            N/A
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td><span class="badge bg-warning text-dark"><?= htmlspecialchars($reparacion['tipoReparacion'] ?? 'N/A') ?></span></td>
-                                                </tr>
-                                            <?php endwhile; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php else: ?>
-                                <div class="alert alert-info text-center">
-                                    No hay reparaciones registradas.
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Sección: Agregar Móvil -->
     <section class="py-5 bg-light" id="agregar-movil" style="padding-top: 80px !important;">
         <div class="container">
@@ -492,24 +419,23 @@ $totalUsuarios = $conexion->query($sqlTotalUsuarios)->fetch_assoc()['total'];
     </section>
 
     <!-- Footer -->
-    <footer>
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 mb-4 mb-lg-0">
-                        <h4 class="fw-bold mb-1"><i class="fas fa-mobile-alt"></i> Nevom</h4>
-                        <p class="text-light opacity-75">
-                            Tu tienda de confianza para comprar, vender y reparar móviles.
-                            Calidad y servicio garantizados.
-                        </p>
-                    </div>
-                </div>
-                <hr class="border-light opacity-25 my-4">
-                <div class="text-center text-light opacity-75">
-                    <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Proyecto Educativo</p>
+    <footer class="bg-dark text-light py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-12 mb-4 mb-lg-0">
+                    <h4 class="fw-bold mb-3"><i class="fas fa-mobile-alt"></i> Nevom</h4>
+                    <p class="opacity-75 mx-auto" style="max-width: 400px;">
+                        Tu tienda de confianza para comprar y vender móviles.
+                        Calidad y servicio garantizados.
+                    </p>
                 </div>
             </div>
-        </footer>
+            <hr class="border-light opacity-25 my-4">
+            <div class="text-center opacity-75">
+                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Panel de Administración</p>
+            </div>
+        </div>
+    </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

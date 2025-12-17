@@ -97,8 +97,6 @@ if ($userRole === 'admin') {
         'linea_compra' => 'Líneas de Compra',
         'venta' => 'Ventas',
         'linea_venta' => 'Líneas de Venta',
-        'reparacion' => 'Reparaciones',
-        'linea_reparacion' => 'Líneas de Reparación',
         'movil' => 'Móviles',
         'users' => 'Usuarios'
     ];

@@ -73,11 +73,6 @@ function renderNavbar($options = []) {
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= $isActive('reparaciones') ?>" href="<?= $basePath ?>admin/indexadmin.php#ver-reparaciones">
-                                    <i class="fas fa-wrench"></i> Reparaciones
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link <?= $isActive('movil') ?>" href="<?= $basePath ?>admin/indexadmin.php#agregar-movil">
                                     <i class="fas fa-plus"></i> Móvil
                                 </a>

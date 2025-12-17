@@ -37,10 +37,9 @@ $userName = $_SESSION['user_name'] ?? null;
 $userRole = $_SESSION['user_role'] ?? null;
 $clienteId = $_SESSION['cliente_id'] ?? null;
 
-// Obtener compras, ventas y reparaciones si es cliente logueado
+// Obtener compras y ventas si es cliente logueado
 $comprasCliente = null;
 $ventasCliente = null;
-$reparacionesCliente = null;
 if ($userRole === 'client' && $clienteId) {
     // Consultar COMPRAS del cliente (cuando el cliente compra móviles de la tienda)
     $sqlCompras = "SELECT p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado,
@@ -74,21 +73,6 @@ if ($userRole === 'client' && $clienteId) {
     $stmtVentas->execute();
     $ventasCliente = $stmtVentas->get_result();
     $stmtVentas->close();
-
-    // Consultar reparaciones del cliente (a través de pedidos)
-    $sqlReparaciones = "SELECT r.id, lr.tipoReparacion, m.marca, m.modelo 
-                        FROM pedido p
-                        JOIN reparacion r ON p.idReparacion = r.id
-                        JOIN linea_reparacion lr ON r.idLineaReparacion = lr.id
-                        JOIN movil m ON lr.idMovil = m.id
-                        WHERE p.idCliente = ?
-                        ORDER BY r.id DESC
-                        LIMIT 3";
-    $stmtReparaciones = $conexion->prepare($sqlReparaciones);
-    $stmtReparaciones->bind_param('i', $clienteId);
-    $stmtReparaciones->execute();
-    $reparacionesCliente = $stmtReparaciones->get_result();
-    $stmtReparaciones->close();
 }
 
 // Obtener móviles disponibles (con stock > 0)
@@ -140,8 +124,8 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
         </div>
     </section>
 
-    <!-- Sección de Compras, Ventas y Reparaciones del Cliente (solo si está logueado como cliente) -->
-    <?php if ($userRole === 'client' && $clienteId && ($comprasCliente || $ventasCliente || $reparacionesCliente)): ?>
+    <!-- Sección de Compras y Ventas del Cliente (solo si está logueado como cliente) -->
+    <?php if ($userRole === 'client' && $clienteId && ($comprasCliente || $ventasCliente)): ?>
         <section class="py-5 bg-light">
             <div class="container">
                 <div class="text-center mb-4">
@@ -151,7 +135,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
 
                 <div class="row g-4">
                     <!-- Compras (cliente compra móviles de la tienda) -->
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-success text-white">
                                 <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Mis Últimas Compras</h5>
@@ -211,7 +195,7 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                     </div>
 
                     <!-- Ventas (cliente vende móviles a la tienda) -->
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0">Mis Ventas</h5>
@@ -255,38 +239,6 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                                 <?php else: ?>
                                     <div class="alert alert-info text-center">
                                         <p class="mb-0">No has vendido móviles aún.<br>¡Vende tus móviles usados!</p>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reparaciones  -->
-                    <div class="col-lg-4">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="fas fa-wrench"></i> Mis Reparaciones</h5>
-                            </div>
-                            <div class="card-body">
-                                <?php if ($reparacionesCliente && $reparacionesCliente->num_rows > 0): ?>
-                                    <div class="list-group">
-                                        <?php while ($reparacion = $reparacionesCliente->fetch_assoc()): ?>
-                                            <div class="list-group-item">
-                                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                                    <h6 class="mb-1">
-                                                        <span class="badge bg-secondary me-2">#<?= htmlspecialchars($reparacion['id']) ?></span>
-                                                        <?= htmlspecialchars($reparacion['marca']) ?> <?= htmlspecialchars($reparacion['modelo']) ?>
-                                                    </h6>
-                                                </div>
-                                                <p class="mb-1 text-muted">
-                                                    <strong>Tipo:</strong> <?= htmlspecialchars($reparacion['tipoReparacion']) ?>
-                                                </p>
-                                            </div>
-                                        <?php endwhile; ?>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="alert alert-info text-center">
-                                        <p class="mb-0"><i class="fas fa-wrench"></i> No tienes reparaciones registradas.</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -366,21 +318,17 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
                 <p class="text-muted mt-4">Más que una tienda, somos tu partner tecnológico</p>
             </div>
             <div class="row g-4 justify-content-center">
-                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
-                    <div class="card feature-card text-center p-4 w-100">
+                <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card feature-card text-center p-4 h-100 d-flex flex-column w-100">
                         <div class="feature-icon"><i class="fas fa-shopping-cart"></i></div>
                         <h5 class="fw-bold mb-3">Compra</h5>
-                        <p class="text-muted">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
+                        <p class="text-muted flex-grow-1">Amplio catálogo de móviles de las mejores marcas con garantía oficial</p>
+                        <a href="#productos" class="btn btn-primary btn-sm mt-3 rounded-pill">
+                            Ver Productos
+                        </a>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
-                    <div class="card feature-card text-center p-4 w-100">
-                        <div class="feature-icon"><i class="fas fa-wrench"></i></div>
-                        <h5 class="fw-bold mb-3">Reparación</h5>
-                        <p class="text-muted">Servicio técnico especializado para todo tipo de averías</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                <div class="col-md-6 col-lg-4 d-flex justify-content-center">
                     <div class="card feature-card text-center p-4 h-100 d-flex flex-column w-100">
                         <div class="feature-icon"><i class="fas fa-money-bill"></i></div>
                         <h5 class="fw-bold mb-3">Venta</h5>
@@ -401,39 +349,37 @@ $resultadoMoviles = $conexion->query($sqlMoviles);
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer class="bg-dark text-light py-5">
         <div class="container">
-            <div class="row">
+            <div class="row text-center">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h4 class="fw-bold mb-3"><i class="fas fa-mobile-alt"></i> Nevom</h4>
-                    <p class="text-light opacity-75">
-                        Tu tienda de confianza para comprar, vender y reparar móviles.
+                    <p class="opacity-75 mx-auto" style="max-width: 300px;">
+                        Tu tienda de confianza para comprar y vender móviles.
                         Calidad y servicio garantizados.
                     </p>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
-                    <h5 class="fw-bold mb-3">Enlaces</h5>
-                    <ul class="list-unstyled">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h4 class="fw-bold mb-3">Enlaces</h4>
+                    <ul class="list-unstyled d-inline-block text-start">
                         <li class="mb-2"><a href="#productos" class="text-light text-decoration-none opacity-75">Productos</a></li>
                         <li class="mb-2"><a href="#servicios" class="text-light text-decoration-none opacity-75">Servicios</a></li>
-                        <li class="mb-2"><a href="#contacto" class="text-light text-decoration-none opacity-75">Contacto</a></li>
                         <?php if ($userRole === 'admin'): ?>
                             <li class="mb-2"><a href="admin/indexadmin.php" class="text-light text-decoration-none opacity-75">Admin Panel</a></li>
                         <?php endif; ?>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-4 mb-4 mb-lg-0">
-                    <h5 class="fw-bold mb-3">Servicios</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><span class="text-light opacity-75">Venta de móviles</span></li>
-                        <li class="mb-2"><span class="text-light opacity-75">Reparaciones</span></li>
-                        <li class="mb-2"><span class="text-light opacity-75">Compra de usados</span></li>
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h4 class="fw-bold mb-3">Servicios</h4>
+                    <ul class="list-unstyled d-inline-block text-start">
+                        <li class="mb-2"><span class="opacity-75">Venta de móviles</span></li>
+                        <li class="mb-2"><span class="opacity-75">Compra de usados</span></li>
                     </ul>
                 </div>
             </div>
             <hr class="border-light opacity-25 my-4">
-            <div class="text-center text-light opacity-75">
-                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados | Proyecto Educativo</p>
+            <div class="text-center opacity-75">
+                <p class="mb-0">&copy; <?= date('Y') ?> Nevom - Todos los derechos reservados</p>
             </div>
         </div>
     </footer>

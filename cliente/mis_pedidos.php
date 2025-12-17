@@ -28,7 +28,7 @@ if (!$userName || $userRole !== 'client' || !$clienteId) {
 // Obtener pedidos del cliente
 $pedidos = [];
 $stmt = $conexion->prepare("
-    SELECT p.id, p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado, p.idCompra, p.idVenta, p.idReparacion,
+    SELECT p.id, p.numSeguimiento, p.precioTotal, p.cantidadTotal, p.formaPago, p.estado, p.idCompra, p.idVenta,
            COALESCE(p.fecha_creacion, 'N/A') as fecha_pedido, p.fecha_entrega
     FROM pedido p
     WHERE p.idCliente = ?
@@ -47,7 +47,6 @@ foreach ($pedidos as &$pedido) {
     $productos = [];
     $idCompra = $pedido['idCompra'];
     $idVenta = $pedido['idVenta'];
-    $idReparacion = $pedido['idReparacion'];
     
     if ($idCompra) {
         $stmt2 = $conexion->prepare("
@@ -73,21 +72,6 @@ foreach ($pedidos as &$pedido) {
             WHERE v.id = ?
         ");
         $stmt2->bind_param('i', $idVenta);
-        $stmt2->execute();
-        $result2 = $stmt2->get_result();
-        while ($prod = $result2->fetch_assoc()) {
-            $productos[] = $prod;
-        }
-        $stmt2->close();
-    } elseif ($idReparacion) {
-        $stmt2 = $conexion->prepare("
-            SELECT m.marca, m.modelo, m.capacidad, m.color, 1 as cantidad, m.precio
-            FROM linea_reparacion lr
-            JOIN movil m ON lr.idMovil = m.id
-            JOIN reparacion r ON lr.id = r.idLineaReparacion
-            WHERE r.id = ?
-        ");
-        $stmt2->bind_param('i', $idReparacion);
         $stmt2->execute();
         $result2 = $stmt2->get_result();
         while ($prod = $result2->fetch_assoc()) {
@@ -157,8 +141,6 @@ $conexion->close();
                                                         echo '<span class="badge bg-primary">Compra</span>';
                                                     } elseif ($pedido['idVenta']) {
                                                         echo '<span class="badge bg-success">Venta</span>';
-                                                    } elseif ($pedido['idReparacion']) {
-                                                        echo '<span class="badge bg-warning">Reparación</span>';
                                                     } else {
                                                         echo '<span class="badge bg-secondary">Desconocido</span>';
                                                     }
@@ -211,8 +193,6 @@ $conexion->close();
                             echo '<span class="badge bg-primary ms-2">Compra</span>';
                         } elseif ($pedido['idVenta']) {
                             echo '<span class="badge bg-success ms-2">Venta</span>';
-                        } elseif ($pedido['idReparacion']) {
-                            echo '<span class="badge bg-warning ms-2">Reparación</span>';
                         }
                         ?>
                     </h4>
@@ -231,8 +211,6 @@ $conexion->close();
                                     echo 'Compra';
                                 } elseif ($pedido['idVenta']) {
                                     echo 'Venta';
-                                } elseif ($pedido['idReparacion']) {
-                                    echo 'Reparación';
                                 } else {
                                     echo 'Desconocido';
                                 }
