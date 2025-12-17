@@ -28,6 +28,30 @@ if (!$userName || $userRole !== 'client' || !$clienteId) {
     exit;
 }
 
+// Manejar confirmación de eliminación
+$showConfirmModal = false;
+$confirmProduct = null;
+if (isset($_GET['confirm_delete']) && isset($_GET['movil_id'])) {
+    $movilIdConfirm = (int) $_GET['movil_id'];
+    if ($movilIdConfirm > 0 && isset($_SESSION['carrito'][$movilIdConfirm])) {
+        $stmtConfirm = $conexion->prepare("SELECT marca, modelo, capacidad, color, precio FROM movil WHERE id = ?");
+        $stmtConfirm->bind_param('i', $movilIdConfirm);
+        $stmtConfirm->execute();
+        $resultConfirm = $stmtConfirm->get_result();
+        $confirmProduct = $resultConfirm->fetch_assoc();
+        $stmtConfirm->close();
+        if ($confirmProduct) {
+            $showConfirmModal = true;
+        }
+    }
+}
+
+// Manejar confirmación de vaciar carrito
+$showVaciarModal = false;
+if (isset($_GET['vaciar_confirm'])) {
+    $showVaciarModal = true;
+}
+
 // Inicializar el carrito si no existe
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
@@ -186,13 +210,9 @@ $conexion->close();
                                                     <strong class="text-success"><?= number_format($producto['subtotal'], 2) ?>€</strong>
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    <form method="post" action="eliminar_carrito.php" class="d-inline">
-                                                        <input type="hidden" name="movil_id" value="<?= $producto['id'] ?>">
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('¿Eliminar este producto del carrito?')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    <a href="carrito.php?confirm_delete=1&movil_id=<?= $producto['id'] ?>" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -205,12 +225,9 @@ $conexion->close();
                                 <a href="../index.php#productos" class="btn btn-outline-secondary">
                                     Seguir Comprando
                                 </a>
-                                <form method="post" action="vaciar_carrito.php" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger"
-                                        onclick="return confirm('¿Vaciar todo el carrito?')">
-                                        <i class="fas fa-trash"></i> Vaciar Carrito
-                                    </button>
-                                </form>
+                                <a href="carrito.php?vaciar_confirm=1" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Vaciar Carrito
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -594,6 +611,64 @@ $conexion->close();
             });
         }
     </script>
+
+    <?php if ($showConfirmModal): ?>
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; align-items: center; justify-content: center;">
+        <div class="card shadow-lg" style="max-width: 500px; width: 90%;">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h5>
+            </div>
+            <div class="card-body text-center" style="background-color: white;">
+                <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #dc3545; opacity: 0.7;"></i>
+                <h5 class="mt-3 mb-4">¿Estás seguro de que quieres eliminar este producto?</h5>
+                <div class="mb-4">
+                    <h6 class="text-primary"><?= htmlspecialchars($confirmProduct['marca']) ?> <?= htmlspecialchars($confirmProduct['modelo']) ?></h6>
+                    <p class="text-muted mb-2">
+                        <?= htmlspecialchars($confirmProduct['capacidad']) ?> GB - <?= htmlspecialchars($confirmProduct['color']) ?>
+                    </p>
+                    <p class="text-success fw-bold fs-5"><?= number_format($confirmProduct['precio'], 2) ?>€</p>
+                </div>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="card-footer bg-light text-center" style="background-color: white !important;">
+                <a href="carrito.php" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+                <form method="post" action="eliminar_carrito.php" class="d-inline">
+                    <input type="hidden" name="movil_id" value="<?= $movilIdConfirm ?>">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sí, Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($showVaciarModal): ?>
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; align-items: center; justify-content: center;">
+        <div class="card shadow-lg" style="max-width: 500px; width: 90%;">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Vaciar Carrito</h5>
+            </div>
+            <div class="card-body text-center" style="background-color: white;">
+                <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #dc3545; opacity: 0.7;"></i>
+                <h5 class="mt-3 mb-4">¿Estás seguro de que quieres vaciar todo el carrito?</h5>
+                <p class="text-muted">Esta acción eliminará todos los productos del carrito y no se puede deshacer.</p>
+            </div>
+            <div class="card-footer bg-light text-center" style="background-color: white !important;">
+                <a href="carrito.php" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+                <form method="post" action="vaciar_carrito.php" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sí, Vaciar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
 </body>
 
