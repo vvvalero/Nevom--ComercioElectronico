@@ -15,9 +15,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Verificar que el usuario esté logueado como administrador
+$userRole = $_SESSION['user_role'] ?? null;
+if ($userRole !== 'admin') {
+    header('Location: ../auth/signin.php');
+    exit;
+}
+
 // Nombre y rol del usuario logueado (si aplica)
 $userName = $_SESSION['user_name'] ?? null;
-$userRole = $_SESSION['user_role'] ?? null;
 
 /**
  * Ejecuta una consulta SQL y devuelve el resultado.

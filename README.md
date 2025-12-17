@@ -36,7 +36,7 @@ nevom/
 │   ├── carrito.php             # Vista del carrito
 │   ├── confirmacion_pedido.php # Confirmación de pedido
 │   ├── descargar_factura_pdf.php # Descargar factura en PDF
-│   ├── descargar_factura.php   # Descargar factura
+│   ├── descargar_factura_facturae.php   # Descargar factura
 │   ├── eliminar_carrito.php    # Eliminar productos del carrito
 │   ├── procesar_compra.php     # Finalizar compra
 │   ├── vaciar_carrito.php      # Vaciar todo el carrito

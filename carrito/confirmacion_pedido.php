@@ -148,7 +148,7 @@ try {
                     <a href="visualizar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-info btn-lg">
                         <i class="fas fa-eye"></i> Visualizar Factura
                     </a>
-                    <a href="descargar_factura.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success btn-lg">
+                    <a href="descargar_factura_facturae.php?numero_pedido=<?php echo urlencode($numeroPedido); ?>" class="btn btn-success btn-lg">
                         <i class="fas fa-file"></i> Descargar Factura (Facturae)
                     </a>
                     <button onclick="descargarPDF('<?php echo urlencode($numeroPedido); ?>')" class="btn btn-danger btn-lg">
@@ -168,7 +168,6 @@ try {
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function descargarPDF(numeroPedido) {
             var iframe = document.createElement('iframe');

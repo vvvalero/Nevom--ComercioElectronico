@@ -202,9 +202,6 @@ $invoice->appendChild($invoiceHeader);
 $invoiceNumber = $dom->createElement('InvoiceNumber', $pedido['numSeguimiento']);
 $invoiceHeader->appendChild($invoiceNumber);
 
-$invoiceSeriesCode = $dom->createElement('InvoiceSeriesCode', 'NV');
-$invoiceHeader->appendChild($invoiceSeriesCode);
-
 $invoiceDocumentType = $dom->createElement('InvoiceDocumentType', 'FC');
 $invoiceHeader->appendChild($invoiceDocumentType);
 
