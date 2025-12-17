@@ -89,19 +89,29 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="marca" class="form-label fw-bold">Marca *</label>
-                                        <input type="text" class="form-control" id="marca" name="marca" required
-                                            placeholder="Ej: Samsung, Apple, Xiaomi">
+                                        <select class="form-select" id="marca" name="marca" required>
+                                            <option value="">Selecciona una marca</option>
+                                            <option value="Apple">Apple</option>
+                                            <option value="Samsung">Samsung</option>
+                                            <option value="Xiaomi">Xiaomi</option>
+                                            <option value="Huawei">Huawei</option>
+                                            <option value="Google">Google</option>
+                                            <option value="OnePlus">OnePlus</option>
+                                            <option value="Sony">Sony</option>
+                                            <option value="Motorola">Motorola</option>
+                                        </select>
                                         <div class="invalid-feedback">
-                                            Por favor, ingresa la marca del móvil
+                                            Por favor, selecciona la marca del móvil
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="modelo" class="form-label fw-bold">Modelo *</label>
-                                        <input type="text" class="form-control" id="modelo" name="modelo" required
-                                            placeholder="Ej: Galaxy S21, iPhone 13">
+                                        <select class="form-select" id="modelo" name="modelo" required>
+                                            <option value="">Primero selecciona una marca</option>
+                                        </select>
                                         <div class="invalid-feedback">
-                                            Por favor, ingresa el modelo del móvil
+                                            Por favor, selecciona el modelo del móvil
                                         </div>
                                     </div>
 
@@ -196,6 +206,37 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                 }, false)
             })
         })()
+    </script>
+
+    <script>
+        // Modelo dependiente de marca
+        const modelosPorMarca = {
+            'Apple': ['iPhone 16 Pro Max', 'iPhone 16 Pro', 'iPhone 16', 'iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15', 'iPhone 14 Pro Max', 'iPhone 14 Pro', 'iPhone 14', 'iPhone 13 Pro Max', 'iPhone 13 Pro', 'iPhone 13', 'iPhone 12', 'iPhone 11', 'iPhone SE (3rd gen)', 'Otro'],
+            'Samsung': ['Galaxy S23 Ultra', 'Galaxy S23+', 'Galaxy S23', 'Galaxy S22 Ultra', 'Galaxy S22', 'Galaxy S21 Ultra', 'Galaxy S21', 'Galaxy Note 20', 'Galaxy A54', 'Galaxy A34', 'Galaxy A14', 'Otro'],
+            'Xiaomi': ['13 Pro', '13', '12 Pro', '12', '11 Pro', 'Mi 11', 'Otro'],
+            'Huawei': ['P60 Pro', 'Mate 50 Pro', 'Mate 40 Pro', 'P40 Pro', 'Otro'],
+            'Google': ['Pixel 8 Pro', 'Pixel 8', 'Pixel 7 Pro', 'Pixel 7', 'Pixel 6 Pro', 'Pixel 6', 'Otro'],
+            'OnePlus': ['12', '11', '10 Pro', '9 Pro', '8 Pro', 'Otro'],
+            'Sony': ['Xperia 1 V', 'Xperia 5 V', 'Xperia 10 V', 'Xperia 1 IV', 'Xperia 5 IV', 'Otro'],
+            'Motorola': ['Edge 40 Pro', 'Edge 30 Pro', 'Moto G Stylus', 'Moto G Power', 'Moto G Play', 'Otro']
+        };
+
+        const marcaSelect = document.getElementById('marca');
+        const modeloSelect = document.getElementById('modelo');
+
+        marcaSelect.addEventListener('change', function() {
+            const marcaSeleccionada = this.value;
+            modeloSelect.innerHTML = '<option value="">Selecciona un modelo</option>';
+
+            if (marcaSeleccionada && modelosPorMarca[marcaSeleccionada]) {
+                modelosPorMarca[marcaSeleccionada].forEach(modelo => {
+                    const option = document.createElement('option');
+                    option.value = modelo;
+                    option.textContent = modelo;
+                    modeloSelect.appendChild(option);
+                });
+            }
+        });
     </script>
 
 </body>
