@@ -48,12 +48,89 @@ if (empty($marca) || empty($modelo) || $capacidad <= 0 || empty($color) || empty
     exit;
 }
 
+// Función para calcular el precio estimado del móvil
+function calcularPrecioMovil($marca, $modelo, $capacidad, $estado) {
+    // Precios base por marca y modelo (aproximados en €, basados en mercado)
+    $preciosBase = [
+        'Apple' => [
+            'iPhone 15 Pro Max' => 1200,
+            'iPhone 15 Pro' => 1100,
+            'iPhone 15' => 900,
+            'iPhone 14 Pro Max' => 1000,
+            'iPhone 14 Pro' => 900,
+            'iPhone 14' => 700,
+            'iPhone 13 Pro Max' => 800,
+            'iPhone 13 Pro' => 700,
+            'iPhone 13' => 600,
+            'iPhone 12' => 500,
+            'default' => 400, // Para modelos no listados
+        ],
+        'Samsung' => [
+            'Galaxy S23 Ultra' => 1000,
+            'Galaxy S23+' => 800,
+            'Galaxy S23' => 700,
+            'Galaxy S22 Ultra' => 800,
+            'Galaxy S22' => 600,
+            'Galaxy A54' => 300,
+            'Galaxy A34' => 250,
+            'default' => 350,
+        ],
+        'Xiaomi' => [
+            '13 Pro' => 600,
+            '13' => 500,
+            '12 Pro' => 400,
+            'default' => 300,
+        ],
+        'Huawei' => [
+            'P60 Pro' => 700,
+            'Mate 50 Pro' => 600,
+            'default' => 400,
+        ],
+        'default' => 250, // Para marcas no listadas
+    ];
+
+    // Normalizar marca y modelo para comparación insensible a mayúsculas
+    $marcaNorm = ucfirst(strtolower($marca));
+    $modeloNorm = strtolower($modelo);
+
+    // Obtener precio base
+    $precioBase = $preciosBase[$marcaNorm][$modeloNorm] ?? $preciosBase[$marcaNorm]['default'] ?? $preciosBase['default'];
+
+    // Factor de capacidad
+    $factoresCapacidad = [
+        16 => 0.8,
+        32 => 0.9,
+        64 => 1.0,
+        128 => 1.1,
+        256 => 1.2,
+        512 => 1.3,
+        1024 => 1.4, // 1TB
+    ];
+    $factorCapacidad = $factoresCapacidad[$capacidad] ?? 1.0;
+
+    // Factor de estado
+    $factoresEstado = [
+        'Como nuevo' => 1.0,
+        'Excelente' => 0.9,
+        'Bueno' => 0.75,
+        'Aceptable' => 0.6,
+        'Regular' => 0.4,
+    ];
+    $factorEstado = $factoresEstado[$estado] ?? 0.5; // Default si no coincide
+
+    // Calcular precio estimado
+    $precioEstimado = $precioBase * $factorCapacidad * $factorEstado;
+
+    // Limitar rango
+    return max(50, min(1500, round($precioEstimado)));
+}
+
 try {
     // Iniciar transacción
     $conexion->begin_transaction();
 
-    // Generar precio aleatorio entre 150 y 400 euros (proyecto educativo)
-    $precioValoracion = rand(150, 400);
+    // Calcular precio estimado usando el algoritmo
+    $precioValoracion = calcularPrecioMovil($marca, $modelo, $capacidad, $estado);
 
     // 1. Insertar el móvil en la tabla movil (con stock 0 ya que es del cliente)
     $sqlMovil = "INSERT INTO movil (marca, modelo, capacidad, stock, color, precio) 
