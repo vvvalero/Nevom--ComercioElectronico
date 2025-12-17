@@ -21,13 +21,6 @@ define('PAYPAL_CURRENCY', 'EUR');
 define('PAYPAL_LANGUAGE', 'es');
 define('PAYPAL_NO_SHIPPING', '0'); // '1' para productos virtuales
 
-// === LOGS ===
-define('PAYPAL_LOG_DIR', dirname(__DIR__) . '/logs');
-if (!is_dir(PAYPAL_LOG_DIR)) @mkdir(PAYPAL_LOG_DIR, 0755, true);
-
-function registrarLogPayPal($mensaje, $tipo = 'INFO') {
-    $logFile = PAYPAL_LOG_DIR . '/paypal_' . date('Y-m-d') . '.log';
-    error_log('[' . date('Y-m-d H:i:s') . "] [$tipo] $mensaje\n", 3, $logFile);
-}
+// Logging eliminado
 
 ?>

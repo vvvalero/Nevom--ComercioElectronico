@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] !== 'client' || !$clienteId) {
     exit;
 }
 
-registrarLogPayPal("Pago cancelado - Cliente: $clienteId", 'WARNING');
+// Logging eliminado
 
 // Limpiar flag de procesamiento
 unset($_SESSION['pago_procesado']);

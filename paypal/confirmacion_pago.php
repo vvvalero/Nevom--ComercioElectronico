@@ -92,7 +92,7 @@ if (!empty($datosCompra) && !empty($carrito)) {
         $procesado = true;
         $mensaje = "¡Pago confirmado! Tu pedido ha sido creado.";
         $numeroPedido = $numSeguimiento;
-        registrarLogPayPal("Pago confirmado - Pedido $numeroPedido - Cliente $clienteId", 'SUCCESS');
+        // Logging eliminado
 
         // Redirigir a página unificada de confirmación
         header('Location: ../carrito/confirmacion_pedido.php?numero_pedido=' . urlencode($numSeguimiento));
@@ -101,7 +101,7 @@ if (!empty($datosCompra) && !empty($carrito)) {
         $conexion->rollback();
         $tipo_mensaje = 'danger';
         $mensaje = 'Error: ' . $e->getMessage();
-        registrarLogPayPal("Error: " . $e->getMessage(), 'ERROR');
+        // Logging eliminado
         $_SESSION['mensaje'] = $mensaje;
         $_SESSION['mensaje_tipo'] = 'danger';
         header('Location: ../carrito/carrito.php');
@@ -110,7 +110,7 @@ if (!empty($datosCompra) && !empty($carrito)) {
 } else {
     $tipo_mensaje = 'warning';
     $mensaje = 'No se encontraron datos de compra. Vuelve a intentar.';
-    registrarLogPayPal("Acceso a confirmación sin datos en sesión", 'WARNING');
+    // Logging eliminado
     $_SESSION['mensaje'] = $mensaje;
     $_SESSION['mensaje_tipo'] = 'warning';
     header('Location: ../carrito/carrito.php');

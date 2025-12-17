@@ -12,7 +12,7 @@ Se ha desarrollado una **pasarela de pago completa con PayPal Sandbox** siguiend
    - Archivo de configuración centralizado
    - Define URLs, credenciales y parámetros
    - **DEBE EDITARSE**: Email del vendedor
-   - Incluye función de logging
+   - Incluye función de logging (eliminada)
 
 2. **`config/procesador_paypal.php`**
    - Clase `ProcesadorPayPal` con todos los métodos
@@ -56,8 +56,8 @@ Se ha desarrollado una **pasarela de pago completa con PayPal Sandbox** siguiend
 
 9. **`sql/crear_tablas_paypal.sql`**
    - Script SQL para crear tablas
-   - `transaccion_paypal`: Almacena transacciones
-   - `log_paypal`: Registro de eventos
+   - `transaccion_paypal`: Almacena transacciones (eliminada)
+   - `log_paypal`: Registro de eventos (eliminada)
 
 10. **`PAYPAL_GUIA_COMPLETA.md`**
     - Documentación exhaustiva
@@ -164,7 +164,7 @@ nevom/
 │   └── README.md                   ⭐ NUEVO
 ├── carrito/
 │   └── carrito.php                 ✏️ MODIFICADO
-├── logs/                            ⭐ NUEVA CARPETA
+├── logs/                            ⭐ CARPETA ELIMINADA
 ├── sql/
 │   ├── nevombbdd.sql
 │   └── crear_tablas_paypal.sql     ⭐ NUEVO
@@ -179,7 +179,7 @@ nevom/
 ✅ **Validación de datos**: Todos los parámetros son validados
 ✅ **Autenticación**: Solo usuarios logueados pueden pagar
 ✅ **Transacciones BD**: Se usan transacciones para integridad
-✅ **Auditoría**: Todos los eventos se registran en logs
+✅ **Auditoría**: Todos los eventos se registran en logs (eliminado)
 ✅ **Cookies seguras**: HttpOnly y Secure
 ✅ **Escapado de datos**: Todo se escapa antes de mostrar
 ✅ **Manejo de errores**: Excepciones y rollback automático
@@ -190,14 +190,7 @@ nevom/
 
 ### Nuevas Tablas Creadas:
 
-**transaccion_paypal:**
-- `id` (PK)
-- `pedido_id` (FK)
-- `referencia_paypal`
-- `estado` (INICIADA, PAGADO, COMPLETADA, FALLIDA, CANCELADA)
-- `monto`, `moneda`
-- `datos_respuesta` (JSON)
-- Índices para búsquedas rápidas
+<!-- Tabla transaccion_paypal eliminada -->
 
 **log_paypal:**
 - `id` (PK)
@@ -266,12 +259,7 @@ http://localhost/nevom/paypal/pruebas.php
 ## 📊 Verificar Datos en BD
 
 ```sql
--- Ver transacciones
-SELECT * FROM transaccion_paypal;
-
--- Ver logs de PayPal
-SELECT * FROM log_paypal ORDER BY fecha_log DESC LIMIT 20;
-
+-- Ver logs de PayPal (eliminados) (eliminados)
 -- Ver pedidos creados
 SELECT * FROM pedido WHERE forma_pago = 'paypal';
 

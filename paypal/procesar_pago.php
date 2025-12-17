@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errores)) {
     $_SESSION['carrito_paypal'] = $_SESSION['carrito'];
     $_SESSION['pago_procesado'] = true;
     $procesarPago = true;
-    registrarLogPayPal("Iniciando pago PayPal - Cliente: $clienteId - Total: $precioTotal EUR", 'INFO');
+    // Logging eliminado
 }
 
 $conexion->close();
