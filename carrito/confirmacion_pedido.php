@@ -13,6 +13,9 @@ if ($userRole !== 'client') {
     exit;
 }
 
+// Limpiar flag de compra procesada
+unset($_SESSION['compra_procesada']);
+
 // Obtener numero_pedido
 $numeroPedido = $_GET['numero_pedido'] ?? '';
 if (!$numeroPedido) {

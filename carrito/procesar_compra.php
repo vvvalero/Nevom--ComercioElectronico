@@ -41,8 +41,30 @@ $clienteData = $resultCliente->fetch_assoc();
 $clienteId = $clienteData['id']; // Este es el ID correcto para la tabla pedido
 $stmtCliente->close();
 
+// Verificar que los datos del cliente estén completos
+$stmtDatosCliente = $conexion->prepare("SELECT nombre, apellidos, email, telefono, direccion FROM cliente WHERE id = ?");
+$stmtDatosCliente->bind_param('i', $clienteId);
+$stmtDatosCliente->execute();
+$datosCliente = $stmtDatosCliente->get_result()->fetch_assoc();
+$stmtDatosCliente->close();
+
+if (!$datosCliente || empty($datosCliente['nombre']) || empty($datosCliente['apellidos']) || empty($datosCliente['email']) || empty($datosCliente['telefono']) || empty($datosCliente['direccion'])) {
+    $_SESSION['mensaje'] = 'Tu perfil de cliente está incompleto. Por favor, actualiza tus datos en el perfil.';
+    $_SESSION['mensaje_tipo'] = 'warning';
+    header('Location: ../cliente/perfil.php');
+    exit;
+}
+
 // Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: carrito.php');
+    exit;
+}
+
+// Evitar múltiples submits
+if (isset($_SESSION['compra_procesada'])) {
+    $_SESSION['mensaje'] = 'La compra ya está siendo procesada. Por favor, espera.';
+    $_SESSION['mensaje_tipo'] = 'warning';
     header('Location: carrito.php');
     exit;
 }
@@ -57,7 +79,7 @@ if (empty($_SESSION['carrito'])) {
 
 // Obtener y validar forma de pago
 $formaPago = trim($_POST['forma_pago'] ?? '');
-$formasPagoValidas = ['tarjeta', 'transferencia', 'efectivo', 'paypal'];
+$formasPagoValidas = ['paypal'];
 
 if (!in_array($formaPago, $formasPagoValidas)) {
     $_SESSION['mensaje'] = 'Selecciona una forma de pago válida';
@@ -161,6 +183,9 @@ try {
 
     // Confirmar transacción
     $conexion->commit();
+
+    // Marcar como procesada para evitar múltiples submits
+    $_SESSION['compra_procesada'] = true;
 
     // Limpiar carrito después de compra exitosa
     $_SESSION['carrito'] = [];

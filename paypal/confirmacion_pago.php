@@ -61,18 +61,33 @@ if (!empty($datosCompra) && !empty($carrito)) {
         $pedidoId = $conexion->insert_id;
         $stmt->close();
 
-        // Actualizar stock
+        // Verificar stock disponible y actualizar
         foreach ($carrito as $movilId => $cantidad) {
-            $stmt = $conexion->prepare("UPDATE movil SET stock = stock - ? WHERE id = ?");
-            $stmt->bind_param('ii', $cantidad, $movilId);
-            if (!$stmt->execute()) throw new Exception('Error al actualizar stock');
+            $stmt = $conexion->prepare("SELECT marca, modelo, stock FROM movil WHERE id = ? FOR UPDATE");
+            $stmt->bind_param('i', $movilId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows === 0) {
+                throw new Exception("El producto con ID $movilId ya no está disponible");
+            }
+            $movil = $result->fetch_assoc();
             $stmt->close();
+
+            if ($movil['stock'] < $cantidad) {
+                throw new Exception("Stock insuficiente para {$movil['marca']} {$movil['modelo']}. Solo quedan {$movil['stock']} unidades");
+            }
+
+            $nuevoStock = $movil['stock'] - $cantidad;
+            $stmtUpdate = $conexion->prepare("UPDATE movil SET stock = ? WHERE id = ?");
+            $stmtUpdate->bind_param('ii', $nuevoStock, $movilId);
+            if (!$stmtUpdate->execute()) throw new Exception('Error al actualizar stock');
+            $stmtUpdate->close();
         }
 
         $conexion->commit();
 
         // Limpiar sesión
-        unset($_SESSION['carrito'], $_SESSION['carrito_paypal'], $_SESSION['datos_compra_paypal']);
+        unset($_SESSION['carrito'], $_SESSION['carrito_paypal'], $_SESSION['datos_compra_paypal'], $_SESSION['pago_procesado']);
 
         $procesado = true;
         $mensaje = "¡Pago confirmado! Tu pedido ha sido creado.";

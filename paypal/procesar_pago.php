@@ -30,6 +30,14 @@ $stmtCliente->execute();
 $cliente = $stmtCliente->get_result()->fetch_assoc();
 $stmtCliente->close();
 
+// Verificar que los datos del cliente estén completos
+if (!$cliente || empty($cliente['nombre']) || empty($cliente['apellidos']) || empty($cliente['email']) || empty($cliente['telefono']) || empty($cliente['direccion'])) {
+    $_SESSION['mensaje'] = 'Tu perfil de cliente está incompleto. Por favor, actualiza tus datos en el perfil.';
+    $_SESSION['mensaje_tipo'] = 'warning';
+    header('Location: ../cliente/perfil.php');
+    exit;
+}
+
 // Calcular total del carrito
 $precioTotal = 0;
 $cantidadTotal = 0;
@@ -68,9 +76,16 @@ $procesarPago = false;
 $parametrosPayPal = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errores)) {
+    if (isset($_SESSION['pago_procesado'])) {
+        $_SESSION['mensaje'] = 'El pago ya está siendo procesado. Por favor, espera.';
+        $_SESSION['mensaje_tipo'] = 'warning';
+        header('Location: carrito.php');
+        exit;
+    }
     $parametrosPayPal = ProcesadorPayPal::generarParametrosPago($datosCompra);
     $_SESSION['datos_compra_paypal'] = $datosCompra;
     $_SESSION['carrito_paypal'] = $_SESSION['carrito'];
+    $_SESSION['pago_procesado'] = true;
     $procesarPago = true;
     registrarLogPayPal("Iniciando pago PayPal - Cliente: $clienteId - Total: $precioTotal EUR", 'INFO');
 }
