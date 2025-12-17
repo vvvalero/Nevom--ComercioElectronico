@@ -43,7 +43,7 @@ try {
 $empresa = [
     'nombre' => 'Nevom Comercio Electrónico S.L.',
     'nif' => 'B12345678',
-    'direccion' => 'Calle Ejemplo 123, 28001 Madrid, España',
+    'direccion' => 'P.º de los Estudiantes, s/n, 02006 Albacete',
     'telefono' => '912345678',
     'email' => 'info@nevom.com'
 ];
@@ -56,6 +56,7 @@ $baseImponible = $pedido['precioTotal'] / 1.21;
 $pedido['baseImponible'] = $baseImponible;
 $pedido['iva'] = $iva;
 $pedido['fecha'] = date('d/m/Y', strtotime($pedido['fecha_creacion']));
+$pedido['formaPago'] = ucfirst(strtolower($pedido['formaPago']));
 
 // Generar HTML con jsPDF para crear PDF
 ?>

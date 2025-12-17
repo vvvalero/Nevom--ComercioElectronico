@@ -43,7 +43,7 @@ try {
 $empresa = [
     'nombre' => 'Nevom Comercio Electrónico S.L.',
     'nif' => 'B12345678',
-    'direccion' => 'Calle Ejemplo 123, 28001 Madrid, España',
+    'direccion' => 'P.º de los Estudiantes, s/n, 02006 Albacete',
     'telefono' => '912345678',
     'email' => 'info@nevom.com'
 ];
@@ -94,10 +94,6 @@ $baseImponible = $pedido['precioTotal'] - $iva;
                             <span class="info-label">Número de Factura:</span>
                             <span><?php echo htmlspecialchars($numeroPedido); ?></span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Serie:</span>
-                            <span>NV</span>
-                        </div>
                     </div>
                     <div>
                         <div class="info-item">
@@ -106,7 +102,7 @@ $baseImponible = $pedido['precioTotal'] - $iva;
                         </div>
                         <div class="info-item">
                             <span class="info-label">Forma de Pago:</span>
-                            <span><?php echo htmlspecialchars($pedido['formaPago']); ?></span>
+                            <span><?php echo htmlspecialchars(ucfirst($pedido['formaPago'])); ?></span>
                         </div>
                     </div>
                 </div>

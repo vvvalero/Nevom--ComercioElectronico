@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($apellidos)) $errores[] = 'Los apellidos son obligatorios';
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errores[] = 'Email inválido';
     if (empty($telefono)) $errores[] = 'El teléfono es obligatorio';
+    if (!empty($telefono) && !preg_match('/^\d+$/', $telefono)) $errores[] = 'El teléfono debe contener solo números';
     if (empty($direccion)) $errores[] = 'La dirección es obligatoria';
     if (empty($userNombre)) $errores[] = 'El nombre de usuario es obligatorio';
 
@@ -201,7 +202,7 @@ $conexion->close();
                                                 <label class="form-label fw-semibold">
                                                     <i class="fas fa-phone me-1"></i>Teléfono
                                                 </label>
-                                                <input type="tel" name="telefono" class="form-control form-control-lg" value="<?php echo htmlspecialchars($cliente['telefono']); ?>" required>
+                                                <input type="tel" name="telefono" class="form-control form-control-lg" value="<?php echo htmlspecialchars($cliente['telefono']); ?>" pattern="[0-9]+" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label fw-semibold">

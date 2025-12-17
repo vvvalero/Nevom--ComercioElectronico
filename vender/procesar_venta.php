@@ -38,7 +38,6 @@ $modelo = trim($_POST['modelo'] ?? '');
 $capacidad = intval($_POST['capacidad'] ?? 0);
 $color = trim($_POST['color'] ?? '');
 $estado = trim($_POST['estado'] ?? '');
-$comentarios = trim($_POST['comentarios'] ?? '');
 
 // Validar campos requeridos
 if (empty($marca) || empty($modelo) || $capacidad <= 0 || empty($color) || empty($estado)) {

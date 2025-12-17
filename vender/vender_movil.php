@@ -155,13 +155,6 @@ unset($_SESSION['mensaje_venta'], $_SESSION['tipo_mensaje']);
                                             Por favor, selecciona el estado del dispositivo
                                         </div>
                                     </div>
-
-                                    <div class="col-md-12">
-                                        <label for="comentarios" class="form-label fw-bold">Comentarios Adicionales</label>
-                                        <textarea class="form-control" id="comentarios" name="comentarios" rows="4"
-                                            placeholder="Describe cualquier detalle adicional sobre el móvil (opcional)"></textarea>
-                                        <small class="text-muted">Menciona si tiene accesorios, caja original, etc.</small>
-                                    </div>
                                 </div>
 
                                 <div class="d-grid gap-2 mt-4">

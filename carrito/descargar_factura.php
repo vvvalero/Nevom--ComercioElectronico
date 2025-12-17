@@ -44,7 +44,7 @@ try {
 $empresa = [
     'nombre' => 'Nevom Comercio Electrónico S.L.',
     'nif' => 'B12345678',
-    'direccion' => 'Calle Ejemplo 123, 28001 Madrid, España',
+    'direccion' => 'P.º de los Estudiantes, s/n, 02006 Albacete',
     'telefono' => '912345678',
     'email' => 'info@nevom.com'
 ];

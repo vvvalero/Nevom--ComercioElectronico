@@ -61,6 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Los clientes deben rellenar todos los campos.');
                     }
                     
+                    if (!preg_match('/^\d+$/', $telefono)) {
+                        throw new Exception('El teléfono debe contener solo números.');
+                    }
+                    
                     // Verificar si el teléfono ya existe
                     $stmtTel = $conexion->prepare('SELECT id FROM cliente WHERE telefono = ? LIMIT 1');
                     $stmtTel->bind_param('s', $telefono);
@@ -263,7 +267,7 @@ $conexion->close();
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Teléfono *</label>
                                 <input type="tel" name="telefono" class="form-control form-control-lg" 
-                                       placeholder="Ej: 666 777 888" id="telefonoInput">
+                                       placeholder="Ej: 666 777 888" pattern="[0-9]+" id="telefonoInput">
                                 <div class="invalid-feedback">
                                     Por favor, ingresa el teléfono
                                 </div>

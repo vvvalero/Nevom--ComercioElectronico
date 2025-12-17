@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Las contraseñas no coinciden.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'El formato del email no es válido.';
+    } elseif (!preg_match('/^\d+$/', $telefono)) {
+        $error = 'El teléfono debe contener solo números.';
     } else {
         // Comprobar si el email ya existe
         $stmt = $conexion->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
@@ -195,7 +197,7 @@ $conexion->close();
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Teléfono *</label>
                                 <input type="tel" name="telefono" class="form-control form-control-lg" 
-                                       placeholder="666777888" 
+                                       placeholder="666777888" pattern="[0-9]+" 
                                        value="<?= htmlspecialchars($_POST['telefono'] ?? '') ?>" required>
                                 <div class="invalid-feedback">
                                     Por favor, ingresa tu teléfono
