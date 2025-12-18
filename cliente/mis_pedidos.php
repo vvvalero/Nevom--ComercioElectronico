@@ -81,6 +81,7 @@ foreach ($pedidos as &$pedido) {
     }
     $pedido['productos'] = $productos;
 }
+unset($pedido);
 
 $conexion->close();
 ?>
