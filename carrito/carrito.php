@@ -251,7 +251,7 @@ $conexion->close();
                                     <?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>€
                                 </h4>
                             </div>
-                            <form method="post" action="procesar_compra.php" id="formProcesarCompra" data-total="<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>">
+                            <form method="post" id="formProcesarCompra" data-total="<?= number_format($totalCarrito >= 50 ? $totalCarrito : $totalCarrito + 5, 2) ?>">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Forma de Pago</label>
                                     <p class="form-control-plaintext"><i class="fab fa-paypal"></i> PayPal</p>
